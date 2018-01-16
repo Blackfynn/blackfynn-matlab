@@ -16,7 +16,7 @@ In order to install the latest release of the MATLAB client，follow the instruc
 
 ### Downloading and adding to MATLAB path
 
-1. Download, or checkout the source code from the source code repository [MATLAB client repository](https://github.com/Blackfynn/blackfynn-matlab-client)
+1. Download, or checkout the source code from the source code repository [MATLAB client repository](https://github.com/Blackfynn/blackfynn-matlab)
 2. (Only for download) Extract contents of the downloaded file into a folder
 3. Add the path of the Blackfynn client folder to the MATLAB path. This can be done in MATLAB as follows:
 
