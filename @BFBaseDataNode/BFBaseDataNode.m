@@ -93,6 +93,9 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
 
       for i = 1 : length(resp)
         item = resp(i);
+        if iscell(item)
+            item = resp{i,1};
+        end
         content = item.content;
         switch content.packageType
             case 'DataSet'
