@@ -78,7 +78,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             request = obj.session.request;
             
             % Login
-            path = 'account/api/session';
+            path = '/account/api/session';
             uri = sprintf('%s%s',obj.session.host, path);
             data = struct(...
                 'tokenId',keyValues{1}, ...
@@ -90,7 +90,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             request.setAPIKey(resp.session_token);
             
             % Get User and organization info
-            path = 'user/';
+            path = '/user/';
             uri = sprintf('%s%s',obj.session.host, path);
             resp = request.get(uri,{});
             
@@ -111,7 +111,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
     
     methods (Hidden, Access = {?BFBaseNode})
         function get_datasets(obj)
-            uri = sprintf('%s%s',obj.session.host, 'datasets');
+            uri = sprintf('%s/%s',obj.session.host, 'datasets');
              params = {'include', '*', 'includeAncestors', 'false',...
                  'api_key', obj.session.request.options.HeaderFields{2}};
             resp = obj.session.request.get(uri,params);
