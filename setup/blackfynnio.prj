@@ -50,7 +50,7 @@
       <param.javaclasspath.excludes />
     </unset>
     <fileset.rootdir>
-      <file>/Users/joost/Code/blackfynn-matlab/setup/..</file>
+      <file>${PROJECT_ROOT}/..</file>
     </fileset.rootdir>
     <fileset.rootfiles>
       <file>/Users/joost/Code/blackfynn-matlab/.DS_Store</file>
