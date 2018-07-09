@@ -102,86 +102,80 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         end
         
     function out = getSpan(obj,channels, start, stop)
-      % GETSPAN gets timeseries data between ``start`` and ``end`` times
-      % for specified channels.
-      %
-      % Args:
-      %         channels (struct): channel or channels to retrieve data from
-      %         start (int): start time for the retrieved interval in usecs
-      %         end (int): end time for the retrieved interval in usecs
-      %
-      % Returns:
-      %         matrix: Matrix of doubles, where the first column represents
-      %         the time, and the remaining columns contain the channel
-      %         data.
-      %
-      % Examples:
-      %             Get 1 second of data for all the channels in ``ts``, a
-      %             ``timeseries`` object::
-      %                 
-      %                 >> data = ts.getSpan(ts.channels, ts.startTime, ts.startTime+1000000);
-      %
-      %             Get 5 seconds of data for channels 2 through 4 of the
-      %             ``ts`` object::
-      %
-      %                 >> data = ts.getSpan(ts.channels(2:4), ts.startTime, ts.startTime+5000000)
-      %
-      %
-      % Note:
-      %         The start and end times are relative to the starTime and
-      %         endTime specified in the package. To find out the start
-      %         and end times, you can use ``ts.startTime`` and ``ts.endTime``
-      %         where ``ts`` is a ``timeseries`` object.
-      %
-      % Warning:
-      %         The maximum amount of data points that can be obtained at a 
-      %         time is 1000. To obtain more data, you can use an iterative
-      %         approach.
-      %
+        % GETSPAN gets timeseries data between ``start`` and ``end`` times
+        % for specified channels.
+        %
+        % Args:
+        %         channels (struct): channel or channels to retrieve data from
+        %         start (int): start time for the retrieved interval in usecs
+        %         end (int): end time for the retrieved interval in usecs
+        %
+        % Returns:
+        %         matrix: Matrix of doubles, where the first column represents
+        %         the time, and the remaining columns contain the channel
+        %         data.
+        %
+        % Examples:
+        %             Get 1 second of data for all the channels in ``ts``, a
+        %             ``timeseries`` object::
+        %                 
+        %                 >> data = ts.getSpan(ts.channels, ts.startTime, ts.startTime+1000000);
+        %
+        %             Get 5 seconds of data for channels 2 through 4 of the
+        %             ``ts`` object::
+        %
+        %                 >> data = ts.getSpan(ts.channels(2:4), ts.startTime, ts.startTime+5000000)
+        %
+        %
+        % Note:
+        %         The start and end times are relative to the starTime and
+        %         endTime specified in the package. To find out the start
+        %         and end times, you can use ``ts.startTime`` and ``ts.endTime``
+        %         where ``ts`` is a ``timeseries`` object.
+        %
+        % Warning:
+        %         The maximum amount of data points that can be obtained at a 
+        %         time is 1000. To obtain more data, you can use an iterative
+        %         approach.
+        %
 
-      chan_array = struct(); %cell(1,length(channels));
-      for i=1:length(channels)
-        chan_array(i).id =  channels(i).id;
-        chan_array(i).rate = channels(i).rate;
-      end
+        % Create channel array structure for request
+        chan_array = struct();
+        for i=1:length(channels)
+            chan_array(i).id =  channels(i).id;
+            chan_array(i).rate = channels(i).rate;
+        end
+        ch_ids = {chan_array.id};
 
-    cmd = struct( ...
-        'command', "new", ...
-        'session', obj.session, ...
-        'packageId', obj.package, ...
-        'channels', chan_array, ...
-        'startTime', uint64(start), ...
-        'endTime', uint64(stop), ...
-        'chunkSize', uint64(5000000), ...
-        'useCache', true);
-    
-    cmd_encode = jsonencode(cmd);  
-    
-    % Create Websocket connection to Blackfynn Agent
-      
-    ws_ = BFAgentIO(obj.session, obj.package);
-    ws_.send(cmd_encode);
-    
-    % Wait for async callback to return with data
-    waitfor(ws_.received_data.handle, 'Empty', false);
-    
-    % Get data
-    data = ws_.received_data.get('data');
-    
-    ks = data.keySet;
-    ks_it = ks.iterator;
-    out = {};
-    ch = 1;
-    while ks_it.hasNext
-        curChId = ks_it.next;
-        curCh = data.get(curChId);
-        br = blackfynn.Request('');
-        out{ch} = double(br.parseTimeSeriesList(curCh));
+        % Create Websocket connection to Blackfynn Agent
+        ws_ = BFAgentIO(obj.session, obj.package);
+        cmd = struct( ...
+            'command', "new", ...
+            'session', obj.session, ...
+            'packageId', obj.package, ...
+            'channels', chan_array, ...
+            'startTime', uint64(start), ...
+            'endTime', uint64(stop), ...
+            'chunkSize', uint64(5000000), ...
+            'useCache', true);
+        cmd_encode = jsonencode(cmd);
+        ws_.send(cmd_encode);
+
+        % Wait for async callback to return with data
+        waitfor(ws_.received_data.handle, 'Empty', false);
+        data = ws_.received_data.get('data');
+
+        % Convert data to Blackfynn Cell-Array
+        ks = data.keySet;
+        ks_it = ks.iterator;
+        out = cell(ks.length,1);
         
-        ch = ch+1;
-    end
-    
-    
+        br = blackfynn.Request('');
+        while ks_it.hasNext
+            curChId = ks_it.next;
+            loc = find(strcmp(ch_ids,curChId),1);
+            out{loc} = double(br.parseTimeSeriesList(data.get(curChId)));
+        end
     end
     
     function show_channels(obj)
