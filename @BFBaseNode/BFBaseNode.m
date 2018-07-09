@@ -1,7 +1,7 @@
 classdef (Abstract) BFBaseNode < handle
     % Base class to serve all Blackfynn objects.
     
-    properties(Access = protected)
+    properties(Access = public)
         id
         session
     end

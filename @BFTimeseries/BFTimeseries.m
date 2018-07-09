@@ -170,22 +170,14 @@ classdef (Sealed) BFTimeseries < BFDataPackage
     
     ks = data.keySet;
     ks_it = ks.iterator;
-    out = struct();
+    out = {};
     ch = 1;
     while ks_it.hasNext
         curChId = ks_it.next;
         curCh = data.get(curChId);
-        chDat = zeros(curCh.size,2);
-
-        dat_it = curCh.iterator;
-        ix = 1;
-        while dat_it.hasNext
-            nextVal = dat_it.next;
-            chDat(ix,1) = nextVal.getTime;
-            chDat(ix,2) = nextVal.getValue;
-            ix = ix+1;
-        end
-        out.(sprintf('ch_%i',ch)) = chDat;
+        br = blackfynn.Request('');
+        out{ch} = double(br.parseTimeSeriesList(curCh));
+        
         ch = ch+1;
     end
     
