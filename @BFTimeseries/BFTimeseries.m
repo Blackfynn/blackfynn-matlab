@@ -13,6 +13,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         channels_
         startTime_
         endTime_
+        package
     end
     
     methods
@@ -28,6 +29,20 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             %
             obj = obj@BFDataPackage(varargin{:});
             obj.channels_=varargin{5};
+            
+            obj.session = varargin{1}.api_key;
+            obj.package = varargin{2}; 
+                     
+            
+        end
+        
+        function delete(obj)
+            try
+                obj.ws_.close();
+            catch ME
+                fprintf('error closing websocket')
+            end
+            
         end
         
         function value = get.startTime(obj)
@@ -86,7 +101,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             end    
         end
         
-    function data = getSpan(obj,channels, start, stop)
+    function out = getSpan(obj,channels, start, stop)
       % GETSPAN gets timeseries data between ``start`` and ``end`` times
       % for specified channels.
       %
@@ -123,22 +138,68 @@ classdef (Sealed) BFTimeseries < BFDataPackage
       %         time is 1000. To obtain more data, you can use an iterative
       %         approach.
       %
-      endPoint = '/ts/retrieve/continuous';
-      uri = sprintf('%s%s', obj.session.streaming_host,endPoint);
-      data = [];
-      chan_array = cell(1,length(channels));
+%       endPoint = '/ts/retrieve/continuous';
+%       uri = sprintf('%s%s', obj.session.streaming_host,endPoint);
+%       data = [];
+      chan_array = struct(); %cell(1,length(channels));
       for i=1:length(channels)
-        chan_array{1,i} = channels(i).id;
+        chan_array(i).id =  channels(i).id;
+        chan_array(i).rate = channels(i).rate;
       end
-      params = {...
-          'start',start,...
-          'end',stop,...
-          'channel','',...
-          'limit','',...
-          'session', obj.session.request.options.HeaderFields{2}};
-        out = BFJavaRequest.blackfynn_get(string(params), chan_array,...
-            obj.session.streaming_host, endPoint);
-        data = out;
+%       params = {...
+%           'start',start,...
+%           'end',stop,...
+%           'channel','',...
+%           'limit','',...
+%           'session', obj.session.request.options.HeaderFields{2}};
+%         out = BFJavaRequest.blackfynn_get(string(params), chan_array,...
+%             obj.session.streaming_host, endPoint);
+%         data = out;
+    cmd = struct( ...
+        'command', "new", ...
+        'session', obj.session, ...
+        'packageId', obj.package, ...
+        'channels', chan_array, ...
+        'startTime', uint64(start), ...
+        'endTime', uint64(stop), ...
+        'chunkSize', 800000, ...
+        'useCache', true);
+    
+    cmd_encode = jsonencode(cmd);  
+    
+    % Create Websocket connection to Blackfynn Agent
+      
+    ws_ = BFAgentIO(obj.session, obj.package);
+    ws_.send(cmd_encode);
+    
+    % Wait for async callback to return with data
+    waitfor(ws_.received_data.handle, 'Empty', false);
+    
+    % Get data
+    data = ws_.received_data.get('data');
+    
+    ks = data.keySet;
+    ks_it = ks.iterator;
+    out = struct();
+    ch = 1;
+    while ks_it.hasNext
+        curChId = ks_it.next;
+        curCh = data.get(curChId);
+        chDat = zeros(curCh.size,2);
+
+        dat_it = curCh.iterator;
+        ix = 1;
+        while dat_it.hasNext
+            nextVal = dat_it.next;
+            chDat(ix,1) = nextVal.get('time');
+            chDat(ix,2) = nextVal.get('value');
+            ix = ix+1;
+        end
+        out.(sprintf('ch_%i',ch)) = chDat;
+        ch = ch+1;
+    end
+    
+    
     end
     
     function show_channels(obj)

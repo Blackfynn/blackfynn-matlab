@@ -5,6 +5,7 @@ classdef BFSession < handle
     request         % Request object
     host            % API host
     streaming_host  % Streaming Host
+    api_key         % session key
   end
 
   properties (Access = private, Constant)

@@ -87,6 +87,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             resp = request.post(uri, data);
             
             % Set API key
+            obj.session.api_key = resp.session_token;
             request.setAPIKey(resp.session_token);
             
             % Get User and organization info
@@ -135,7 +136,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             % OUT = GET_PACKAGE(OBJ, 'id') returns a single package based on the
             % provided 'id'
             %
-            uri = sprintf('%s%s%s',obj.session.host,'packages/',id);
+            uri = sprintf('%s%s%s',obj.session.host,'/packages/',id);
             params = {'includeAncestors' 'false' 'include' 'false'};
             resp = obj.session.request.get(uri,params);
             out = BFBaseDataNode.createFromResponse(resp, obj.session);
