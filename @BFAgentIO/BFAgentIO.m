@@ -1,6 +1,4 @@
-classdef BFAgentIO < WebSocketClient
-    %CLIENT Summary of this class goes here
-    %   Detailed explanation goes here
+classdef (Sealed) BFAgentIO < WebSocketClient
     
     properties
         session

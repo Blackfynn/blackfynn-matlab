@@ -9,8 +9,9 @@ classdef BFBaseCollection < BFBaseDataNode
     properties (Hidden)
         items_  =  BFBaseDataNode.empty();
         items__ =  BFBaseDataNode.empty();
+        checked_items = false;
     end
-    
+
     methods
         function obj = BFBaseCollection(varargin)
             %BFBASECOLLECTION Base class used for both ``Dataset`` and ``Collection``
@@ -160,27 +161,45 @@ classdef BFBaseCollection < BFBaseDataNode
         function value = get.items(obj)
             % get the items that reside within a ``Collection``.
             %
-            if (~isempty(obj.items__))
-                value = obj.items__;
+            if obj.checked_items
+                value = obj.items__;  % Return Matlab representation of objects.
             else
+                % Check items
+                uri = sprintf('%s%s%s',obj.session.host, '/datasets/', obj.id);
+                params = {'api_key', obj.session.request.options.HeaderFields{2}};
+                resp = obj.session.request.get(uri,params);
+                
                 % Create items
-                if ~isempty(obj.items_)
-                    value(length(obj.items_)) = BFCollection('','','','');
-                    for i = 1:length(obj.items_)
-                        curItem = obj.items_(i);
+                if ~isempty(resp.children)
+                    value(length(resp.children)) = BFCollection('','','','');
+                    for i = 1:length(resp.children)
+                        curItem = resp.children(i);
                         if isa(curItem, 'cell')
                             curItem = curItem{1,1};
                         end
                         value(i) = BFBaseDataNode.createFromResponse(curItem, obj.session);
                         obj.items__(i) = value(i);
                     end
+                    obj.checked_items = true;
                 else
                     value =  BFBaseDataNode.empty();
                 end
             end
         end
-        
-    % end of methods
+    end
+    
+    methods (Access = protected)
+        function s = getFooter(obj)
+            if isscalar(obj)
+                objId = obj.id;
+                s = sprintf(['  <a href="matlab: display(''obj.id: %s'')"'...
+                    '>ID</a>, <a href="matlab: Blackfynn.gotoSite">'...
+                    'Webapp</a>, <a href="matlab: methods(%s)">Methods</a>']...
+                    ,objId,class(obj));
+            else
+                s = '';
+            end
+        end
     end
     
     methods (Hidden, Access=private)
@@ -193,8 +212,6 @@ classdef BFBaseCollection < BFBaseDataNode
             out=resp;
         end
         
-    end
-    
-% end of class
+    end    
 end
 

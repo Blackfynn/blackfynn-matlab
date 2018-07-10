@@ -2,7 +2,7 @@
     xsi:noNamespaceSchemaLocation="optional">
     <?xml-stylesheet type="text/xsl"href="optional"?>
      
-    <matlabrelease>R2018a</matlabrelease>
+    <matlabrelease>R2017b</matlabrelease>
     <name>Blackfynn</name>
     <type>toolbox</type>
     <icon></icon>

@@ -48,10 +48,7 @@ classdef BFDataset < BFBaseCollection
             if isfield(content, 'description')
                 out.description = content.description;
             end
-            
-            if (isfield(resp, 'children') == 1)
-                out.items_ = resp.children;
-            end
+
         end
         
     % end of static methods
