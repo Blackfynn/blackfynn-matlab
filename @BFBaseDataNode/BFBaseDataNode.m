@@ -5,6 +5,9 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
   properties(Access = private)
     parent
   end
+  properties (Hidden);
+    id
+  end
   
   properties
     name = '' % Name of the element as a string
@@ -20,35 +23,11 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
       obj = obj@BFBaseNode(varargin{:});
       
       if nargin > 0
+        obj.id = varargin{2};
         obj.name = varargin{3};
         obj.type = varargin{4};
         
       end
-    end
-    
-    function id = get_id(obj)
-        %GET_ID  Returns the Blackfynn ID for the object. You can
-        % use this ID to reference the Blackfynn object in all clients and on
-        % the platform.
-        %
-        %
-        % Note:
-        %       All of the Blackfynn data objects are identified with a unique
-        %       ID of the type
-        %       ``N:obj_type:????????-????-????-????-????????????``, where the
-        %       ``?`` wildcard represents alphanumeric characters.
-        %
-        % Examples:
-        %
-        %           Get the ID of a dataset under your current Organization::
-        %
-        %               >> dataset_obj.get_id;
-        %
-        %           Get the ID of a package under a dataset::
-        %
-        %               >> package_obj.get_id;
-        %
-        id = obj.id;
     end
     
     function out = update(obj)
@@ -71,16 +50,6 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
                 error('Cannot update object of class %s', class(obj));
         end
         
-    end
-    
-  % end of methods
-  end
-  
-  methods (Access = protected)
-    function info = specialPropsInfo(obj)
-        % Information about special properties
-        %
-      info = struct('name',{},'size',[0 0], 'format','');
     end
     
   end
@@ -126,8 +95,6 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
         out(i).props = props;
       end
     end
-    
-  % end of static methods
   end
   
   methods (Hidden)
@@ -145,15 +112,11 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
   end
   
   methods (Static, Sealed, Access = protected)
-      
       function default_object = getDefaultScalarElement
           %GETDEFAULTSCALARELEMENT Get default scalar element
           %
           default_object = BFCollection('','','','');
       end
-      
-  % end of methods    
   end
 
-% end of class
 end

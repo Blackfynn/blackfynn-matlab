@@ -28,20 +28,12 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             %           ``BFTimeseries``: Timeseries object
             %
             obj = obj@BFDataPackage(varargin{:});
-            obj.channels_=varargin{5};
-            
-            obj.session = varargin{1}.api_key;
-            obj.package = varargin{2}; 
-                     
-            
-        end
-        
-        function delete(obj)
-            try
-                obj.ws_.close();
-            catch ME
-                fprintf('error closing websocket')
+            if nargin
+                obj.channels_= varargin{5};
+                obj.session = varargin{1}.api_key;
+                obj.package = varargin{2}; 
             end
+                     
             
         end
         
@@ -102,42 +94,28 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         end
         
     function out = getSpan(obj,channels, start, stop)
-        % GETSPAN gets timeseries data between ``start`` and ``end`` times
-        % for specified channels.
-        %
-        % Args:
-        %         channels (struct): channel or channels to retrieve data from
-        %         start (int): start time for the retrieved interval in usecs
-        %         end (int): end time for the retrieved interval in usecs
-        %
-        % Returns:
-        %         matrix: Matrix of doubles, where the first column represents
-        %         the time, and the remaining columns contain the channel
-        %         data.
-        %
-        % Examples:
-        %             Get 1 second of data for all the channels in ``ts``, a
-        %             ``timeseries`` object::
-        %                 
-        %                 >> data = ts.getSpan(ts.channels, ts.startTime, ts.startTime+1000000);
-        %
-        %             Get 5 seconds of data for channels 2 through 4 of the
-        %             ``ts`` object::
-        %
-        %                 >> data = ts.getSpan(ts.channels(2:4), ts.startTime, ts.startTime+5000000)
+        % GETSPAN Returns data for a given span of time and channels.
+        %    RESULT = GETSPAN(OBJ, CHANNELS, START, STOP) returns a 2D
+        %    array for each channel with the time-stamps and the values of
+        %    the timeseries within the given range. CHANNELS is an array of
+        %    BFTIMESERIESCHANNEL objects, START is the start of the range
+        %    relative to the start-time of the timeseries object in
+        %    microseconds. STOP is the end of the range relative to the
+        %    start-time of the package in microseconds.
         %
         %
-        % Note:
-        %         The start and end times are relative to the starTime and
-        %         endTime specified in the package. To find out the start
-        %         and end times, you can use ``ts.startTime`` and ``ts.endTime``
-        %         where ``ts`` is a ``timeseries`` object.
+        %    Examples:
+        %       % Return first 10 seconds of data on all channels
+        %       TS = BFTimeseries(...)
+        %       DATA = TS.GETSPAN(TS.channels, 0, 10e6)
         %
-        % Warning:
-        %         The maximum amount of data points that can be obtained at a 
-        %         time is 1000. To obtain more data, you can use an iterative
-        %         approach.
+        %       % Return minute 5 through 10 on first two channels
+        %       START = 5*60*1e6
+        %       STOP = 10*60*1e6
+        %       DATA = TS.GETSPAN(TS.channels(1:2), START, STOP) 
         %
+        %    see also:
+        %       BFTimeSeries, BFTimeSeriesChannel
 
         % Create channel array structure for request
         chan_array = struct();
@@ -146,7 +124,11 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             chan_array(i).rate = channels(i).rate;
         end
         ch_ids = {chan_array.id};
+        max_rate = max([chan_array.rate]);
 
+        % Set chunk size (10,000 values per chunk)
+        chunk_size = 1e6* (10000/max_rate);
+        
         % Create Websocket connection to Blackfynn Agent
         ws_ = BFAgentIO(obj.session, obj.package);
         cmd = struct( ...
@@ -156,7 +138,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             'channels', chan_array, ...
             'startTime', uint64(start), ...
             'endTime', uint64(stop), ...
-            'chunkSize', uint64(5000000), ...
+            'chunkSize', uint64(chunk_size), ...
             'useCache', true);
         cmd_encode = jsonencode(cmd);
         ws_.send(cmd_encode);
@@ -169,7 +151,6 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         ks = data.keySet;
         ks_it = ks.iterator;
         out = cell(ks.length,1);
-        
         br = blackfynn.Request('');
         while ks_it.hasNext
             curChId = ks_it.next;
@@ -179,23 +160,25 @@ classdef (Sealed) BFTimeseries < BFDataPackage
     end
     
     function show_channels(obj)
-        % SHOW_CHANNELS lists the channel IDs, Names and Types in a
-        % timeseries package.
+        % SHOW_CHANNELS Pretty display of all channel objects.
+        %    SHOW_CHANNELS(OBJ) prints a list of all channel objects in the
+        %    Timeseries package.
         % 
-        % Examples:
+        %    Examples:
+        %       TS = BFTimeseries(...);
+        %       TS.SHOW_CHANNELS()
         %
-        %           Show channels for ``ts``, a timeseries object::
+        %           0. ID: "N:channel:43dd423a-6f8f-4fe9-b8c3-9d4444...
+        %           1. ID: "N:channel:ef222470-e947-472a-b975-4dad95...
+        %           2. ID: "N:channel:e663cdc1-68a4-4a9f-3333-55681b...
+        %           3. ID: "N:channel:31419dfc-1dc0-4eac-b9d9-6trtf4...
         %
-        %               >> ts.show_channels
-        %               0. ID: "N:channel:43dd423a-6f8f-4fe9-b8c3-9d4444449f7b", Name: "chan000", Type: "CONTINUOUS"
-        %               1. ID: "N:channel:ef222470-e947-472a-b975-4dad95ac8ccd", Name: "chan006", Type: "CONTINUOUS"
-        %               2. ID: "N:channel:e663cdc1-68a4-4a9f-3333-55681b65562a", Name: "chan004", Type: "CONTINUOUS"
-        %               3. ID: "N:channel:31419dfc-1dc0-4eac-b9d9-6trtf4215dff", Name: "chan020", Type: "CONTINUOUS"
-        %
-        len_chan = length(obj.channels);
+        %    see also:
+        %       BFTimeSeries, BFTimeSeriesChannel
         
+        len_chan = length(obj.channels);
         for i = 1 : len_chan
-            fprintf('%d. ID: "%s", Name: "%s", Type: "%s"\n',...
+            fprintf('%d. ID: "%s", Name: "%s", Type: "%s"\n', ...
                 (i-1), obj.channels(i).id, obj.channels(i).name, ...
                 obj.channels(i).channelType);
         end

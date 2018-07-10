@@ -3,7 +3,7 @@ classdef BFDataPackage < BFBaseDataNode
   % do not need specialized methods).
   %
   
-  properties
+  properties (Hidden)
       datasetId
       state
   end
@@ -27,6 +27,17 @@ classdef BFDataPackage < BFBaseDataNode
       obj = obj@BFBaseDataNode(varargin{:});
     end
   end
+  
+  methods (Access = protected)
+        function s = getFooter(obj)
+            if isscalar(obj)
+                s = sprintf('  <a href="matlab: display(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite">Webapp</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id,class(obj));
+            else
+                s = '';
+            end
+        end
+  end
+    
   
   methods (Static)
     function out = createFromResponse(resp, session)
