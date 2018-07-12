@@ -1,4 +1,5 @@
 classdef (Sealed) BFAgentIO < WebSocketClient
+    % BFAGENTIO Class handling communication with the Blackfynn Agent
     
     properties
         session
@@ -14,7 +15,6 @@ classdef (Sealed) BFAgentIO < WebSocketClient
     
     methods
         function obj = BFAgentIO(session, package)
-            %Constructor
             URI = sprintf('ws://%s/ts/query?package=%s&session=%s', ...
                 BFAgentIO.uri, package, session);
 
@@ -27,12 +27,12 @@ classdef (Sealed) BFAgentIO < WebSocketClient
     end
     
     methods (Access = protected)
-        function onOpen(obj,message)
+        function onOpen(~,message)
             % This function simply displays the message received
             fprintf('%s\n',message);
         end
         
-        function onTextMessage(obj,message)
+        function onTextMessage(~,message)
             % This function simply displays the message received
             fprintf('Message received:\n%s\n',message);
         end
@@ -75,12 +75,12 @@ classdef (Sealed) BFAgentIO < WebSocketClient
         end
         
         
-        function onError(obj,message)
+        function onError(~,message)
             % This function simply displays the message received
             fprintf('Error: %s\n',message);
         end
         
-        function onClose(obj,message)
+        function onClose(~,message)
             % This function simply displays the message received
             fprintf('%s\n',message);
         end

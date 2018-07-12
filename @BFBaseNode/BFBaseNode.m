@@ -90,6 +90,7 @@ classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
             end
             fprintf('\n\n');  
         end
+        
     end
     
     methods (Static, Sealed = true)
