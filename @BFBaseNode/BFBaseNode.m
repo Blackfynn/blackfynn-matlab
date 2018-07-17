@@ -6,15 +6,11 @@ classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
     end
     
     methods
-        function obj = BFBaseNode(varargin)
-            % BFBASENODE Is a method to serve all objects.
-            
+        function obj = BFBaseNode(varargin)            
             if (nargin > 0)
                 obj.session = varargin{1};
             end
         end
-        
-        
     end
     
     methods (Sealed = true)    

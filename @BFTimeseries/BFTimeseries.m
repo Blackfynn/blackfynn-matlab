@@ -1,11 +1,11 @@
 classdef (Sealed) BFTimeseries < BFDataPackage
-    % Object that represents a timeseries package
+    % BFTIMESERIES  A Timeseries package on Blackfynn
     %
     properties (Dependent)
-        channels % Returns struct of channel objects associated with the package.
-        layers
-        startTime % Signal's start time in usecs
-        endTime % Signal's end time in usecs
+        channels        % Struct of channel objects
+        layers          % Array of annotation layers
+        startTime       % Signal's start time in usecs
+        endTime         % Signal's end time in usecs
     end
     
     properties (Hidden)

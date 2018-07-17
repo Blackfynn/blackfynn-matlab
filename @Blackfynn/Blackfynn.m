@@ -19,7 +19,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
     end
     
     methods
-        function obj = Blackfynn(varargin)                
+        function obj = Blackfynn(varargin)                  
             % BLACKFYNN Main class for interacting with Blackfynn platform.
             %   OBJ = BLACKFYN() opens a Blackfynn session with your default
             %   profile.
@@ -124,7 +124,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             obj.get_datasets();
         end
         
-        function out = createdataset(obj, name, varargin) 
+        function out = createdataset(obj, name, varargin)   
             % CREATEDATASET Creates a new dataset in organization
             %   DS = CREATEDATASET(OBJ, 'Name') creates a new dataset in
             %   the current organization with the provided 'Name'. The
@@ -159,18 +159,21 @@ classdef (Sealed) Blackfynn < BFBaseNode
             
         end
 
-        function out = organizations(obj)                 
-            % ORGANIZATIONS  Returns all organizations for the user
+        function out = organizations(obj)                   
+            % ORGANIZATIONS  Returns all organizations for the user.
+            %   OUT = ORGANIZATIONS(OBJ) returns all organizations that a
+            %   user belongs to.
             %
-            % Note:
-            %     The user will need to create a separate API token for each
-            %     organization in order to access the data through the API. A session
-            %     can only interact with data from a single organization.
+            %   Note:
+            %     The user will need to create a separate API token for
+            %     each organization in order to access the data through the
+            %     API. A session can only interact with data from a single
+            %     organization.
             %
-            % Examples:
+            %   Example:
             %
-            %      bf=Blackfynn('profile_name')
-            %      bf.ORGANIZATIONS()
+            %      BF = BLACKFYNN('profile_name')
+            %      BF.ORGANIZATIONS()
             %
             %      ans = 
             %
@@ -187,66 +190,62 @@ classdef (Sealed) Blackfynn < BFBaseNode
             out = obj.handleGetOrganizations(resp);
         end
         
-        function delete(obj, varargin)                    
-            %DELETE Deletes an object from the platform.
+         function delete(obj, delobjs)                      
+            % DELETE Deletes an object from the platform.
+            %   DELETE(OBJ, DELOBJS) deletes the objects in the array
+            %   DELOBJS. DELOBJS can be a combination of data packages,
+            %   and folders. When deleting folders, all child items will
+            %   also be deleted.
             %
-            % Args:
-            %    things (list): ID or object of items to delete.
+            %   DELETE(OBJ, DELIDS) deletes the objects with the IDS in the
+            %   cell-array of strings DELIDS. DELIDS can refer to a
+            %   combination of data packages, and folders. When deleting
+            %   folders, all child items will also be deleted.
+            %   
+            %   Note: datasets cannot be deleted through the Matlab Client.
             %
-            % Examples:
+            %   Example:
             %
-            %           In this example ``col`` and ``pkg`` are Collection  and
-            %           DataPackage objects respectively.
+            %       BF = Blackfynn()
+            %       PKG1 = BF.datasets(1).items(1)
+            %       COL1 = BF.datasets(1).items(2)
+            %       REM = [PKG1 COL1]
             %
-            %           Remove multiple items through their objects or
-            %           IDs::
+            %       BF.DELETE(REM)
             %
-            %               bf.delete('N:collection:117775eb-2222-47fc-aa8f-7a69ad7a04b2', col, pkg)
-            %
-            %
-            % Note:
-            %       For safety, datasets cannot be deleted from the client.
-            %
-            % Note:
-            %       When deleting a ``Collection`` all child items will also
-            %       be deleted.
-            %
-            things{length(varargin)} = '';
+            %   See also:
+            %       Blackfynn
             
-            for i = 1 : length(varargin)
-                switch class(varargin{i})
-                    case {'string', 'char'}
-                        things{i} = char(varargin{i});
-                    case {'BFTimeseries','BFCollection',...
-                            'BFDataPackage', 'BFTabular'}
-                        things{i} = varargin{i}.get_id;
-                    case 'BFDataset'
-                        msg=['Datasets cannot be deleted from the client.'...
-                            '\n [%s] will not be deleted'];
-                        warning(msg, varargin{i}.name)
+            
+            things = {};
+            if iscellstr(delobjs)
+                things = delobjs;
+            elseif isa(ts,'BFBaseDataNode')
+                things{length(delobjs)} = '';
+                for i = 1 : length(delobjs)
+                    things{i} = delobjs(i).id;
                 end
+            else
+                error('Incorrect input type');
             end
-            things=things(~cellfun('isempty',things));
-            obj.delete_items(things)
+
+            things = things(~cellfun('isempty',things));
+            obj.delete_items(things);
         end
         
-        function out = get(obj, thing)                    
-            %GET  Returns any object based on the Blackfynn ID.
+        function out = get(obj, thing)                      
+            % GET Returns any object based on its Blackfynn ID.
+            %   OBJECT = GET(OBJ, 'id') returns the object associated with
+            %   the provided Blackfynn ID. Object ids from datasets,
+            %   packages and folders are accepted.
             %
-            % Args:
-            %       ID (str): ID of the package that is being retrieved.
+            %   Example:
+            %       BF = BLACKFYNN()
+            %       PKG = BF.GET('N:package:113335eb-2222-47fc-aa...')
             %
-            % Returns:
-            %          Object: object for the package that is
-            %          being retrieved
-            %
-            % Example:
-            %
-            %           Get a package from the platform and save the object in `pkg`::
-            %
-            %               pkg =
-            %               bf.get('N:package:113335eb-2222-47fc-aa8f-7a90a46a0455');
-            %
+            %   See also:
+            %       BLACKFYNN
+            
             types = split(thing,':');
             assert(length(types) == 3, 'Incorrect object ID');
             type = types{2};
@@ -265,7 +264,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
         end
     end
     
-    methods (Access = protected)
+    methods (Access = protected)                            
         function s = getFooter(obj)
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
@@ -277,7 +276,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
     end
     
     methods (Hidden, Access = {?BFBaseNode})
-        function get_datasets(obj)
+        function get_datasets(obj)                          
             uri = sprintf('%s/%s',obj.session.host, 'datasets');
              params = {'include', '*', 'includeAncestors', 'false',...
                  'api_key', obj.session.request.options.HeaderFields{2}};
@@ -285,7 +284,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             obj.datasets = BFBaseDataNode.createFromResponse(resp, obj.session);
         end
         
-        function out = get_dataset(obj, id)
+        function out = get_dataset(obj, id)                 
             % GET_DATASET  Returns single dataset
             % OUT = GET_DATASET(OBJ, 'id') returns a single dataset based on the
             % provided 'id'
@@ -297,7 +296,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             out = BFBaseDataNode.createFromResponse(resp, obj.session);
         end
         
-        function out = get_package(obj,id)
+        function out = get_package(obj, id)                 
             % GET_PACKAGE  Returns single package
             % OUT = GET_PACKAGE(OBJ, 'id') returns a single package based on the
             % provided 'id'
@@ -308,26 +307,22 @@ classdef (Sealed) Blackfynn < BFBaseNode
             out = BFBaseDataNode.createFromResponse(resp, obj.session);
         end
         
-        function out = get_collection(obj,id)
+        function out = get_collection(obj, id)              
             % GET_PACKAGE  Returns collection
             % OUT = GET_PACKAGE(OBJ, 'id') returns a single package based on the
             % provided 'id'
             %
-            uri = sprintf('%s%s%s',obj.session.host,'packages/',id);
+            uri = sprintf('%s%s%s',obj.session.host,'packages/', id);
             params = {'includeAncestors', 'false'};
             resp = obj.session.request.get(uri,params);
             out = BFBaseDataNode.createFromResponse(resp, obj.session);
         end
         
-        function obj = handleGetDatasets(obj, resp)
-            % DOCSTRING
-            %
+        function obj = handleGetDatasets(obj, resp)         
             obj.datasets = resp;
         end
         
-        function delete_items(obj, thingIds)
-            % DOCSTRING
-            %
+        function delete_items(obj, thingIds)                
             uri = sprintf('%s%s',obj.session.host, 'data/delete');
             
             message = struct(...
@@ -355,7 +350,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             end          
         end
         
-        function orgs = handleGetOrganizations(obj, resp)
+        function orgs = handleGetOrganizations(~, resp)     
             % HANDLEGETORGANIZATIONS handles the response from the 
             % organizations query.
             %
@@ -368,10 +363,9 @@ classdef (Sealed) Blackfynn < BFBaseNode
                 orgs(i, 2) = {resp.organizations(i).organization.id};
             end
         end
-        
     end
     
-    methods(Static, Hidden)
+    methods(Static, Hidden)                                 
         function home = getHome()
             % GETHOME gets home directory, and BF config
             % path for the OS in use.
@@ -388,7 +382,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
     end
     
     methods(Static)
-        function out = profiles()
+        function out = profiles()                           
             %PROFILES  Returns all Blackfynn configuration profiles.
             %   PROFILES() Static class-method that shows a list of all
             %   Blackfynn profiles.
@@ -427,7 +421,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             end
         end
         
-        function setup()
+        function setup()                                    
             %SETUP  Setup a profile for the Blackfynn client.
             %   SETUP() Static method to create a profile that contains an
             %   API token and secret to use as credentials for using the

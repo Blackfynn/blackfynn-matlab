@@ -1,29 +1,15 @@
 classdef BFDataPackage < BFBaseDataNode
-  %BFDATAPACKAGE is a class for all non-specific data classes (i.e classes that 
-  % do not need specialized methods).
-  %
+  % BFDATAPACKAGE Represents any datapackage on the platform.
   
   properties (Hidden)
       datasetId
       state
+      props = struct()    % attributes associated with a data node
   end
   
   methods
     function obj = BFDataPackage(varargin)
-      %BFDATAPACKAGE is the core data object representation on the platform
-      %
-      % Args:
-      %         name (str): The name of the data package
-      %         package_type (str): Type of the package (``TimeSeries``, ``Tabular``, etc.)
-      %
-      % Returns:
-      %          ``BFDataPackage``: A DataPackage object.
-      %
-      %
-      % Note:   
-      %       The ``package_type`` must be a supported package type. See 
-      %       our data type registry for supported values.
-      %
+      % Args: Empty, or [session, id, name, type]
       obj = obj@BFBaseDataNode(varargin{:});
     end
     
@@ -79,6 +65,8 @@ classdef BFDataPackage < BFBaseDataNode
   
   methods (Access = protected)
         function s = getFooter(obj)
+            % GETFOOTER Required for CustomDisplay mixin.
+                
             if isscalar(obj)
                 s = sprintf('  <a href="matlab: display(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite">Webapp</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id,class(obj));
             else
@@ -86,7 +74,6 @@ classdef BFDataPackage < BFBaseDataNode
             end
         end
   end
-    
   
   methods (Static)
     function out = createFromResponse(resp, session)

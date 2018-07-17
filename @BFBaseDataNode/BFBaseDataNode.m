@@ -1,10 +1,9 @@
 classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
-    % BFBASEDATANODE Abstract class underlying all package representations 
+    % BFBASEDATANODE Abstract class underlying all package representations. 
     
   properties
     name = ''           % Name of the data node
     type = ''           % Type of the data node 
-    props = struct()    % attributes associated with a data node
   end
   
   properties (Hidden)
@@ -13,9 +12,7 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
   
   methods
     function obj = BFBaseDataNode(varargin)
-      % BFBASEDATANODE Is a method that creates a base Blackfynn object with a 
-      % ``name`` and a ``type``.
-      %
+      % Args: Empty, or [session, id, name, type]  
       obj = obj@BFBaseNode(varargin{:});
       
       if nargin > 0
@@ -65,7 +62,7 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
       end
   end
   
-  methods (Static)
+  methods (Static, Hidden)
     function out = createFromResponse(resp, session)
       % Creates an object from a GET request's response.
       % 
@@ -90,20 +87,22 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
                 out(i) = BFDataPackage.createFromResponse(item, session);
         end
         
-        props = struct();
-        for j = 1 : length(item.properties)
-          curLayer = item.properties(j);
-          validLayer = matlab.lang.makeValidName(curLayer.category);
-          
-          props.(validLayer) = struct();
-          
-          for k = 1 : length(curLayer.properties)
-            validKey = matlab.lang.makeValidName(curLayer.properties(k).key);
-            props.(validLayer).(validKey) = curLayer.properties(k).value;
-          end
+        if isfield(out(i),'props')
+            props = struct();
+            for j = 1 : length(item.properties)
+              curLayer = item.properties(j);
+              validLayer = matlab.lang.makeValidName(curLayer.category);
+
+              props.(validLayer) = struct();
+
+              for k = 1 : length(curLayer.properties)
+                validKey = matlab.lang.makeValidName(curLayer.properties(k).key);
+                props.(validLayer).(validKey) = curLayer.properties(k).value;
+              end
+            end
+
+            out(i).props = props;
         end
-        
-        out(i).props = props;
       end
     end
   end
@@ -111,6 +110,8 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
   methods (Static, Sealed, Access = protected)
       function default_object = getDefaultScalarElement
           %GETDEFAULTSCALARELEMENT Get default scalar element
+          %
+          % This is required for Heterogeneous mixin
           
           default_object = BFCollection('','','','');
       end

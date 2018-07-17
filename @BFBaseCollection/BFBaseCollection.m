@@ -13,6 +13,7 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
 
     methods
         function obj = BFBaseCollection(varargin)       
+            % Args: Empty, or [session, id, name, type]
             obj = obj@BFBaseDataNode(varargin{:});
         end
         
