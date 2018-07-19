@@ -16,7 +16,7 @@ classdef (Sealed) BFAgentIO < WebSocketClient
     methods
         function obj = BFAgentIO(session, package)
             URI = sprintf('ws://%s/ts/query?package=%s&session=%s', ...
-                BFAgentIO.uri, package, session);
+                BFAgentIO.uri, package, session.api_key);
 
             obj@WebSocketClient(URI);
             obj.session = session;

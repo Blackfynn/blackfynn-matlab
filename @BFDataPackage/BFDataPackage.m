@@ -63,12 +63,12 @@ classdef BFDataPackage < BFBaseDataNode
 
   end
   
-  methods (Access = protected)
+  methods (Access = protected)                            
         function s = getFooter(obj)
-            % GETFOOTER Required for CustomDisplay mixin.
-                
+            %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                s = sprintf('  <a href="matlab: display(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite">Webapp</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id,class(obj));
+                url = sprintf('%s/%s/datasets/%s/viewer/%s',obj.session.web_host,obj.session.org,obj.datasetId,obj.id);
+                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id,url,class(obj));
             else
                 s = '';
             end

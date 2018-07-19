@@ -18,19 +18,11 @@ classdef (Sealed) BFTimeseries < BFDataPackage
     
     methods
         function obj = BFTimeseries(varargin)
-            % BFTIMESERIES Base class used for ``BFTimeseries`` objects
-            %
-            % Args:
-            %       ID (str): timeseries package's ID
-            %       name (str): name of the timeseries package
-            %
-            % Returns:
-            %           ``BFTimeseries``: Timeseries object
-            %
+            % Args: Empty, or [session, id, name, type, channels] 
+            
             obj = obj@BFDataPackage(varargin{:});
             if nargin
                 obj.channels_= varargin{5};
-                obj.session = varargin{1}.api_key;
                 obj.package = varargin{2}; 
             end
                      
@@ -93,7 +85,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             end    
         end
         
-    function out = getSpan(obj,channels, start, stop)
+        function out = getSpan(obj,channels, start, stop)
         % GETSPAN Returns data for a given span of time and channels.
         %    RESULT = GETSPAN(OBJ, CHANNELS, START, STOP) returns a 2D
         %    array for each channel with the time-stamps and the values of
@@ -157,9 +149,9 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             loc = find(strcmp(ch_ids,curChId),1);
             out{loc} = double(br.parseTimeSeriesList(data.get(curChId)));
         end
-    end
+        end
     
-    function show_channels(obj)
+        function show_channels(obj)
         % SHOW_CHANNELS Pretty display of all channel objects.
         %    SHOW_CHANNELS(OBJ) prints a list of all channel objects in the
         %    Timeseries package.
@@ -182,9 +174,9 @@ classdef (Sealed) BFTimeseries < BFDataPackage
                 (i-1), obj.channels(i).id, obj.channels(i).name, ...
                 obj.channels(i).channelType);
         end
-    end
+        end
     
-    function out = get_channel(obj, chan_id)
+        function out = get_channel(obj, chan_id)
         % GET_CHANNELS gets the channels for a ts package.
         %
         % Args:
@@ -216,9 +208,9 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         if ~(isfield(out, fieldSpikes))
             out.(fieldSpikes) = '(null)';
         end
-    end
+        end
     
-    function out = insert_annotation(obj, name, label, varargin)
+        function out = insert_annotation(obj, name, label, varargin)
         % INSERT_ANNOTATION Adds an annotation in the layer specified by
         % the user.
         %
@@ -249,9 +241,9 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         message = obj.load_annotation_params(name, label, layer.layerId, varargin{:});
         out = obj.session.request.post(uri, message);
         out = BFTimeseriesAnnotation.createFromResponse(out, obj.session);
-    end
+        end
     
-    function out = get_layers(obj)
+        function out = get_layers(obj)
         % GET_LAYERS gets the annotation layers for a timeseries package
         %
         % Returns:
@@ -290,9 +282,9 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             end
         end
         out = layer;
-    end
+        end
     
-    function out = create_layer(obj, name, varargin)
+        function out = create_layer(obj, name, varargin)
         % CREATE_LAYER Creates an annotation layer for the given timeseries
         % object.
         %
@@ -351,9 +343,9 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             out = BFTimeseriesAnnotationLayer.createFromResponse(layer,...
                     obj.session);
         end
-    end
+        end
     
-    function show_layers(obj)
+        function show_layers(obj)
         % SHOW_LAYERS displays all the annotation layers for the given
         % timeseries object in the console.
         %
@@ -370,9 +362,9 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             fprintf('ID: "%d", Name: %s, Description: "%s"\n', ...
                 l(1,i).layerId, l(1,i).name, l(1,i).description)
         end
-    end
+        end
     
-    function out = layers2table(obj)
+        function out = layers2table(obj)
         % LAYERS2TABLE stores all of the layers associated with a
         % timeseries object in a MATLAB table. The output is a table that
         % looks as follows:
@@ -411,9 +403,9 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             out_table(i,3) = {l(i).description};
         end
         out = out_table;
-    end
+        end
     
-    function delete_layer(obj, id)
+        function delete_layer(obj, id)
         % DELETE_LAYER Removes layer associated with timeseries object
         %
         % Args:
@@ -430,23 +422,22 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             obj.get_id, '/layers/', id);
         message = '';
         obj.session.request.delete(uri, message);
+        end
     end
     
-  end
-  
-  methods (Access = private)
+    methods (Access = private)
       
-   function out = get_channels(obj)
-      % GET_CHANNELS gets the channels for a ts package
-      %
-      uri = sprintf('%s%s%s%s', obj.session.host,'timeseries/', obj.id,...
-          '/channels');
-      params = {};
-      out = obj.session.request.get(uri, params);
-   end
+        function out = get_channels(obj)
+            % GET_CHANNELS gets the channels for a ts package
+            %
+            uri = sprintf('%s%s%s%s', obj.session.host,'timeseries/', obj.id,...
+              '/channels');
+            params = {};
+            out = obj.session.request.get(uri, params);
+        end
     
-    function out = load_annotation_params(obj, name, label, layer_id, ...
-            varargin)
+        function out = load_annotation_params(obj, name, label, layer_id, ...
+                varargin)
        % LOAD_ANNOTATION_PARAMS Parameter parser
        %
     
@@ -482,8 +473,8 @@ classdef (Sealed) BFTimeseries < BFDataPackage
        
        out = params;
     end
+    end
     
-  end
   
   methods (Static, Hidden)
       

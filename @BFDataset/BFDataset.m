@@ -26,7 +26,17 @@ classdef BFDataset < BFBaseCollection
         end
         
     end
-    
+    methods (Access = protected)                            
+        function s = getFooter(obj)
+            %GETFOOTER Returns footer for object display.
+            if isscalar(obj)
+                url = sprintf('%s/%s/datasets/%s/files',obj.session.web_host,obj.session.org, obj.id);
+                s = sprintf('  <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',url,class(obj));
+            else
+                s = '';
+            end
+        end
+    end
     methods (Static, Hidden)
         function out = createFromResponse(resp, session)
             % CREATEFROMRESPONSE creates a BF dataset object from a

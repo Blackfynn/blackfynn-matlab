@@ -71,21 +71,27 @@ classdef (Sealed) Blackfynn < BFBaseNode
                 end
                 
                 keyValues = config.GetValues(userProfile, ...
-                    {'api_token' 'api_secret' 'api_host' 'streaming_api_host'});
+                    {'api_token' 'api_secret' 'api_host' 'streaming_api_host' 'web_host'});
                 
                 % if the streaming_api and api_host fields are specified in the
                 % config file, use their values.
-                if (isempty(keyValues{4}) == 0) && (isempty(keyValues{3}) == 0)
-                    obj.session.host = keyValues{3};
-                    obj.session.streaming_host = keyValues{4};
-                    
-                % if the streaming_api and api_host fields are NOT specified in the
-                % config file, set default values.
+                defaultHosts = BFSession.getDefaultHosts();
+                if isempty(keyValues{4}) == 0
+                   obj.session.streaming_host = keyValues{4}; 
                 else
-                    defaultHosts = BFSession.getDefaultHosts();
-                    obj.session.host = defaultHosts.host;
-                    obj.session.streaming_host = defaultHosts.streamingHost;
+                   obj.session.streaming_host = defaultHosts.streamingHost; 
                 end
+                if isempty(keyValues{3}) == 0
+                   obj.session.host = keyValues{3};
+                else
+                   obj.session.host = defaultHosts.host; 
+                end
+                if isempty(keyValues{5}) == 0
+                   obj.session.web_host = keyValues{5};
+                else
+                   obj.session.web_host = defaultHosts.webHost; 
+                end
+                
                 
             else
                 error('Username and password not found: Use setup method');
@@ -104,6 +110,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             
             % Set API key
             obj.session.api_key = resp.session_token;
+            obj.session.org = resp.organization;
             request.setAPIKey(resp.session_token);
             
             % Get User and organization info
@@ -190,7 +197,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             out = obj.handleGetOrganizations(resp);
         end
         
-         function delete(obj, delobjs)                      
+        function delete(obj, delobjs)                       
             % DELETE Deletes an object from the platform.
             %   DELETE(OBJ, DELOBJS) deletes the objects in the array
             %   DELOBJS. DELOBJS can be a combination of data packages,
@@ -262,13 +269,15 @@ classdef (Sealed) Blackfynn < BFBaseNode
                     fprintf(2, 'Incorrect object ID');
             end
         end
+        
     end
     
     methods (Access = protected)                            
         function s = getFooter(obj)
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                s = sprintf('  <a href="matlab: Blackfynn.gotoSite">Webapp</a>, <a href="matlab: methods(%s)">Methods</a>',class(obj));
+                url = sprintf('%s/%s/datasets',obj.session.web_host,obj.session.org);
+                s = sprintf('  <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',url,class(obj));
             else
                 s = '';
             end
@@ -474,6 +483,16 @@ classdef (Sealed) Blackfynn < BFBaseNode
             config.AddKeys(profile,{'api_token' 'api_secret'}, ...
                 {token secret});
             config.WriteFile(filename);           
+        end
+        
+        function gotoSite(url)
+            %GOTOSITE  Opens the Blackfynn platform in an external browser.
+            
+            web(url,'-browser');
+        end
+        
+        function displayID(id)
+            fprintf('\n ID: %s\n\n',id);
         end
     end
     

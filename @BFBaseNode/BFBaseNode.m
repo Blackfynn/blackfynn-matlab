@@ -89,7 +89,7 @@ classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
         
     end
     
-    methods (Static, Sealed = true)
+    methods (Static)
         function gotoSite()
             %GOTOSITE  Opens the Blackfynn platform in an external browser.
             
