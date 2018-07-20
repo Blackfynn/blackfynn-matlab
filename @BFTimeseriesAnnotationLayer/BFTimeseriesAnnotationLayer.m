@@ -1,30 +1,36 @@
 classdef BFTimeseriesAnnotationLayer < BFBaseNode
-  % Object that represents a timeseries annotation layer
-  % 
+  % BFTIMESERIESANNOTATIONLAYER Object that represents a timeseries annotation layer
+  %
+  % Annotation layers contain collections of annotations. A timeseries
+  % package can have multiple annotation layers, and each annotation layer
+  % can have multiple annotations.
+  
   properties
     name            % Layer's name
-    timeSeriesId    % ID of the timeseries package the layer is associated to
-    layerId         % Layer's ID
     description     % Layer's description
   end
   
+  properties (Hidden)
+    timeSeriesId    % ID of the timeseries package
+    layerId         % Layer's ID
+  end
+  
   methods
-    function obj = BFTimeseriesAnnotationLayer(session, id, name,...
-            timeSeriesId, description)
-         % BFTIMESERIESANNOTATIONLAYER Base class used for
-         % ``BFTimeseriesAnnotationLayer`` objects
-         %
-         %
-         %
-         obj = obj@BFBaseNode(session, id, name, 'BFTimeseriesAnnotationLayer');
-         obj.name = name;
-         obj.layerId = id;
-         obj.timeSeriesId = timeSeriesId;
-         obj.description = description;
+    function obj = BFTimeseriesAnnotationLayer(varargin)
+         %Args: [session, id, name, ts_id, descritpion)
+
+         obj = obj@BFBaseNode(varargin{:});
+         if nargin
+             obj.name = varargin{3};
+             obj.layerId = varargin{2};
+             obj.timeSeriesId = varargin{4};
+             obj.description = varargin{5};
+         end
     end
     
     function out = annotations(obj, varargin)
-        % ANNOTATIONS Gets all the annotations for a given layer
+        % ANNOTATIONS Gets all the annotations for a given layer.
+        %   ANNS = ANNOTATIONS(OBJ, )
         % 
         % Args:
         %       end (int, optional): end time (in usecs) for the interval in which to search for annotations (default 1000000)
@@ -55,8 +61,8 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
         %                       startTime
         %                       endTime
         %            
-        uri = sprintf('%s%s%s%s%d%s', obj.session.host, 'timeseries/',...
-            obj.timeSeriesId, '/layers/', obj.id, '/annotations');
+        uri = sprintf('%s/timeseries/%s/layers/%d/annotations', obj.session.host,...
+            obj.timeSeriesId, obj.layerId);
         params = obj.load_annotation_params(varargin{:});
         resp = obj.session.request.get(uri, params);
         resp = resp.annotations.results;
@@ -65,10 +71,10 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
         annotation = struct();
         for i = 1 : length(resp)
             if i == 1
-                annotation = BFTimeseriesAnnotation.createFromResponse(resp(i), ...
+                annotation = BFTimeseriesAnnotation.createFromResponse(resp{i}, ...
                     obj.session);
             else
-                annotation = [BFTimeseriesAnnotation.createFromResponse(resp(i),...
+                annotation = [BFTimeseriesAnnotation.createFromResponse(resp{i},...
                     obj.session), annotation];
             end
         end
@@ -167,7 +173,7 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
           % LOAD_ANNOTATION_PARAMS Parameter parser
           %
           defaultStart = 0;
-          defaultEnd = 1000000;
+          defaultEnd = 100000000;
           
           p = inputParser;
           addParameter(p, 'start', defaultStart);
@@ -189,6 +195,18 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
       end
     
   end
+  
+    methods (Access = protected)                            
+        function s = getFooter(obj)
+            %GETFOOTER Returns footer for object display.
+            if isscalar(obj)
+                url = sprintf('%s/%s/datasets',obj.session.web_host,obj.session.org);
+                s = sprintf('  <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',url,class(obj));
+            else
+                s = '';
+            end
+        end
+    end
   
    methods(Static, Hidden)
        

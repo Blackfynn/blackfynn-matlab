@@ -73,12 +73,18 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             % GET_LAYERS gets all the annotation layers for the timeseries
             % package.
             %
-            if (~isempty(obj.channels_))
+            if (~isempty(obj.layers_))
                 value = obj.layers_;
             else
-                resp = obj.get_channels();
-                for i = 1 : length(resp)
-                    value(i) = BFTimeseriesAnnotationLayer.createFromResponse(resp, ...
+                uri = sprintf('%s/timeseries/%s/layers',obj.session.host,obj.id);
+                params = {};
+                resp = obj.session.request.get(uri,params);
+                %out = BFBaseDataNode.createFromResponse(resp, obj.session);
+                res = resp.results;
+%                 resp = obj.get_channels();
+                value = BFTimeseriesAnnotationLayer.empty(length(res),0);
+                for i = 1 : length(res)
+                    value(i) = BFTimeseriesAnnotationLayer.createFromResponse(res(i), ...
                         obj.session);
                 end
                 obj.layers_ = value;
@@ -125,7 +131,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         ws_ = BFAgentIO(obj.session, obj.package);
         cmd = struct( ...
             'command', "new", ...
-            'session', obj.session, ...
+            'session', obj.session.api_key, ...
             'packageId', obj.package, ...
             'channels', chan_array, ...
             'startTime', uint64(start), ...
@@ -346,22 +352,22 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         end
     
         function show_layers(obj)
-        % SHOW_LAYERS displays all the annotation layers for the given
-        % timeseries object in the console.
-        %
-        % Example:
-        %           Show all the layers for ``ts``, a timeseries object::
-        %
-        %               >> ts.show_layers
-        %               ID: "387", Name: "Artifacts", Description: "Layer for artifact annotations"
-        %               ID: "367", Name: "Default", Description: "Default Annotation Layer"
-        %               ID: "390", Name: "Seizures", Description: "Layer for seizure annotations"
-        %
-        l = obj.get_layers;
-        for i  = 1 : length(l)
-            fprintf('ID: "%d", Name: %s, Description: "%s"\n', ...
-                l(1,i).layerId, l(1,i).name, l(1,i).description)
-        end
+            % SHOW_LAYERS displays all the annotation layers for the given
+            % timeseries object in the console.
+            %
+            % Example:
+            %           Show all the layers for ``ts``, a timeseries object::
+            %
+            %               >> ts.show_layers
+            %               ID: "387", Name: "Artifacts", Description: "Layer for artifact annotations"
+            %               ID: "367", Name: "Default", Description: "Default Annotation Layer"
+            %               ID: "390", Name: "Seizures", Description: "Layer for seizure annotations"
+            %
+            l = obj.get_layers;
+            for i  = 1 : length(l)
+                fprintf('ID: "%d", Name: %s, Description: "%s"\n', ...
+                    l(1,i).layerId, l(1,i).name, l(1,i).description)
+            end
         end
     
         function out = layers2table(obj)
