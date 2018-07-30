@@ -6,9 +6,7 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
     type = ''           % Type of the data node 
   end
   
-  properties (Hidden)
-    id                  % The Blackfynn ID of the package
-  end
+
   
   methods
     function obj = BFBaseDataNode(varargin)
@@ -16,10 +14,8 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
       obj = obj@BFBaseNode(varargin{:});
       
       if nargin > 0
-        obj.id = varargin{2};
         obj.name = varargin{3};
         obj.type = varargin{4};
-        
       end
     end
     

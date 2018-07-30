@@ -136,21 +136,18 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
         end
     end
     
-    methods (Hidden, Access = protected)                
+    methods (Access = protected)                            
         function s = getFooter(obj)
-            % (internal) Used to display object
-            
+            %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                objId = obj.id;
-                s = sprintf(['  <a href="matlab: display(''obj.id: %s'')"'...
-                    '>ID</a>, <a href="matlab: Blackfynn.gotoSite">'...
-                    'Webapp</a>, <a href="matlab: methods(%s)">Methods</a>']...
-                    ,objId,class(obj));
+                url = sprintf('%s/%s/datasets/%s/viewer/%s',obj.session.web_host,obj.session.org,obj.datasetId,obj.id);
+                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id,url,class(obj));
             else
                 s = '';
             end
         end
     end
+
        
 end
 

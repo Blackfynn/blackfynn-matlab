@@ -4,6 +4,7 @@ classdef BFSession < handle
   properties
     request         % Request object
     host            % API host
+    concepts_host   % Concepts API location
     streaming_host  % Streaming Host
     api_key         % session key
     web_host        % url to Blackfynn web app
@@ -12,6 +13,7 @@ classdef BFSession < handle
 
   properties (Access = private, Constant)
     streamingHost =  'https://streaming.blackfynn.io';
+    conceptsHost  =  'https://concepts.blackfynn.io';
     serverUrl     =  'https://api.blackfynn.io';
     webHost       =  'https://app.blackfynn.io';
   end

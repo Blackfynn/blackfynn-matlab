@@ -54,7 +54,7 @@ classdef BFRequest < handle
     end
     
     function obj = setAPIKey(obj, key)
-      headerFields = {'X-SESSION-ID' key};
+      headerFields = {'X-SESSION-ID' key ; 'AUTHORIZATION' ['BEARER ' key]};
       obj.options.HeaderFields = [headerFields ; obj.options.HeaderFields];
     end
     

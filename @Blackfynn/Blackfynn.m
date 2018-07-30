@@ -71,7 +71,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
                 end
                 
                 keyValues = config.GetValues(userProfile, ...
-                    {'api_token' 'api_secret' 'api_host' 'streaming_api_host' 'web_host'});
+                    {'api_token' 'api_secret' 'api_host' 'streaming_api_host' 'concepts_api_host' 'web_host'});
                 
                 % if the streaming_api and api_host fields are specified in the
                 % config file, use their values.
@@ -87,7 +87,12 @@ classdef (Sealed) Blackfynn < BFBaseNode
                    obj.session.host = defaultHosts.host; 
                 end
                 if isempty(keyValues{5}) == 0
-                   obj.session.web_host = keyValues{5};
+                   obj.session.concepts_host = keyValues{5};
+                else
+                   obj.session.concepts_host = defaultHosts.conceptsHost; 
+                end
+                if isempty(keyValues{6}) == 0
+                   obj.session.web_host = keyValues{6};
                 else
                    obj.session.web_host = defaultHosts.webHost; 
                 end
@@ -188,9 +193,9 @@ classdef (Sealed) Blackfynn < BFBaseNode
             %       ___________    ______________________________________
             %       'Blackfynn'    'N:organization:c9055555-3333-4444-...
             
-            uri = '/organizations/';
+            uri = 'organizations';
             params = {'includeAdmins' 'false'};
-            endPoint = sprintf('%s%s%s',obj.session.host, uri);
+            endPoint = sprintf('%s/%s',obj.session.host, uri);
             
             request = obj.session.request;
             resp = request.get(endPoint, params);
@@ -270,6 +275,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             end
         end
         
+
     end
     
     methods (Access = protected)                            

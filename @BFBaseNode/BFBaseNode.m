@@ -1,14 +1,20 @@
 classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
     % Base class to serve all Blackfynn objects.
     
+    
+    properties (Hidden)
+        id          % ID on Blackfynn platform
+    end
     properties(Access = protected)
         session     % Session ID
+        
     end
     
     methods
         function obj = BFBaseNode(varargin)            
             if (nargin > 0)
                 obj.session = varargin{1};
+                obj.id = varargin{2};
             end
         end
     end
@@ -24,7 +30,7 @@ classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
             blockmethods = {'addlistener' 'delete' 'disp' 'eq' 'ge' 'ne' 'gt'  ...
                 'le' 'lt' 'notify' 'isvalid' 'findobj' 'findprop' 'copy' ...
                 'addprop' 'subsref' 'setsync' 'getTSIprop' 'populateAnnLayer'...
-                'listener'};
+                'listener' 'cat' 'horzcat' 'vertcat'};
             
             if nargout
                 fncs = builtin('methods', obj);
@@ -86,7 +92,6 @@ classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
             end
             fprintf('\n\n');  
         end
-        
     end
     
     methods (Static)

@@ -30,7 +30,9 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
     
     function out = annotations(obj, varargin)
         % ANNOTATIONS Gets all the annotations for a given layer.
-        %   ANNS = ANNOTATIONS(OBJ, )
+        %   [ANNS, ISALL] = ANNOTATIONS(OBJ)
+        %   [ANNS, ISALL] = ANNOTATIONS(..., START, END)
+        %   [ANNS, ISALL] = ANNOTATIONS(..., START, END, OFFSET, LIMIT)
         % 
         % Args:
         %       end (int, optional): end time (in usecs) for the interval in which to search for annotations (default 1000000)
