@@ -3,9 +3,13 @@ classdef BFModel < BFBaseModelNode
     %   Detailed explanation goes here
     
     properties
-        count = 0           % Number of records for this model
-        propertyCount = 0   % Number of properties in the model
+        nrRecords = 0           % Number of records for this model
     end
+    
+    properties (Hidden)
+        nrProperties = 0        % Number of properties in the model
+    end
+
     
     methods
         function obj = BFModel(varargin)
@@ -35,15 +39,12 @@ classdef BFModel < BFBaseModelNode
             
             params = {};
             endPoint = sprintf('%s/datasets/%s/concepts/%s/instances',...
-                obj.session.concepts_host, obj.datasetid,obj.id);
+                obj.session.concepts_host, obj.datasetId,obj.id);
             
             request = obj.session.request;
             resp = request.get(endPoint, params);
             records = obj.handleGetRecords(resp);
         end
-        
-        
-
     end
     
     methods (Access = protected)                            
@@ -56,7 +57,10 @@ classdef BFModel < BFBaseModelNode
             end
         end
         function records = handleGetRecords(obj,resp)
-            records = resp;
+            records = BFRecord.empty(length(resp),0);
+            for i=1: length(resp)
+                records(i) = BFRecord.createFromResponse(resp(i), obj.session, obj.id);
+            end
         end
     end
     
@@ -69,9 +73,9 @@ classdef BFModel < BFBaseModelNode
           out = BFModel(session, resp.id, resp.name, ...
               resp.displayName, resp.description, resp.locked,...
               resp.createdAt, resp.updatedAt);
-          out.count = resp.count;
-          out.propertyCount = resp.propertyCount;
-          out.datasetid = datasetid;
+          out.nrRecords = resp.count;
+          out.nrProperties = resp.propertyCount;
+          out.datasetId = datasetid;
         end
     end
 end

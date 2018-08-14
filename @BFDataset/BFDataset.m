@@ -5,6 +5,27 @@ classdef BFDataset < BFBaseCollection
         description
     end
     
+    properties (Dependent)
+        models
+    end
+    
+    properties (Access = private)
+        models_
+    end
+    
+    methods
+        function value = get.models(obj)
+            % GET_MODELS gets and caches the models for dataset.
+            %
+            if ~isempty(obj.models_)
+                value = obj.models_;
+            else
+                obj.models_ = obj.getmodels();
+                value = obj.models_;
+            end
+        end
+    end
+    
     methods (Sealed = true)
         
         function obj = BFDataset(varargin)
@@ -25,25 +46,6 @@ classdef BFDataset < BFBaseCollection
             out=obj;
         end
         
-        function out = models(obj)
-            % MODELS Returns models for the dataset.
-            %   MODELS = MODELS(OBJ) returns an array of BFMODELS that are
-            %   defined for the dataset.
-            %
-            %   Example:
-            %
-            %       BF = Blackfynn()
-            %       MODELS = BF.MODELS()
-            
-            uri = 'concepts';
-            params = {};
-            endPoint = sprintf('%s/datasets/%s/%s',obj.session.concepts_host, obj.id, uri);
-            
-            request = obj.session.request;
-            resp = request.get(endPoint, params);
-            out = obj.handleGetModels(resp);
-
-        end
     end
     methods (Access = protected)                            
         function s = getFooter(obj)
@@ -62,6 +64,27 @@ classdef BFDataset < BFBaseCollection
             for i=1: length(resp)
                 models(i) = BFModel.createFromResponse(resp(i), obj.session, obj.id);
             end
+        end
+        
+        function out = getmodels(obj)
+            % GETMODELS Returns models for the dataset.
+            %   MODELS = GETMODELS(OBJ) returns an array of BFMODELS that are
+            %   defined for the dataset from the server. This function also
+            %   updates the caches property 
+            %
+            %   Example:
+            %
+            %       BF = Blackfynn()
+            %       MODELS = BF.MODELS()
+            
+            uri = 'concepts';
+            params = {};
+            endPoint = sprintf('%s/datasets/%s/%s',obj.session.concepts_host, obj.id, uri);
+            
+            request = obj.session.request;
+            resp = request.get(endPoint, params);
+            obj.models_ = obj.handleGetModels(resp);
+            out = obj.models_;
         end
     end
     methods (Static, Hidden)

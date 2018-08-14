@@ -3,16 +3,16 @@ classdef BFBaseModelNode < BFBaseNode
     %   Detailed explanation goes here
     
     properties
-        displayname     % Identifying property
+        displayName     % Identifying property
         description     % Description of the model
         locked          % Is model locked?
-        createdat       % Creation data
-        updatedat       % Updated date
     end
     
     properties( Hidden)
-        datasetid       % Id of the dataset
+        datasetId       % Id of the dataset
         type            % Type of the model
+        createDate       % Creation data
+        updateDate       % Updated date
     end
     
     methods
@@ -25,11 +25,11 @@ classdef BFBaseModelNode < BFBaseNode
             
             if nargin
                 obj.type = varargin{3};
-                obj.displayname = varargin{4};
+                obj.displayName = varargin{4};
                 obj.description = varargin{5};
                 obj.locked = varargin{6};
-                obj.createdat = varargin{7};
-                obj.updatedat = varargin{8};
+                obj.createDate = varargin{7};
+                obj.updateDate = varargin{8};
             end
         end
         
