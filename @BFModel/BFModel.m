@@ -59,7 +59,7 @@ classdef BFModel < BFBaseModelNode
         function records = handleGetRecords(obj,resp)
             records = BFRecord.empty(length(resp),0);
             for i=1: length(resp)
-                records(i) = BFRecord.createFromResponse(resp(i), obj.session, obj.id);
+                records(i) = BFRecord.createFromResponse(resp(i), obj.session, obj.id, obj.datasetId);
             end
         end
     end
