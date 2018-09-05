@@ -1,4 +1,5 @@
 classdef BFRequest < handle
+  % BFREQUEST Class representing a web-request to Blackfynn.
   
   properties
     options
@@ -14,7 +15,6 @@ classdef BFRequest < handle
     
     function response = get(obj, uri, params)
      obj.options.MediaType = 'application/x-www-form-urlencoded';
-     %obj.options.ContentType = 'raw';
      try
       response = webread(uri, params{:}, obj.options);
      catch ME
@@ -54,7 +54,7 @@ classdef BFRequest < handle
     end
     
     function obj = setAPIKey(obj, key)
-      headerFields = {'X-SESSION-ID' key};
+      headerFields = {'X-SESSION-ID' key ; 'AUTHORIZATION' ['BEARER ' key]};
       obj.options.HeaderFields = [headerFields ; obj.options.HeaderFields];
     end
     
@@ -63,7 +63,7 @@ classdef BFRequest < handle
       obj.options.HeaderFields = [headerField ; obj.options.HeaderFields];
     end
     
-    function err = handleError(obj, ME)
+    function err = handleError(~, ME) %#ok<STOUT>
       
       if (strcmp(ME.identifier,'MATLAB:webservices:HTTP403StatusCodeError'))
         msg = [' Blackfyn user does not have the right permissions on the ' ...

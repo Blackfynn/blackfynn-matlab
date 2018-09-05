@@ -1,1 +1,4 @@
 *.m~
+java/blackfynn/
+.DS_Store
+build/

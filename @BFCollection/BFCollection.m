@@ -27,7 +27,7 @@ classdef (Sealed) BFCollection < BFBaseCollection
         function out = createFromResponse(resp, session)
             % CREATEFROMRESPONSE creates a BF collection object from a
             % response.
-            %
+            
             content = resp.content;
             if ~isfield(resp, 'children')
                 resp = BFCollection.get_collection(resp.content.id,session);
@@ -44,7 +44,7 @@ classdef (Sealed) BFCollection < BFBaseCollection
         function out = get_collection(id, session)
             % GET_COLLECTION retrieves a collection object from the
             % platform.
-            %
+            
             uri = sprintf('%s%s%s', session.host,'packages/', id);
             params = {'includeAncestors', 'false',...
                 'session', session.request.options.HeaderFields{2}};

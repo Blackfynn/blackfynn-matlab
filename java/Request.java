@@ -5,12 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.net.URL;
 import java.io.*;
+import java.util.stream.Collectors;
+import blackfynn.TsProto.*;
+import java.util.stream.*;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import javax.net.ssl.HttpsURLConnection;
+
 
 public class Request implements Callable<InputStream> {
 
@@ -39,6 +43,17 @@ public class Request implements Callable<InputStream> {
 	}
 	url = url.substring(0, url.length()-1);
 	return url;
+    }
+
+    public double[][] parseTimeSeriesList(ArrayList<TsProto.Datum> input) {
+	DoubleStream myStreamV = input.stream().mapToDouble(TsProto.Datum::getValue);
+	double[] arrayV = myStreamV.toArray();
+	DoubleStream myStreamT = input.stream().mapToDouble(TsProto.Datum::getTime);
+
+	double[] arrayT = myStreamT.toArray();
+	double[][] result = {arrayT, arrayV};
+
+	return result;    
     }
 
     public List<String> RequestService(String[] params_a, String[] channels_a, String api_streaming_host_a,

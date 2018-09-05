@@ -4,12 +4,18 @@ classdef BFSession < handle
   properties
     request         % Request object
     host            % API host
+    concepts_host   % Concepts API location
     streaming_host  % Streaming Host
+    api_key         % session key
+    web_host        % url to Blackfynn web app
+    org             % Organization ID
   end
 
   properties (Access = private, Constant)
     streamingHost =  'https://streaming.blackfynn.io';
-    serverUrl     =  'https://api.blackfynn.io/';
+    conceptsHost  =  'https://concepts.blackfynn.io';
+    serverUrl     =  'https://api.blackfynn.io';
+    webHost       =  'https://app.blackfynn.io';
   end
   
   methods (Static)
@@ -17,7 +23,8 @@ classdef BFSession < handle
       % GETDEFAULTHOSTS  Returns the default hosts for a Blackfynn session
       
       hosts = struct('host',BFSession.serverUrl, ...
-        'streamingHost',BFSession.streamingHost);
+        'streamingHost',BFSession.streamingHost, ...
+        'webHost', BFSession.webHost);
     end
   end
   
