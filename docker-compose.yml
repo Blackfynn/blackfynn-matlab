@@ -1,0 +1,15 @@
+version: '3.5'
+
+services:
+  matlab:
+    build: .
+    image: blackfynn/matlab:R2018a
+    mac_address: ${MAC_ADDRESS}
+    hostname: vagrant
+    user: vagrant
+    command: sleep 120
+    networks:
+      - matlab
+
+networks:
+  matlab:
