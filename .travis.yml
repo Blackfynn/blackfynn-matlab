@@ -1,0 +1,37 @@
+sudo: required
+
+services:
+  - docker
+
+
+
+
+############
+#language: ruby
+#
+#rvm:
+#  - 2.4.1
+#
+#script:
+#  - bundle exec jekyll build
+#
+#branches:
+#  only:
+#  - master
+#
+#cache: 
+#  - bundler # caching bundler gem packages will speed up build
+#
+#deploy:
+#  - provider: s3
+#    access_key_id: "$AWS_ACCESS_KEY_ID"
+#    secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+#    bucket: "$S3_BUCKET"
+#    skip_cleanup: true
+#    region: us-east-1
+#    local_dir: _site 
+#
+#after_deploy:
+#  - pip install --user awscli
+#  - export PATH=$PATH:$HOME/.local/bin # put aws in the path
+#  - aws cloudfront create-invalidation --distribution-id $CF_DISTRO_ID --paths /*
