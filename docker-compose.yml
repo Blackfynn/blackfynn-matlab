@@ -3,13 +3,14 @@ version: '3.5'
 services:
   matlab:
     build: .
-    image: blackfynn/matlab:R2018a
     mac_address: ${MAC_ADDRESS}
-    hostname: vagrant
+    hostname: matlab
     user: vagrant
-    command: sleep 120
+    command: ./setup.sh
     networks:
       - matlab
+    volumes:
+      - ./build:/blackfynn-matlab/setup/build
 
 networks:
   matlab:
