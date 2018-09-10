@@ -18,30 +18,12 @@ script:
   - docker-compose up
 
 #deploy:
-#  provider: releases
-#  api_key: "GITHUB OAUTH TOKEN"
-#  file: "setup/build/"
-#  skip_cleanup: true
-#  on:
+#  - provider: releases
+#    api_key: "GITHUB OAUTH TOKEN"
+#    file: "setup/build/"
+#    skip_cleanup: true
+#    on:
 #    tags: true
-
-############
-#language: ruby
-#
-#rvm:
-#  - 2.4.1
-#
-#script:
-#  - bundle exec jekyll build
-#
-#branches:
-#  only:
-#  - master
-#
-#cache: 
-#  - bundler # caching bundler gem packages will speed up build
-#
-#deploy:
 #  - provider: s3
 #    access_key_id: "$AWS_ACCESS_KEY_ID"
 #    secret_access_key: "$AWS_SECRET_ACCESS_KEY"
@@ -49,7 +31,7 @@ script:
 #    skip_cleanup: true
 #    region: us-east-1
 #    local_dir: _site 
-#
+
 #after_deploy:
 #  - pip install --user awscli
 #  - export PATH=$PATH:$HOME/.local/bin # put aws in the path
