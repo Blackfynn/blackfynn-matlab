@@ -53,9 +53,6 @@
       <file>${PROJECT_ROOT}/..</file>
     </fileset.rootdir>
     <fileset.rootfiles>
-      <file>${PROJECT_ROOT}/../.DS_Store</file>
-      <file>${PROJECT_ROOT}/../.git</file>
-      <file>${PROJECT_ROOT}/../.gitignore</file>
       <file>${PROJECT_ROOT}/../@BFAgentIO</file>
       <file>${PROJECT_ROOT}/../@BFBaseCollection</file>
       <file>${PROJECT_ROOT}/../@BFBaseDataNode</file>
