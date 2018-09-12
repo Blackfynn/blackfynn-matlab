@@ -2,6 +2,8 @@
 
 This repository contains the source code for the Blackfynn MATLAB client.
 
+[![Build Status](https://travis-ci.org/Blackfynn/blackfynn-matlab.svg?branch=master)](https://travis-ci.org/Blackfynn/blackfynn-matlab)
+
 ## Installation
 
 The Blackfynn MATLAB client can be installed using two methods:
