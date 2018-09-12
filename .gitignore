@@ -1,4 +1,5 @@
 *.m~
-java/blackfynn/
 .DS_Store
+.env
 build/
+java/blackfynn/

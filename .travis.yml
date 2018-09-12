@@ -1,0 +1,46 @@
+sudo: required
+
+services:
+  - docker
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.22.0
+
+before_install:
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker-compose build
+  - docker-compose up
+
+before_deploy:
+- mkdir artifact || true
+- mkdir artifact-latest || true
+- cp build/blackfynn-agent-${TRAVIS_TAG} artifact/ || true
+- cp build/blackfynn-matlab artifact-latest/ || true
+
+deploy:
+  - provider: s3
+    access_key_id: "$AWS_ACCESS_KEY_ID"
+    secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+    region: us-east-1
+    bucket: "$S3_BUCKET"
+    skip_cleanup: true
+    local-dir: artifact
+    upload-dir: public-downloads/blackfynn-matlab/${TRAVIS_TAG}/
+    on:
+      tags: true
+  - provider: s3
+    access_key_id: "$AWS_ACCESS_KEY_ID"
+    secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+    region: us-east-1
+    bucket: "$S3_BUCKET"
+    skip_cleanup: true
+    local-dir: artifact-latest
+    upload-dir: public-downloads/blackfynn-matlab/latest/
+    on:
+      tags: true

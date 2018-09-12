@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration file="/Users/joost/Code/blackfynn-matlab/setup/blackfynnio.prj" location="/Users/joost/Code/blackfynn-matlab/setup" name="blackfynnio" target="target.toolbox" target-name="Package Toolbox">
+  <configuration file="/blackfynn-matlab/setup/blackfynn.xml" location="/blackfynn-matlab/setup" name="blackfynnio" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>blackfynn-matlab</param.appname>
     <param.authnamewatermark />
     <param.email />
@@ -86,39 +86,39 @@
       <file>${PROJECT_ROOT}/../setup</file>
     </fileset.rootfiles>
     <fileset.depfun.included>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFAgentIO/BFAgentIO.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFBaseCollection/BFBaseCollection.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFBaseDataNode/BFBaseDataNode.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFBaseNode/BFBaseNode.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFCollection/BFCollection.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFDataPackage/BFDataPackage.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFDataset/BFDataset.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFJavaRequest/BFJavaRequest.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFRequest/BFRequest.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFSession/BFSession.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFTabular/BFTabular.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFTimeseries/BFTimeseries.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFTimeseriesAnnotation/BFTimeseriesAnnotation.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFTimeseriesAnnotationLayer/BFTimeseriesAnnotationLayer.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@BFTimeseriesChannel/BFTimeseriesChannel.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@Blackfynn/Blackfynn.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@IniConfig/IniConfig.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@IniConfig/example.ini</file>
-      <file>/Users/joost/Code/blackfynn-matlab/@IniConfig/license.txt</file>
-      <file>/Users/joost/Code/blackfynn-matlab/LICENSE</file>
-      <file>/Users/joost/Code/blackfynn-matlab/README.md</file>
-      <file>/Users/joost/Code/blackfynn-matlab/WebSocketClient.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/WebSocketConnection.m</file>
-      <file>/Users/joost/Code/blackfynn-matlab/WebSocketServer.m</file>
+      <file>/blackfynn-matlab/@BFAgentIO/BFAgentIO.m</file>
+      <file>/blackfynn-matlab/@BFBaseCollection/BFBaseCollection.m</file>
+      <file>/blackfynn-matlab/@BFBaseDataNode/BFBaseDataNode.m</file>
+      <file>/blackfynn-matlab/@BFBaseNode/BFBaseNode.m</file>
+      <file>/blackfynn-matlab/@BFCollection/BFCollection.m</file>
+      <file>/blackfynn-matlab/@BFDataPackage/BFDataPackage.m</file>
+      <file>/blackfynn-matlab/@BFDataset/BFDataset.m</file>
+      <file>/blackfynn-matlab/@BFJavaRequest/BFJavaRequest.m</file>
+      <file>/blackfynn-matlab/@BFRequest/BFRequest.m</file>
+      <file>/blackfynn-matlab/@BFSession/BFSession.m</file>
+      <file>/blackfynn-matlab/@BFTabular/BFTabular.m</file>
+      <file>/blackfynn-matlab/@BFTimeseries/BFTimeseries.m</file>
+      <file>/blackfynn-matlab/@BFTimeseriesAnnotation/BFTimeseriesAnnotation.m</file>
+      <file>/blackfynn-matlab/@BFTimeseriesAnnotationLayer/BFTimeseriesAnnotationLayer.m</file>
+      <file>/blackfynn-matlab/@BFTimeseriesChannel/BFTimeseriesChannel.m</file>
+      <file>/blackfynn-matlab/@Blackfynn/Blackfynn.m</file>
+      <file>/blackfynn-matlab/@IniConfig/IniConfig.m</file>
+      <file>/blackfynn-matlab/@IniConfig/example.ini</file>
+      <file>/blackfynn-matlab/@IniConfig/license.txt</file>
+      <file>/blackfynn-matlab/LICENSE</file>
+      <file>/blackfynn-matlab/README.md</file>
+      <file>/blackfynn-matlab/WebSocketClient.m</file>
+      <file>/blackfynn-matlab/WebSocketConnection.m</file>
+      <file>/blackfynn-matlab/WebSocketServer.m</file>
     </fileset.depfun.included>
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="/Users/joost/Code/blackfynn-matlab/setup" name="blackfynn-matlab.mltbx" optional="false">/Users/joost/Code/blackfynn-matlab/setup/blackfynn-matlab.mltbx</file>
+      <file location="/blackfynn-matlab/setup" name="blackfynn-matlab.mltbx" optional="false">/blackfynn-matlab/setup/blackfynn-matlab.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/Applications/MATLAB_R2017b.app</root>
+      <root>/usr/local/bin/matlab</root>
       <toolboxes />
     </matlab>
     <platform>
@@ -128,12 +128,12 @@
       <win2k>false</win2k>
       <winxp>false</winxp>
       <vista>false</vista>
-      <linux>false</linux>
+      <linux>true</linux>
       <solaris>false</solaris>
-      <osver>10.13.5</osver>
+      <osver>4.4.0-131-generic</osver>
       <os32>false</os32>
-      <os64>true</os64>
-      <arch>maci64</arch>
+      <os64>false</os64>
+      <arch>glnxa64</arch>
       <matlab>true</matlab>
     </platform>
   </configuration>

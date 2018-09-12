@@ -1,0 +1,16 @@
+version: '3.5'
+
+services:
+  matlab:
+    build: .
+    mac_address: ${MAC_ADDRESS}
+    hostname: matlab
+    user: vagrant
+    command: ./setup.sh
+    networks:
+      - matlab
+    volumes:
+      - ./build:/blackfynn-matlab/setup/build
+
+networks:
+  matlab:
