@@ -17,22 +17,30 @@ script:
   - docker-compose build
   - docker-compose up
 
-#deploy:
-#  - provider: releases
-#    api_key: "GITHUB OAUTH TOKEN"
-#    file: "setup/build/"
-#    skip_cleanup: true
-#    on:
-#    tags: true
-#  - provider: s3
-#    access_key_id: "$AWS_ACCESS_KEY_ID"
-#    secret_access_key: "$AWS_SECRET_ACCESS_KEY"
-#    bucket: "$S3_BUCKET"
-#    skip_cleanup: true
-#    region: us-east-1
-#    local_dir: _site 
+before_deploy:
+- mkdir artifact || true
+- mkdir artifact-latest || true
+- cp build/blackfynn-agent-${TRAVIS_TAG} artifact/ || true
+- cp build/blackfynn-matlab artifact-latest/ || true
 
-#after_deploy:
-#  - pip install --user awscli
-#  - export PATH=$PATH:$HOME/.local/bin # put aws in the path
-#  - aws cloudfront create-invalidation --distribution-id $CF_DISTRO_ID --paths /*
+deploy:
+  - provider: s3
+    access_key_id: "$AWS_ACCESS_KEY_ID"
+    secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+    region: us-east-1
+    bucket: "$S3_BUCKET"
+    skip_cleanup: true
+    local-dir: artifact
+    upload-dir: public-downloads/blackfynn-matlab/${TRAVIS_TAG}/
+    on:
+      tags: true
+  - provider: s3
+    access_key_id: "$AWS_ACCESS_KEY_ID"
+    secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+    region: us-east-1
+    bucket: "$S3_BUCKET"
+    skip_cleanup: true
+    local-dir: artifact-latest
+    upload-dir: public-downloads/blackfynn-matlab/latest/
+    on:
+      tags: true
