@@ -63,7 +63,6 @@
       <file>${PROJECT_ROOT}/../@BFJavaRequest</file>
       <file>${PROJECT_ROOT}/../@BFModel</file>
       <file>${PROJECT_ROOT}/../@BFRecord</file>
-      <file>${PROJECT_ROOT}/../@BFRelationship</file>
       <file>${PROJECT_ROOT}/../@BFRequest</file>
       <file>${PROJECT_ROOT}/../@BFSession</file>
       <file>${PROJECT_ROOT}/../@BFTabular</file>
