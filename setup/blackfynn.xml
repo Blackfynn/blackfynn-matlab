@@ -77,7 +77,6 @@
       <file>${PROJECT_ROOT}/../WebSocketClient.m</file>
       <file>${PROJECT_ROOT}/../WebSocketConnection.m</file>
       <file>${PROJECT_ROOT}/../WebSocketServer.m</file>
-      <file>${PROJECT_ROOT}/../build</file>
       <file>${PROJECT_ROOT}/../java</file>
       <file>${PROJECT_ROOT}/../setup</file>
     </fileset.rootfiles>
