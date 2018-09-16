@@ -6,6 +6,7 @@ ENV LD_LIBRARY_PATH $LD_LIBRARY_PATH:${ML_PATH}/runtime/glnxa64:${ML_PATH}/bin/g
 
 COPY ./ /blackfynn-matlab
 
-RUN chown vagrant:vagrant -R /blackfynn-matlab
+RUN mkdir /blackfynn-matlab/build && \
+    chown vagrant:vagrant -R /blackfynn-matlab
 
 WORKDIR /blackfynn-matlab/setup
