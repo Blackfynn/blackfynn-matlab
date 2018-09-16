@@ -5,7 +5,6 @@ services:
 
 env:
   - DOCKER_COMPOSE_VERSION=1.22.0
-  - MLTBX_VERSION=0.0.${TRAVIS_TAG}
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
@@ -15,15 +14,14 @@ before_install:
 
 script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - echo "Building blackfynn-$MLTBX_VERSION.mltbx"
   - docker-compose build
   - docker-compose up
 
 before_deploy:
-  - mkdir artifact || true
-  - mkdir artifact-latest || true
-  - cp build/blackfynn.mltbx artifact/blackfynn-${MLTBX_VERSION}.mltbx
-  - cp build/blackfynn.mltbx artifact-latest/blackfynn.mltbx
+- mkdir artifact || true
+- mkdir artifact-latest || true
+- cp build/blackfynn.mltbx artifact/blackfynn-${TRAVIS_TAG}.mltbx
+- cp build/blackfynn.mltbx artifact-latest/blackfynn.mltbx
 
 deploy:
   - provider: s3
@@ -33,7 +31,7 @@ deploy:
     bucket: "$S3_BUCKET"
     skip_cleanup: true
     local-dir: artifact
-    upload-dir: public-downloads/blackfynn-matlab/${MLTBX_VERSION}/
+    upload-dir: public-downloads/blackfynn-matlab/${TRAVIS_TAG}/
     on:
       tags: true
   - provider: s3
