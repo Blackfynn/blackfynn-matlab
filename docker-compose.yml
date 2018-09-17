@@ -9,8 +9,6 @@ services:
     command: ./setup.sh
     networks:
       - matlab
-    #volumes:
-    #  - ./setup/build:/blackfynn-matlab/setup/build
 
 networks:
   matlab:

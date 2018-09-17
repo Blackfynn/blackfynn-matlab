@@ -18,6 +18,7 @@ script:
   - docker-compose up --exit-code-from matlab
 
 before_deploy:
+- docker cp blackfynn-matlab_matlab_1:/blackfynn-matlab/setup/build/ .
 - mkdir artifact || true
 - mkdir artifact-latest || true
 - cp build/blackfynn.mltbx artifact/blackfynn-${TRAVIS_TAG}.mltbx
