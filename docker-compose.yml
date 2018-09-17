@@ -10,7 +10,7 @@ services:
     networks:
       - matlab
     volumes:
-      - ./build:/blackfynn-matlab/setup/build
+      - ./setup/build:/blackfynn-matlab/setup/build
 
 networks:
   matlab:
