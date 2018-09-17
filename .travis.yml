@@ -35,6 +35,8 @@ deploy:
     skip_cleanup: true
     local-dir: artifact
     upload-dir: public-downloads/blackfynn-matlab/${TRAVIS_TAG}/
+    on:
+      tags: true
   - provider: s3
     access_key_id: "$AWS_ACCESS_KEY_ID"
     secret_access_key: "$AWS_SECRET_ACCESS_KEY"
@@ -43,6 +45,8 @@ deploy:
     skip_cleanup: true
     local-dir: artifact-latest
     upload-dir: public-downloads/blackfynn-matlab/latest/
+    on:
+      tags: true
 
 after_deploy:
   - rm -rf build/ artifact/ artifact-latest/
