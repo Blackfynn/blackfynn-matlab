@@ -34,7 +34,7 @@ deploy:
     bucket: "$S3_BUCKET"
     skip_cleanup: true
     local-dir: artifact
-    upload-dir: public-downloads/blackfynn-matlab/${TRAVIS_TAG}/
+    upload-dir: public-downloads/blackfynn-matlab/${TRAVIS_TAG}
     on:
       tags: true
   - provider: s3
@@ -44,7 +44,7 @@ deploy:
     bucket: "$S3_BUCKET"
     skip_cleanup: true
     local-dir: artifact-latest
-    upload-dir: public-downloads/blackfynn-matlab/latest/
+    upload-dir: public-downloads/blackfynn-matlab/latest
     on:
       tags: true
 
