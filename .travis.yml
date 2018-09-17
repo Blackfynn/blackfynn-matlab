@@ -1,4 +1,6 @@
-sudo: required
+if: tag IS present
+
+sudo: required # required to run docker
 
 services:
   - docker
