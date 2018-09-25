@@ -13,19 +13,15 @@ classdef BFModel < BFBaseModelNode
 
     
     methods
-        function obj = BFModel(varargin)
+        function obj = BFModel(obj, varargin)
             %BFBASEMODELNODE Construct an instance of this class
             %   args = [session, id, name, dataset_id, display_name,
             %           description, locked, created_at, updated_at]
             obj = obj@BFBaseModelNode(varargin{:});
         end
-        
-
-        
-        
-        function records = getall(obj, varargin)
-            %GETALL Returns records of the given model
-            %   RECORDS = GETALL(OBJ) returns the first 100 records for the
+        function records = getRecords(obj, varargin)
+            %GETRECORDS Returns records of the given model
+            %   RECORDS = GETRECORDS(OBJ) returns the first 100 records for the
             %   given model.
             %   RECORDS = GETALL(OBJ, MAXCOUNT, OFFSET) returns a total of
             %   MAXCOUNT records starting at an OFFSET from the first
@@ -40,8 +36,11 @@ classdef BFModel < BFBaseModelNode
             %   See also:
             %       BFRecord, BFDataset
             
-            
             params = {};
+            if nargin >1
+                params = {'limit',varargin{1}, 'offset',varargin{2}};
+            end
+            
             endPoint = sprintf('%s/datasets/%s/concepts/%s/instances',...
                 obj.session.concepts_host, obj.datasetId,obj.id);
             
@@ -49,7 +48,7 @@ classdef BFModel < BFBaseModelNode
             resp = request.get(endPoint, params);
             records = obj.handleGetRecords(resp);
         end
-        function out = createRecord(obj, values)
+        function out = createRecords(obj, values)
             %CREATE  Create a record for a particular model
             %   RECORDS = CREATE(OBJ, DATA) creates a
             %   record of type MODEL and populate the record with the
@@ -94,8 +93,7 @@ classdef BFModel < BFBaseModelNode
             for i=1: length(response)
                 out(i) = BFRecord.createFromResponse(response(i), obj.session, obj.id, obj.datasetId);
             end
-            
-            
+
         end
     end
     
