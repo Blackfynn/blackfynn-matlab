@@ -43,14 +43,17 @@ classdef BFRequest < handle
     
     function response = delete(obj, uri, message)
         % DELETE Makes DELETE HTTP request
-        %
-        obj.options.MediaType = 'application/json';
-        obj.options.RequestMethod = 'delete';
-            try
-                response = webwrite(uri, message, obj.options);
-            catch ME
-                obj.handleError(ME);
-            end
+
+        try
+            header(1) = matlab.net.http.field.GenericField('X-SESSION-ID',obj.options.HeaderFields{1,2});
+            header(2) = matlab.net.http.field.GenericField('AUTHORIZATION',obj.options.HeaderFields{2,2});
+            header(3) = matlab.net.http.field.ContentTypeField('application/json');
+            message = matlab.net.http.MessageBody(message);
+            request = matlab.net.http.RequestMessage('delete',header,message);
+            response = request.send( uri );
+        catch ME
+            obj.handleError(ME);
+        end
     end
     
     function obj = setAPIKey(obj, key)
@@ -69,7 +72,12 @@ classdef BFRequest < handle
         msg = [' Blackfyn user does not have the right permissions on the ' ...
           'Blackfynn platform to perform this action.'];
         causeException = MException('MATLAB:Blackfynn:unauthorized',msg);
-        ME = addCause(ME, causeException);       
+        ME = addCause(ME, causeException);     
+      elseif (strcmp(ME.identifier,'MATLAB:webservices:HTTP400StatusCodeError'))
+        msg = [' Incorrectly formed web-request from client. Please report to the' ...
+            ' Blackfynn team at support@blackfynn.com'];
+        causeException = MException('MATLAB:Blackfynn:BadRequest',msg);
+        ME = addCause(ME, causeException);   
       end
       
       rethrow(ME);
