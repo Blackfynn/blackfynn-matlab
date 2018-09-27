@@ -39,6 +39,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             obj.session = BFSession();
             obj.session.request = BFRequest();
             
+            
             userProfile = '';
             if nargin == 1
                 userProfile = varargin{1};
@@ -87,8 +88,10 @@ classdef (Sealed) Blackfynn < BFBaseNode
                    obj.session.host = defaultHosts.host; 
                 end
                 if isempty(keyValues{5}) == 0
+                   obj.session.conceptsAPI = BFConceptsAPI(obj.session, keyValues{5});
                    obj.session.concepts_host = keyValues{5};
                 else
+                   obj.session.conceptsAPI = BFConceptsAPI(session);
                    obj.session.concepts_host = defaultHosts.conceptsHost; 
                 end
                 if isempty(keyValues{6}) == 0

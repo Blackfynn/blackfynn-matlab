@@ -9,6 +9,7 @@ classdef BFSession < handle
     api_key         % session key
     web_host        % url to Blackfynn web app
     org             % Organization ID
+    conceptsAPI     % ConceptsAPI instance
   end
 
   properties (Access = private, Constant)

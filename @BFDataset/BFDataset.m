@@ -20,7 +20,7 @@ classdef BFDataset < BFBaseCollection
             if ~isempty(obj.models_)
                 value = obj.models_;
             else
-                obj.models_ = obj.getmodels();
+                obj.models_ = obj.session.conceptsAPI.getModels(obj.id);
                 value = obj.models_;
             end
         end
@@ -58,34 +58,6 @@ classdef BFDataset < BFBaseCollection
             end
         end
         
-        function models = handleGetModels(obj,resp)
-            
-            models = BFModel.empty(length(resp),0);
-            for i=1: length(resp)
-                models(i) = BFModel.createFromResponse(resp(i), obj.session, obj.id);
-            end
-        end
-        
-        function out = getmodels(obj)
-            % GETMODELS Returns models for the dataset.
-            %   MODELS = GETMODELS(OBJ) returns an array of BFMODELS that are
-            %   defined for the dataset from the server. This function also
-            %   updates the caches property 
-            %
-            %   Example:
-            %
-            %       BF = Blackfynn()
-            %       MODELS = BF.MODELS()
-            
-            uri = 'concepts';
-            params = {};
-            endPoint = sprintf('%s/datasets/%s/%s',obj.session.concepts_host, obj.id, uri);
-            
-            request = obj.session.request;
-            resp = request.get(endPoint, params);
-            obj.models_ = obj.handleGetModels(resp);
-            out = obj.models_;
-        end
     end
     methods (Static, Hidden)
         function out = createFromResponse(resp, session)

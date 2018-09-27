@@ -52,7 +52,51 @@ classdef BFRecord < BFBaseNode & dynamicprops
             
             obj.updated = false;
         end
+        
+        function out = getAllRelationships(obj)
+            uri = sprintf('%s/datasets/%s/concepts/%s/related', obj.session.concepts_host, obj.datasetId,obj.modelId);
+            params = {};
+            out = obj.session.request.get(uri, params);
+        end
+        
+        function out = getRelationships(obj)
+            uri = sprintf('%s/datasets/%s/concepts/%s/instances/%s/relationCounts', obj.session.concepts_host, obj.datasetId,obj.modelId,obj.id);
+            params = {};
+            out = obj.session.request.get(uri, params);
+        end
+        
+        function obj = delete(obj)
 
+            % check all records from same model
+            if ~all(strcmp({obj.modelId}, obj(1).modelId))
+                sprintf(2, 'All records should belong to the same model.');
+                return
+            end
+            
+            % check all records in single dataset
+            if ~all(strcmp({obj.datasetId}, obj(1).datasetId))
+                sprintf(2, 'All records should belong to the same dataset.');
+                return
+            end
+            
+            recordIds = {obj.id};
+            success = obj(1).session.conceptsAPI.deleteRecords(obj(1).datasetId, obj(1).modelId, recordIds);
+            
+            % delete matlab objects if platform delete is successfull
+            for i=1:length(obj)
+                if any(strcmp(obj(i).id, success))
+                    delete(obj(i));
+                end
+            end
+            
+            % let user know if delete failed 
+            if length(success) ~= length(obj)
+                diff_l = length(obj)-length(success);
+                fprintf(2, '%i our of %i records could not be deleted.\nThis could be because the records no longer exist on the platform.', diff_l, length(obj));
+            end
+            
+            
+        end
     end
     
     methods (Access = protected)                            
@@ -63,7 +107,6 @@ classdef BFRecord < BFBaseNode & dynamicprops
                 if obj.updated
                     s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id,url,class(obj));
                 else
-                    %https://test.blackfynn.io/N:organization:c905919f-56f5-43ae-9c2a-8d5d542c133b/datasets/N:dataset:5a6779a4-e3d8-473f-91d0-0a99f144dc44/explore/d7dda599-686b-4213-8ade-f17866e8fc9c/f4b275b4-00dc-edd1-b1b7-1ff362569de3
                     s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>,<a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id,url,class(obj));
                 end
             else
@@ -111,6 +154,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
 
             end
         end
+
         function handlePropEvents(src, evnt)
             % Set updated flag to True
             evnt.AffectedObject.updated = true;
