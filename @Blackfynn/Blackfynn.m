@@ -83,8 +83,10 @@ classdef (Sealed) Blackfynn < BFBaseNode
                    obj.session.streaming_host = defaultHosts.streamingHost; 
                 end
                 if isempty(keyValues{3}) == 0
+                   obj.session.mainAPI = BFMainAPI(obj.session, keyValues{3}); 
                    obj.session.host = keyValues{3};
                 else
+                   obj.session.mainAPI = BFMainAPI(obj.session);
                    obj.session.host = defaultHosts.host; 
                 end
                 if isempty(keyValues{5}) == 0
@@ -104,42 +106,31 @@ classdef (Sealed) Blackfynn < BFBaseNode
             else
                 error('Username and password not found: Use setup method');
             end
-            
-            request = obj.session.request;
-            
-            % Login
-            path = '/account/api/session';
-            uri = sprintf('%s%s',obj.session.host, path);
-            data = struct(...
-                'tokenId',keyValues{1}, ...
-                'secret',keyValues{2} ...
-                );
-            resp = request.post(uri, data);
+   
+            resp = obj.session.mainAPI.getSessionToken(keyValues{1},keyValues{2});
             
             % Set API key
             obj.session.api_key = resp.session_token;
             obj.session.org = resp.organization;
-            request.setAPIKey(resp.session_token);
+            obj.session.setAPIKey(resp.session_token);
             
             % Get User and organization info
-            path = '/user/';
-            uri = sprintf('%s%s',obj.session.host, path);
-            resp = request.get(uri,{});
+            user = obj.session.mainAPI.getUser();
             
             % Get Organizations
             obj.profile = struct(...
-                'id', resp.id,...
-                'email', resp.email,...
-                'firstName',resp.firstName,...
-                'lastName',resp.lastName,...
-                'organization',resp.preferredOrganization,...
-                'credential',resp.credential);
+                'id', user.id,...
+                'email', user.email,...
+                'firstName',user.firstName,...
+                'lastName',user.lastName,...
+                'organization',user.preferredOrganization,...
+                'credential',user.credential);
             
             % get datasets
-            obj.get_datasets();
+            obj.datasets = obj.session.mainAPI.getDatasets();
         end
         
-        function out = createdataset(obj, name, varargin)   
+        function dataset = createdataset(obj, name, varargin)   
             % CREATEDATASET Creates a new dataset in organization
             %   DS = CREATEDATASET(OBJ, 'Name') creates a new dataset in
             %   the current organization with the provided 'Name'. The
@@ -156,25 +147,17 @@ classdef (Sealed) Blackfynn < BFBaseNode
             %   See also:
             %       Blackfynn
             
-            uri = sprintf('%s%s',obj.session.host,'datasets/');
-            description='';
-            
+            description = '';
             if nargin > 2
                 description = varargin{1};
             end
-            
-            message = struct(...
-                'name', name,...
-                'description', description,...
-                'properties', []);
-            
-            resp = obj.session.request.post(uri, message);
-            obj.get_datasets();
-            out = obj.get(resp.content.id);
-            
+
+            dataset = obj.session.mainAPI.createDataset( name, description);
+            obj.datasets = [obj.datasets dataset];
+
         end
 
-        function out = organizations(obj)                   
+        function organizations = organizations(obj)         
             % ORGANIZATIONS  Returns all organizations for the user.
             %   OUT = ORGANIZATIONS(OBJ) returns all organizations that a
             %   user belongs to.
@@ -196,13 +179,15 @@ classdef (Sealed) Blackfynn < BFBaseNode
             %       ___________    ______________________________________
             %       'Blackfynn'    'N:organization:c9055555-3333-4444-...
             
-            uri = 'organizations';
-            params = {'includeAdmins' 'false'};
-            endPoint = sprintf('%s/%s',obj.session.host, uri);
-            
-            request = obj.session.request;
-            resp = request.get(endPoint, params);
-            out = obj.handleGetOrganizations(resp);
+            response = obj.session.mainAPI.getOrganizations();            
+            len_org=length(response.organizations);
+            col_names = {'Name','Id'};
+            organizations = cell2table(cell(len_org, length(col_names)));
+            organizations.Properties.VariableNames=col_names;
+            for i=1:len_org
+                organizations(i, 1) = {response.organizations(i).organization.name};
+                organizations(i, 2) = {response.organizations(i).organization.id};
+            end
         end
         
         function delete(obj, delobjs)                       
@@ -267,11 +252,11 @@ classdef (Sealed) Blackfynn < BFBaseNode
             
             switch (type)
                 case 'dataset'
-                    out = obj.get_dataset(thing);
+                    out = obj.getDataset(thing);
                 case 'package'
-                    out = obj.get_package(thing);
+                    out = obj.getPackage(thing);
                 case 'collection'
-                    out = obj.get_collection(thing);
+                    out = obj.getCollection(thing);
                     
                 otherwise
                     fprintf(2, 'Incorrect object ID');
@@ -294,92 +279,33 @@ classdef (Sealed) Blackfynn < BFBaseNode
     end
     
     methods (Hidden, Access = {?BFBaseNode})
-        function get_datasets(obj)                          
-            uri = sprintf('%s/%s',obj.session.host, 'datasets');
-             params = {'include', '*', 'includeAncestors', 'false',...
-                 'api_key', obj.session.request.options.HeaderFields{2}};
-            resp = obj.session.request.get(uri,params);
-            obj.datasets = BFBaseDataNode.createFromResponse(resp, obj.session);
-        end
         
-        function out = get_dataset(obj, id)                 
-            % GET_DATASET  Returns single dataset
-            % OUT = GET_DATASET(OBJ, 'id') returns a single dataset based on the
+        function out = getDataset(obj, id)                 
+            % GETDATASET  Returns single dataset
+            % OUT = GETDATASET(OBJ, 'id') returns a single dataset based on the
             % provided 'id'
             
-            uri = sprintf('%s%s%s',obj.session.host,'datasets/',id);
-            params = {'includeCollaborators' 'false' 'includeAncestors' 'false'...
-                'session', obj.session.request.options.HeaderFields{2}};
-            resp = obj.session.request.get(uri,params);
-            out = BFBaseDataNode.createFromResponse(resp, obj.session);
+            out = obj.session.mainAPI.getDataset(id);
         end
         
-        function out = get_package(obj, id)                 
+        function out = getPackage(obj, id)                 
             % GET_PACKAGE  Returns single package
             % OUT = GET_PACKAGE(OBJ, 'id') returns a single package based on the
             % provided 'id'
             %
-            uri = sprintf('%s%s%s',obj.session.host,'/packages/',id);
-            params = {'includeAncestors' 'false' 'include' 'false'};
-            resp = obj.session.request.get(uri,params);
-            out = BFBaseDataNode.createFromResponse(resp, obj.session);
+            out = obj.session.mainAPI.getPackage(id, false, false);
         end
         
-        function out = get_collection(obj, id)              
+        function out = getCollection(obj, id)              
             % GET_PACKAGE  Returns collection
             % OUT = GET_PACKAGE(OBJ, 'id') returns a single package based on the
             % provided 'id'
             %
-            uri = sprintf('%s%s%s',obj.session.host,'packages/', id);
-            params = {'includeAncestors', 'false'};
-            resp = obj.session.request.get(uri,params);
-            out = BFBaseDataNode.createFromResponse(resp, obj.session);
+            out = obj.session.mainAPI.getPackage(id, true, false);
         end
         
-        function obj = handleGetDatasets(obj, resp)         
-            obj.datasets = resp;
-        end
-        
-        function delete_items(obj, thingIds)                
-            uri = sprintf('%s%s',obj.session.host, 'data/delete');
-            
-            message = struct(...
-                'things', []);
-            
-            message.things = thingIds;
-            resp = obj.session.request.post(uri, message);
-            
-            if ~isempty(resp.success)
-                fprintf('\nSuccess removing the following items:\n')
-                for i = 1 : length(resp.success)
-                    fprintf('%d. %s, item was successfully deleted\n',...
-                        i, char(resp.success(i)))
-                end
-            end
-            
-            if ~isempty(resp.failures)
-                fprintf('\n')
-                warning('Not all items were deleted')
-                fprintf('\nFailed to remove the following items:\n')
-                for i = 1 : length(resp.failures)
-                    fprintf('%d. %s, item was not deleted\n',...
-                        i, resp.failures(i).error)
-                end
-            end          
-        end
-        
-        function orgs = handleGetOrganizations(~, resp)     
-            % HANDLEGETORGANIZATIONS handles the response from the 
-            % organizations query.
-            %
-            len_org=length(resp.organizations);
-            col_names = {'Name','Id'};
-            orgs = cell2table(cell(len_org, length(col_names)));
-            orgs.Properties.VariableNames=col_names;
-            for i=1:len_org
-                orgs(i, 1) = {resp.organizations(i).organization.name};
-                orgs(i, 2) = {resp.organizations(i).organization.id};
-            end
+        function success = delete_items(obj, thingIds)  
+            success = obj.session.mainAPI.delete_packages(thingIds);
         end
     end
     

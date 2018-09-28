@@ -48,49 +48,14 @@ classdef (Sealed) BFTabular < BFDataPackage
             %               6          1     2     3
             %               
             %
-            endPoint = 'tabular/';
-            uri = sprintf('%s%s%s', obj.session.host,endPoint,obj.id);
             
-            params=obj.load_params(varargin{:});
-            
-            out = obj.session.request.get(uri, params);
-            data = struct2table(out.rows);
+            response = obj.session.mainAPI.getTabularData(obj.id, varargin{:});
+            data = struct2table(response.rows);
             
         end
         
     end
-    
-    methods (Access = private)
-        
-        function out = load_params(obj,varargin)
-            % LOAD_PARAMS parameter parser
-            %
-            defaultLimit = 1000;
-            defaultOffset = '';
-            defaultOrder = '';
-            defaultDirection = 'ASC';
-            expectedDirection = {'ASC', 'DESC'};
-            
-            p = inputParser;
-            addParameter(p,'limit', defaultLimit);
-            addParameter(p, 'offset', defaultOffset);
-            addParameter(p, 'orderBy', defaultOrder);
-            addParameter(p, 'orderDirection', defaultDirection,...
-                @(x) any(validatestring(x,expectedDirection)));
-            addParameter(p, 'session', obj.session.request.options.HeaderFields{2});
-            parse(p,varargin{:});
-            
-            j=1;
-            params=cell(1,length(p.Parameters)*2);
-            for i = 1:length(p.Parameters)
-                params{j}=p.Parameters{i};
-                params{j+1}=getfield(p.Results, p.Parameters{i});
-                j=j+2;
-            end
-            
-            out = params;
-        end
-    end
+   
     
     methods (Static)
         function out = createFromResponse(resp, session)

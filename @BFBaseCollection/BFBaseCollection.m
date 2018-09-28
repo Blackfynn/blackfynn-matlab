@@ -6,9 +6,11 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
         items   % The contents of a folder or a dataset.
     end
     
-    properties (Hidden, Access = private)
-        items__ =  BFBaseDataNode.empty();
+    properties (Hidden, Access = protected)
+        items_ =  BFBaseDataNode.empty();
         checked_items = false;
+        items_resp
+        updateCounter = 0;
     end
 
     methods
@@ -61,7 +63,7 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
 
         end
                 
-        function out = createfolder(obj, name, varargin)
+        function obj = createfolder(obj, name)
             % CREATEFOLDER creates a new folder within the object.
             %   OUT = CREATEFOLDER(OBJ, 'Name') creates a folder with the
             %   specified 'Name' and returns the newly created folder.
@@ -77,61 +79,51 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
             %   See also:
             %       Blackfynn, BFDataset.listitems
             
-            uri = sprintf('%s%s',obj.session.host,'packages/');
-            description='';
-            
-            if nargin > 2
-                description = varargin{1};
-            end
-            
             switch class(obj)
                 case 'BFCollection'
-                    message = struct('name', name,...
-                        'parent', obj.get_id,...
-                        'description', description,...
-                        'packageType', 'Collection',...
-                        'properties', [],...
-                        'dataset', obj.datasetId);
+                    datasetId = obj.datasetId;
+                    parentId = obj.id;
                 case 'BFDataset'
-                    message = struct('name', name,...
-                        'description', description,...
-                        'packageType', 'Collection',...
-                        'properties', [],...
-                        'dataset', obj.id);                    
+                    datasetId = obj.id;
+                    parentId = '';
                 otherwise
                     error('Object must be a dataset or a collection');
             end
-            resp = obj.session.request.post(uri, message);
-            out = BFCollection.createFromResponse(resp, obj.session);
+            
+            obj.session.mainAPI.createFolder(datasetId, parentId, name);
+            obj.session.updateCounter = obj.session.updateCounter +1;
         end
         
         function value = get.items(obj)                 
             % Getter for items property 
             % Dynamically loads items during first access
 
-            if obj.checked_items
-                value = obj.items__;
+            if obj.checked_items && (obj.updateCounter == obj.session.updateCounter)
+                value = obj.items_;
             else
-                % Check items
-                uri = sprintf('%s%s%s',obj.session.host, '/datasets/', obj.id);
-                params = {'api_key', obj.session.request.options.HeaderFields{2}};
-                resp = obj.session.request.get(uri,params);
-                
-                % Create items
-                if ~isempty(resp.children)
-                    value(length(resp.children)) = BFCollection('','','','');
-                    for i = 1:length(resp.children)
-                        curItem = resp.children(i);
-                        if isa(curItem, 'cell')
-                            curItem = curItem{1,1};
-                        end
-                        value(i) = BFBaseDataNode.createFromResponse(curItem, obj.session);
-                        obj.items__(i) = value(i);
-                    end
-                    obj.checked_items = true;
+                if isa(obj, 'BFDataset')
+                    response = obj.session.mainAPI.getDataset(obj.id);          
                 else
-                    value =  BFBaseDataNode.empty();
+                    response = obj.session.mainAPI.getPackage(obj.id, ...
+                        true, false);
                 end
+                
+                % If object has children, create the children objects 
+                if ~isempty(response.children)
+                    children(length(response.children)) = ...
+                        BFCollection('','','','');
+                    for i=1:length(response.children)
+                        children(i) = BFBaseDataNode.createFromResponse(...
+                            response.children(i), obj.session);
+                    end
+                else
+                    children = BFBaseDataNode.empty();
+                end
+                obj.items_ = children;
+                obj.checked_items = true;
+                value = children;
+                
+                obj.updateCounter = obj.session.updateCounter;
             end
         end
     end

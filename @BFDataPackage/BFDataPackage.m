@@ -13,7 +13,7 @@ classdef BFDataPackage < BFBaseDataNode
       obj = obj@BFBaseDataNode(varargin{:});
     end
     
-    function obj = move(obj, dest, varargin)          
+    function success = move(obj, dest)          
         % MOVE  Moves objects to a destination collection
         %   OBJ = MOVE(OBJ, DEST) moves OBJ to a new destination DEST
         %   where DEST is a BFFOLDER, or BFDATASET object where the OBJ
@@ -37,28 +37,21 @@ classdef BFDataPackage < BFBaseDataNode
         %       between organizations.
         %
 
-        uri = sprintf('%s/%s',obj.session.host,'data/move');
-
         destid = dest;
         if isa(dest,'BFBaseCollection')
             destid = dest.get_id;
         end
 
-        thingIds{length(varargin)} = '';
-        for i = 1 : length(varargin)
-            thingIds{i} = varargin{i}.get_id;
+        thingIds{length(obj)} = '';
+        for i = 1 : length(obj)
+            thingIds{i} = obj(i).id;
         end
 
-        if length(varargin) == 1
-            thingIds{2} = '';
-        end
-
-        message = struct(...
-            'things', [],...
-            'destination', destid);
-
-        message.things = thingIds;
-        obj.session.request.post(uri, message);
+        success = obj.session.mainAPI.move(thingIds, destid);
+        
+        % Now move these objects in the MATLAB client
+        obj.session.updateCounter = obj.session.updateCounter + 1;
+        
     end
 
   end

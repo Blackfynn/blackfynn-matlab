@@ -10,6 +10,7 @@ classdef BFSession < handle
     web_host        % url to Blackfynn web app
     org             % Organization ID
     conceptsAPI     % ConceptsAPI instance
+    mainAPI         % MainAPI instance
   end
 
   properties (Access = private, Constant)
@@ -17,6 +18,20 @@ classdef BFSession < handle
     conceptsHost  =  'https://concepts.blackfynn.io';
     serverUrl     =  'https://api.blackfynn.io';
     webHost       =  'https://app.blackfynn.io';
+  end
+  
+  properties (Hidden, Access = {?BFBaseNode})
+      updateCounter = 0  % Used to invalidate children after updates to organization of files.
+  end
+  
+  methods
+      function success = setAPIKey(obj, key)
+        if isa(obj.request, 'BFRequest')
+            success = obj.request.setAPIKey(key);
+        else
+            error('No request object provided, contact support@blackfynn.com');
+        end
+      end
   end
   
   methods (Static)
@@ -27,6 +42,8 @@ classdef BFSession < handle
         'streamingHost',BFSession.streamingHost, ...
         'webHost', BFSession.webHost);
     end
+    
+    
   end
   
   
