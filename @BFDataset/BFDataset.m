@@ -34,16 +34,11 @@ classdef BFDataset < BFBaseCollection
             obj = obj@BFBaseCollection(varargin{:} );
         end
         
-        function out = update(obj)
+        function obj = update(obj)
             %UPDATE updates dataset on the platform.
-            id = obj.id;
-            uri = sprintf('%s/%s/%s', obj.session.host, 'datasets', id);
-            params = struct(...
-                'name', obj.name,...
-                'description', obj.description,...
-                'properties', []);
-            obj.session.request.put(uri, params);
-            out=obj;
+
+            obj.session.mainAPI.updateDataset(obj.id, obj.name, obj.description);
+             
         end
         
     end
@@ -70,7 +65,6 @@ classdef BFDataset < BFBaseCollection
             if isfield(content, 'description')
                 out.description = content.description;
             end
-
         end
     end
     

@@ -56,9 +56,10 @@ classdef BFRequest < handle
         end
     end
     
-    function obj = setAPIKey(obj, key)
+    function success = setAPIKey(obj, key)
       headerFields = {'X-SESSION-ID' key ; 'AUTHORIZATION' ['BEARER ' key]};
       obj.options.HeaderFields = [headerFields ; obj.options.HeaderFields];
+      success = true;
     end
     
     function obj = setOrganization(obj, org)
@@ -77,8 +78,15 @@ classdef BFRequest < handle
         msg = [' Incorrectly formed web-request from client. Please report to the' ...
             ' Blackfynn team at support@blackfynn.com'];
         causeException = MException('MATLAB:Blackfynn:BadRequest',msg);
-        ME = addCause(ME, causeException);   
+        ME = addCause(ME, causeException);
+      elseif (strcmp(ME.identifier,'MATLAB:webservices:HTTP404StatusCodeError'))
+        msg = [' Platform could not find one of the objects referred to in ' ...
+            'the request.'];
+        causeException = MException('MATLAB:Blackfynn:NotFound',msg);
+        ME = addCause(ME, causeException);
       end
+      
+      
       
       rethrow(ME);
     end

@@ -19,7 +19,7 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
       end
     end
     
-    function out = update(obj)
+    function obj = update(obj)
         % UPDATE Updates the current object in the platform.
         %   OUT = UPDATE(OBJ) updates the object on the platform with the
         %   current version of the local object.
@@ -36,7 +36,7 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
         switch class(obj)
             case {'BFTimeseries','BFCollection','BFDataPackage', ...
                     'BFTabular'}
-                out = obj.update_package(obj.id);
+                obj.session.mainAPI.updatePackage(obj.id, obj.name, obj.state, obj.type);
             otherwise
                 error('Cannot update object of class %s', class(obj));
         end
@@ -44,24 +44,18 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
     end 
   end
   
-  methods (Access=private)
-      function out = update_package(obj, id)
-          % UPDATE_PACKAGE Update package in the platform
+  methods (Access=protected, Sealed)
+      function displayNonScalarObject(~)
           
-          uri = sprintf('%s%s%s', obj.session.host, 'packages/', id);
-          params = struct(...
-              'name', obj.name,...
-              'state', obj.state,...
-              'packageType', obj.type);
-          resp = obj.session.request.put(uri, params);
-          out = BFBaseDataNode.createFromResponse(resp, obj.session);
+          % TODO: implement this.
+          fprintf('Display of arrays of heterogeneous objects not supported.\n\n');
       end
   end
   
   methods (Static, Hidden)
     function out = createFromResponse(resp, session)
       % Creates an object from a GET request's response.
-      % 
+       
       out(length(resp)) = BFCollection();
 
       for i = 1 : length(resp)
