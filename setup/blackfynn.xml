@@ -7,7 +7,7 @@
     <param.summary />
     <param.description />
     <param.screenshot />
-    <param.version>0.1</param.version>
+    <param.version>1.1</param.version>
     <param.output>${PROJECT_ROOT}/blackfynn-matlab.mltbx</param.output>
     <param.products.name>
       <item>MATLAB</item>

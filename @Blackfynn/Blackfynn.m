@@ -263,7 +263,6 @@ classdef (Sealed) Blackfynn < BFBaseNode
                     fprintf(2, 'Incorrect object ID');
             end
         end
-        
 
     end
     
