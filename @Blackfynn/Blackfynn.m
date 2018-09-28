@@ -255,6 +255,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
                     out = obj.getDataset(thing);
                 case 'package'
                     out = obj.getPackage(thing);
+                    
                 case 'collection'
                     out = obj.getCollection(thing);
                     
@@ -285,7 +286,8 @@ classdef (Sealed) Blackfynn < BFBaseNode
             % OUT = GETDATASET(OBJ, 'id') returns a single dataset based on the
             % provided 'id'
             
-            out = obj.session.mainAPI.getDataset(id);
+            resp = obj.session.mainAPI.getDataset(id);
+            out = BFBaseDataNode.createFromResponse(resp, obj.session);
         end
         
         function out = getPackage(obj, id)                 
@@ -293,7 +295,8 @@ classdef (Sealed) Blackfynn < BFBaseNode
             % OUT = GET_PACKAGE(OBJ, 'id') returns a single package based on the
             % provided 'id'
             %
-            out = obj.session.mainAPI.getPackage(id, false, false);
+            resp = obj.session.mainAPI.getPackage(id, false, false);
+            out = BFBaseDataNode.createFromResponse(resp, obj.session);
         end
         
         function out = getCollection(obj, id)              
@@ -301,7 +304,8 @@ classdef (Sealed) Blackfynn < BFBaseNode
             % OUT = GET_PACKAGE(OBJ, 'id') returns a single package based on the
             % provided 'id'
             %
-            out = obj.session.mainAPI.getPackage(id, true, false);
+            resp = obj.session.mainAPI.getPackage(id, true, false);
+            out = BFBaseDataNode.createFromResponse(resp, obj.session);
         end
         
         function success = delete_items(obj, thingIds)  
