@@ -1,25 +1,19 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration file="/blackfynn-matlab/setup/blackfynn.prj" location="/blackfynn-matlab/setup" name="blackfynn" target="target.toolbox" target-name="Package Toolbox">
-    <param.appname>blackfynn-matlab</param.appname>
-    <param.authnamewatermark />
-    <param.email />
-    <param.company />
-    <param.summary />
-    <param.description />
+  <configuration file="${PROJECT_ROOT}/../setup/blackfynn-matlab.prj" location="${PROJECT_ROOT}/../setup" name="blackfynn-matlab" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>blackfynn</param.appname>
+    <param.authnamewatermark>Blackfynn Team</param.authnamewatermark>
+    <param.email>support@blackfynn.com</param.email>
+    <param.company>Blackfynn Inc.</param.company>
+    <param.summary>Blackfynn Client for MATLAB</param.summary>
+    <param.description>The Blackfynn Client for MATLAB allows users of the Blackfynn platform to programmatically access data in their MATLAB environment.</param.description>
     <param.screenshot />
     <param.version>1.1.1</param.version>
-    <param.output>${PROJECT_ROOT}/blackfynn-matlab.mltbx</param.output>
-    <param.products.name>
-      <item>MATLAB</item>
-    </param.products.name>
-    <param.products.id>
-      <item>1</item>
-    </param.products.id>
-    <param.products.version>
-      <item>9.3</item>
-    </param.products.version>
+    <param.output>${PROJECT_ROOT}/blackfynn.mltbx</param.output>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
     <param.platforms />
-    <param.guid>7f6028e9-c2a1-49fe-952d-67f6733cbd2b</param.guid>
+    <param.guid>b8c2462b-21f4-43ac-9c38-5918b560cf5f</param.guid>
     <param.exclude.filters />
     <param.examples />
     <param.demosxml />
@@ -30,13 +24,11 @@
     <param.matlabpath.excludes />
     <param.javaclasspath.excludes />
     <unset>
-      <param.authnamewatermark />
-      <param.email />
-      <param.company />
-      <param.summary />
-      <param.description />
       <param.screenshot />
       <param.output />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
       <param.platforms />
       <param.exclude.filters />
       <param.examples />
@@ -50,6 +42,10 @@
       <file>${PROJECT_ROOT}/..</file>
     </fileset.rootdir>
     <fileset.rootfiles>
+      <file>${PROJECT_ROOT}/../.DS_Store</file>
+      <file>${PROJECT_ROOT}/../.git</file>
+      <file>${PROJECT_ROOT}/../.gitignore</file>
+      <file>${PROJECT_ROOT}/../.travis.yml</file>
       <file>${PROJECT_ROOT}/../@BFAgentIO</file>
       <file>${PROJECT_ROOT}/../@BFBaseCollection</file>
       <file>${PROJECT_ROOT}/../@BFBaseDataNode</file>
@@ -81,55 +77,24 @@
       <file>${PROJECT_ROOT}/../WebSocketClient.m</file>
       <file>${PROJECT_ROOT}/../WebSocketConnection.m</file>
       <file>${PROJECT_ROOT}/../WebSocketServer.m</file>
+      <file>${PROJECT_ROOT}/../build</file>
       <file>${PROJECT_ROOT}/../doc</file>
+      <file>${PROJECT_ROOT}/../docker-compose.yml</file>
       <file>${PROJECT_ROOT}/../html</file>
       <file>${PROJECT_ROOT}/../info.xml</file>
       <file>${PROJECT_ROOT}/../java</file>
       <file>${PROJECT_ROOT}/../setup</file>
+      <file>${PROJECT_ROOT}/../test.html</file>
     </fileset.rootfiles>
-    <fileset.depfun.included>
-      <file>/blackfynn-matlab/@BFAgentIO/BFAgentIO.m</file>
-      <file>/blackfynn-matlab/@BFBaseCollection/BFBaseCollection.m</file>
-      <file>/blackfynn-matlab/@BFBaseDataNode/BFBaseDataNode.m</file>
-      <file>/blackfynn-matlab/@BFBaseModelNode/BFBaseModelNode.m</file>
-      <file>/blackfynn-matlab/@BFBaseModelProperty/BFBaseModelProperty.m</file>
-      <file>/blackfynn-matlab/@BFBaseNode/BFBaseNode.m</file>
-      <file>/blackfynn-matlab/@BFCollection/BFCollection.m</file>
-      <file>/blackfynn-matlab/@BFConceptsAPI/BFConceptsAPI.m</file>
-      <file>/blackfynn-matlab/@BFDataPackage/BFDataPackage.m</file>
-      <file>/blackfynn-matlab/@BFDataset/BFDataset.m</file>
-      <file>/blackfynn-matlab/@BFJavaRequest/BFJavaRequest.m</file>
-      <file>/blackfynn-matlab/@BFMainAPI/BFMainAPI.m</file>
-      <file>/blackfynn-matlab/@BFModel/BFModel.m</file>
-      <file>/blackfynn-matlab/@BFModelProperty/BFModelProperty.m</file>
-      <file>/blackfynn-matlab/@BFRecord/BFRecord.m</file>
-      <file>/blackfynn-matlab/@BFRelationship/BFRelationship.m</file>
-      <file>/blackfynn-matlab/@BFRequest/BFRequest.m</file>
-      <file>/blackfynn-matlab/@BFSession/BFSession.m</file>
-      <file>/blackfynn-matlab/@BFTabular/BFTabular.m</file>
-      <file>/blackfynn-matlab/@BFTimeseries/BFTimeseries.m</file>
-      <file>/blackfynn-matlab/@BFTimeseriesAnnotation/BFTimeseriesAnnotation.m</file>
-      <file>/blackfynn-matlab/@BFTimeseriesAnnotationLayer/BFTimeseriesAnnotationLayer.m</file>
-      <file>/blackfynn-matlab/@BFTimeseriesChannel/BFTimeseriesChannel.m</file>
-      <file>/blackfynn-matlab/@Blackfynn/Blackfynn.m</file>
-      <file>/blackfynn-matlab/@IniConfig/IniConfig.m</file>
-      <file>/blackfynn-matlab/@IniConfig/example.ini</file>
-      <file>/blackfynn-matlab/@IniConfig/license.txt</file>
-      <file>/blackfynn-matlab/LICENSE</file>
-      <file>/blackfynn-matlab/README.md</file>
-      <file>/blackfynn-matlab/WebSocketClient.m</file>
-      <file>/blackfynn-matlab/WebSocketConnection.m</file>
-      <file>/blackfynn-matlab/WebSocketServer.m</file>
-      <file>/blackfynn-matlab/info.xml</file>
-    </fileset.depfun.included>
+    <fileset.depfun.included />
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="/blackfynn-matlab/setup" name="blackfynn-matlab.mltbx" optional="false">/blackfynn-matlab/setup/blackfynn-matlab.mltbx</file>
+      <file location="${PROJECT_ROOT}/../setup" name="blackfynn.mltbx" optional="false">${PROJECT_ROOT}/../setup/blackfynn.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/usr/local/bin/matlab</root>
+      <root>/Applications/MATLAB_R2017b.app</root>
       <toolboxes />
     </matlab>
     <platform>
