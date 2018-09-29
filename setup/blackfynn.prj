@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration file="/blackfynn-matlab/setup/blackfynn.xml" location="/blackfynn-matlab/setup" name="blackfynnio" target="target.toolbox" target-name="Package Toolbox">
+  <configuration file="/blackfynn-matlab/setup/blackfynn.prj" location="/blackfynn-matlab/setup" name="blackfynn" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>blackfynn-matlab</param.appname>
     <param.authnamewatermark />
     <param.email />
@@ -7,7 +7,7 @@
     <param.summary />
     <param.description />
     <param.screenshot />
-    <param.version>1.1</param.version>
+    <param.version>1.2</param.version>
     <param.output>${PROJECT_ROOT}/blackfynn-matlab.mltbx</param.output>
     <param.products.name>
       <item>MATLAB</item>
@@ -19,14 +19,14 @@
       <item>9.3</item>
     </param.products.version>
     <param.platforms />
-    <param.guid>39cf37a3-e99c-456a-b343-65a19c850249</param.guid>
+    <param.guid>7f6028e9-c2a1-49fe-952d-67f6733cbd2b</param.guid>
     <param.exclude.filters />
     <param.examples />
     <param.demosxml />
     <param.apps />
     <param.registered.apps />
-    <param.docs />
-    <param.getting.started.guide />
+    <param.docs>${PROJECT_ROOT}/../info.xml</param.docs>
+    <param.getting.started.guide>${PROJECT_ROOT}/../doc/GettingStarted.mlx</param.getting.started.guide>
     <param.matlabpath.excludes />
     <param.javaclasspath.excludes />
     <unset>
@@ -36,7 +36,6 @@
       <param.summary />
       <param.description />
       <param.screenshot />
-      <param.version />
       <param.output />
       <param.platforms />
       <param.exclude.filters />
@@ -44,8 +43,6 @@
       <param.demosxml />
       <param.apps />
       <param.registered.apps />
-      <param.docs />
-      <param.getting.started.guide />
       <param.matlabpath.excludes />
       <param.javaclasspath.excludes />
     </unset>
@@ -56,13 +53,19 @@
       <file>${PROJECT_ROOT}/../@BFAgentIO</file>
       <file>${PROJECT_ROOT}/../@BFBaseCollection</file>
       <file>${PROJECT_ROOT}/../@BFBaseDataNode</file>
+      <file>${PROJECT_ROOT}/../@BFBaseModelNode</file>
+      <file>${PROJECT_ROOT}/../@BFBaseModelProperty</file>
       <file>${PROJECT_ROOT}/../@BFBaseNode</file>
       <file>${PROJECT_ROOT}/../@BFCollection</file>
+      <file>${PROJECT_ROOT}/../@BFConceptsAPI</file>
       <file>${PROJECT_ROOT}/../@BFDataPackage</file>
       <file>${PROJECT_ROOT}/../@BFDataset</file>
       <file>${PROJECT_ROOT}/../@BFJavaRequest</file>
+      <file>${PROJECT_ROOT}/../@BFMainAPI</file>
       <file>${PROJECT_ROOT}/../@BFModel</file>
+      <file>${PROJECT_ROOT}/../@BFModelProperty</file>
       <file>${PROJECT_ROOT}/../@BFRecord</file>
+      <file>${PROJECT_ROOT}/../@BFRelationship</file>
       <file>${PROJECT_ROOT}/../@BFRequest</file>
       <file>${PROJECT_ROOT}/../@BFSession</file>
       <file>${PROJECT_ROOT}/../@BFTabular</file>
@@ -72,11 +75,15 @@
       <file>${PROJECT_ROOT}/../@BFTimeseriesChannel</file>
       <file>${PROJECT_ROOT}/../@Blackfynn</file>
       <file>${PROJECT_ROOT}/../@IniConfig</file>
+      <file>${PROJECT_ROOT}/../Dockerfile</file>
       <file>${PROJECT_ROOT}/../LICENSE</file>
       <file>${PROJECT_ROOT}/../README.md</file>
       <file>${PROJECT_ROOT}/../WebSocketClient.m</file>
       <file>${PROJECT_ROOT}/../WebSocketConnection.m</file>
       <file>${PROJECT_ROOT}/../WebSocketServer.m</file>
+      <file>${PROJECT_ROOT}/../doc</file>
+      <file>${PROJECT_ROOT}/../html</file>
+      <file>${PROJECT_ROOT}/../info.xml</file>
       <file>${PROJECT_ROOT}/../java</file>
       <file>${PROJECT_ROOT}/../setup</file>
     </fileset.rootfiles>
@@ -84,11 +91,19 @@
       <file>/blackfynn-matlab/@BFAgentIO/BFAgentIO.m</file>
       <file>/blackfynn-matlab/@BFBaseCollection/BFBaseCollection.m</file>
       <file>/blackfynn-matlab/@BFBaseDataNode/BFBaseDataNode.m</file>
+      <file>/blackfynn-matlab/@BFBaseModelNode/BFBaseModelNode.m</file>
+      <file>/blackfynn-matlab/@BFBaseModelProperty/BFBaseModelProperty.m</file>
       <file>/blackfynn-matlab/@BFBaseNode/BFBaseNode.m</file>
       <file>/blackfynn-matlab/@BFCollection/BFCollection.m</file>
+      <file>/blackfynn-matlab/@BFConceptsAPI/BFConceptsAPI.m</file>
       <file>/blackfynn-matlab/@BFDataPackage/BFDataPackage.m</file>
       <file>/blackfynn-matlab/@BFDataset/BFDataset.m</file>
       <file>/blackfynn-matlab/@BFJavaRequest/BFJavaRequest.m</file>
+      <file>/blackfynn-matlab/@BFMainAPI/BFMainAPI.m</file>
+      <file>/blackfynn-matlab/@BFModel/BFModel.m</file>
+      <file>/blackfynn-matlab/@BFModelProperty/BFModelProperty.m</file>
+      <file>/blackfynn-matlab/@BFRecord/BFRecord.m</file>
+      <file>/blackfynn-matlab/@BFRelationship/BFRelationship.m</file>
       <file>/blackfynn-matlab/@BFRequest/BFRequest.m</file>
       <file>/blackfynn-matlab/@BFSession/BFSession.m</file>
       <file>/blackfynn-matlab/@BFTabular/BFTabular.m</file>
@@ -105,6 +120,7 @@
       <file>/blackfynn-matlab/WebSocketClient.m</file>
       <file>/blackfynn-matlab/WebSocketConnection.m</file>
       <file>/blackfynn-matlab/WebSocketServer.m</file>
+      <file>/blackfynn-matlab/info.xml</file>
     </fileset.depfun.included>
     <fileset.depfun.excluded />
     <fileset.package />
@@ -123,12 +139,12 @@
       <win2k>false</win2k>
       <winxp>false</winxp>
       <vista>false</vista>
-      <linux>true</linux>
+      <linux>false</linux>
       <solaris>false</solaris>
-      <osver>4.4.0-131-generic</osver>
+      <osver>10.13.6</osver>
       <os32>false</os32>
-      <os64>false</os64>
-      <arch>glnxa64</arch>
+      <os64>true</os64>
+      <arch>maci64</arch>
       <matlab>true</matlab>
     </platform>
   </configuration>
