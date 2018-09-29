@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration file="/blackfynn-matlab/setup/blackfynn2.prj" location="/blackfynn-matlab/setup" name="blackfynn2" target="target.toolbox" target-name="Package Toolbox">
+  <configuration file="/blackfynn-matlab/setup/blackfynn.prj" location="/blackfynn-matlab/setup" name="blackfynn" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>blackfynn-matlab</param.appname>
     <param.authnamewatermark />
     <param.email />
