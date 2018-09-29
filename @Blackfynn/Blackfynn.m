@@ -330,7 +330,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
     
     methods(Static)
         function version = toolboxVersion()
-            version = '1.2';
+            version = '1.1.1';
         end
         function out = profiles()                           
             %PROFILES  Returns all Blackfynn configuration profiles.
