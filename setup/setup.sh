@@ -8,6 +8,8 @@ javac -cp ../java/protobuf-java-3.5.1.jar ../java/*.java -d . -source 1.8 -targe
 jar cf blackfynio.jar blackfynn/*.class
 
 echo -e "Running matlab build..."
-matlab -nodisplay -nodesktop -r "run ./createToolbox.m"
+# matlab -nodisplay -nodesktop -r "run ./createToolbox.m"
+/Applications/MATLAB_R2017b.app/bin/matlab -nodisplay -nodesktop -r "run ./createToolbox.m"
+
 
 [ -f build/blackfynn.mltbx ] || { echo "ERROR: build failed /build/blackfynn.mltbx doesn't exist." && exit 1; }
