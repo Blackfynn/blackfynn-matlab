@@ -1,5 +1,5 @@
 % This script creates the toolbox from the project file
-projectFile = 'blackfynn2.prj';
+projectFile = 'blackfynn.prj';
 outputFile = 'build/blackfynn';
 
 addpath('../');
