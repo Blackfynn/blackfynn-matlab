@@ -129,7 +129,7 @@
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>/Applications/MATLAB_R2017b.app</root>
+      <root>/usr/local/bin/matlab</root>
       <toolboxes />
     </matlab>
     <platform>
