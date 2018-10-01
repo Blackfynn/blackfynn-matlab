@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration file="/Users/joost/Code/blackfynn-matlab/setup/blackfynn-matlab.prj" location="/Users/joost/Code/blackfynn-matlab/setup" name="blackfynn-matlab" target="target.toolbox" target-name="Package Toolbox">
+  <configuration file="${PROJECT_ROOT}/blackfynn-matlab.prj" location="${PROJECT_ROOT}" name="blackfynn-matlab" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>blackfynn</param.appname>
     <param.authnamewatermark>Blackfynn Team</param.authnamewatermark>
     <param.email>support@blackfynn.com</param.email>
@@ -90,7 +90,7 @@
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="/Users/joost/Code/blackfynn-matlab/setup" name="blackfynn.mltbx" optional="false">/Users/joost/Code/blackfynn-matlab/setup/blackfynn.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="blackfynn.mltbx" optional="false">${PROJECT_ROOT}/blackfynn.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>

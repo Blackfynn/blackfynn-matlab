@@ -11,8 +11,8 @@ jar cf blackfynio.jar blackfynn/*.class
 tag=$(git describe --tags); echo "$tag">version.txt
 
 echo -e "Running matlab build..."
-# matlab -nodisplay -nodesktop -r "run ./createToolbox.m"
-/Applications/MATLAB_R2017b.app/bin/matlab -nodisplay -nodesktop -r "run ./createToolbox.m"
+matlab -nodisplay -nodesktop -r "run ./createToolbox.m"
+#/Applications/MATLAB_R2017b.app/bin/matlab -nodisplay -nodesktop -r "run ./createToolbox.m"
 
 
 [ -f build/blackfynn.mltbx ] || { echo "ERROR: build failed /build/blackfynn.mltbx doesn't exist." && exit 1; }
