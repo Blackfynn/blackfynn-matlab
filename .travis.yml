@@ -25,6 +25,8 @@ before_deploy:
 - mkdir artifact-latest || true
 - cp build/blackfynn.mltbx artifact/blackfynn-${TRAVIS_TAG}.mltbx
 - cp build/blackfynn.mltbx artifact-latest/blackfynn.mltbx
+- cp build/matlab-version.txt artifact-latest/matlab-version.txt
+
 
 deploy:
   - provider: s3
