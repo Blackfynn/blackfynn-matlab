@@ -42,10 +42,6 @@
       <file>${PROJECT_ROOT}/..</file>
     </fileset.rootdir>
     <fileset.rootfiles>
-      <file>${PROJECT_ROOT}/../.DS_Store</file>
-      <file>${PROJECT_ROOT}/../.git</file>
-      <file>${PROJECT_ROOT}/../.gitignore</file>
-      <file>${PROJECT_ROOT}/../.travis.yml</file>
       <file>${PROJECT_ROOT}/../@BFAgentIO</file>
       <file>${PROJECT_ROOT}/../@BFBaseCollection</file>
       <file>${PROJECT_ROOT}/../@BFBaseDataNode</file>
@@ -71,20 +67,15 @@
       <file>${PROJECT_ROOT}/../@BFTimeseriesChannel</file>
       <file>${PROJECT_ROOT}/../@Blackfynn</file>
       <file>${PROJECT_ROOT}/../@IniConfig</file>
-      <file>${PROJECT_ROOT}/../Dockerfile</file>
       <file>${PROJECT_ROOT}/../LICENSE</file>
       <file>${PROJECT_ROOT}/../README.md</file>
       <file>${PROJECT_ROOT}/../WebSocketClient.m</file>
       <file>${PROJECT_ROOT}/../WebSocketConnection.m</file>
       <file>${PROJECT_ROOT}/../WebSocketServer.m</file>
       <file>${PROJECT_ROOT}/../build</file>
-      <file>${PROJECT_ROOT}/../doc</file>
-      <file>${PROJECT_ROOT}/../docker-compose.yml</file>
       <file>${PROJECT_ROOT}/../html</file>
       <file>${PROJECT_ROOT}/../info.xml</file>
       <file>${PROJECT_ROOT}/../java</file>
-      <file>${PROJECT_ROOT}/../setup</file>
-      <file>${PROJECT_ROOT}/../test.html</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
     <fileset.depfun.excluded />
