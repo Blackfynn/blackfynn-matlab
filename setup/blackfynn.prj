@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration file="${PROJECT_ROOT}/../setup/blackfynn-matlab.prj" location="${PROJECT_ROOT}/../setup" name="blackfynn-matlab" target="target.toolbox" target-name="Package Toolbox">
+  <configuration file="/Users/joost/Code/blackfynn-matlab/setup/blackfynn-matlab.prj" location="/Users/joost/Code/blackfynn-matlab/setup" name="blackfynn-matlab" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>blackfynn</param.appname>
     <param.authnamewatermark>Blackfynn Team</param.authnamewatermark>
     <param.email>support@blackfynn.com</param.email>
@@ -7,7 +7,7 @@
     <param.summary>Blackfynn Client for MATLAB</param.summary>
     <param.description>The Blackfynn Client for MATLAB allows users of the Blackfynn platform to programmatically access data in their MATLAB environment.</param.description>
     <param.screenshot />
-    <param.version>1.1.1</param.version>
+    <param.version>1.1</param.version>
     <param.output>${PROJECT_ROOT}/blackfynn.mltbx</param.output>
     <param.products.name />
     <param.products.id />
@@ -61,6 +61,7 @@
       <file>${PROJECT_ROOT}/../@BFModel</file>
       <file>${PROJECT_ROOT}/../@BFModelProperty</file>
       <file>${PROJECT_ROOT}/../@BFRecord</file>
+      <file>${PROJECT_ROOT}/../@BFRelationship</file>
       <file>${PROJECT_ROOT}/../@BFRequest</file>
       <file>${PROJECT_ROOT}/../@BFSession</file>
       <file>${PROJECT_ROOT}/../@BFTabular</file>
@@ -89,7 +90,7 @@
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}/../setup" name="blackfynn.mltbx" optional="false">${PROJECT_ROOT}/../setup/blackfynn.mltbx</file>
+      <file location="/Users/joost/Code/blackfynn-matlab/setup" name="blackfynn.mltbx" optional="false">/Users/joost/Code/blackfynn-matlab/setup/blackfynn.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
@@ -105,7 +106,7 @@
       <vista>false</vista>
       <linux>false</linux>
       <solaris>false</solaris>
-      <osver>10.13.6</osver>
+      <osver>10.14</osver>
       <os32>false</os32>
       <os64>true</os64>
       <arch>maci64</arch>

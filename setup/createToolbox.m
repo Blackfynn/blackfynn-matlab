@@ -1,5 +1,5 @@
 % This script creates the toolbox from the project file
-projectFile = 'blackfynn-matlab.prj';
+projectFile = 'blackfynn.prj';
 outputFile = 'build/blackfynn';
 
 % Get version from Github tag (saved in version.txt)
