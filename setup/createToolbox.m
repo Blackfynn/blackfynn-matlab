@@ -5,6 +5,7 @@ outputFile = 'build/blackfynn';
 % Get version from Github tag (saved in version.txt)
 h = fopen('build/matlab_version.txt');
 newVersion = fscanf(h,'%s');
+fprintf(2,'MATLAB building from: %s',newVersion);
 [a,b]=regexp(newVersion,'(\d+\.)+\d');
 newVersion = newVersion(a:b);
 if isempty(newVersion)
