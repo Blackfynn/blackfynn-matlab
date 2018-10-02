@@ -9,6 +9,7 @@ jar cf blackfynio.jar blackfynn/*.class
 
 # Get build version of toolbox
 tag=$(git describe --tags); echo "$tag">build/matlab_version.txt
+echo "Building from tag: $tag"
 
 echo -e "Running matlab build..."
 matlab -nodisplay -nodesktop -r "run ./createToolbox.m"
