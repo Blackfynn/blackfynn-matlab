@@ -52,7 +52,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             if any(bfIndex)
                 version = toolboxes(bfIndex).Version;
                 latestVersion = strip(webread('http://data.blackfynn.io/public-downloads/blackfynn-matlab/latest/matlab_version.txt'));
-                if version ~= latestVersion
+                if ~strcmp(version,latestVersion)
                     fprintf(2, '\nThere is a newer version of the Blackfynn toolbox available. Please update.\n');
                 end
             end
