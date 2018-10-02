@@ -25,7 +25,7 @@ before_deploy:
 - mkdir artifact-latest || true
 - cp build/blackfynn.mltbx artifact/blackfynn-${TRAVIS_TAG}.mltbx
 - cp build/blackfynn.mltbx artifact-latest/blackfynn.mltbx
-- cp matlab-version.txt artifact-latest/matlab-version.txt
+- cp build/matlab_version.txt artifact-latest/matlab_version.txt
 
 
 deploy:

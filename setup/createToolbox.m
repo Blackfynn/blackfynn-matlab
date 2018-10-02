@@ -3,7 +3,7 @@ projectFile = 'blackfynn.prj';
 outputFile = 'build/blackfynn';
 
 % Get version from Github tag (saved in version.txt)
-h = fopen('matlab-version.txt');
+h = fopen('build/matlab_version.txt');
 newVersion = fscanf(h,'%s');
 [a,b]=regexp(newVersion,'(\d+\.)+\d');
 newVersion = newVersion(a:b);

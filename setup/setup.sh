@@ -8,7 +8,7 @@ javac -cp ../java/protobuf-java-3.5.1.jar ../java/*.java -d . -source 1.8 -targe
 jar cf blackfynio.jar blackfynn/*.class
 
 # Get build version of toolbox
-tag=$(git describe --tags); echo "$tag">matlab-version.txt
+tag=$(git describe --tags); echo "$tag">build/matlab_version.txt
 
 echo -e "Running matlab build..."
 matlab -nodisplay -nodesktop -r "run ./createToolbox.m"
