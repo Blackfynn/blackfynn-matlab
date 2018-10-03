@@ -61,15 +61,15 @@ classdef BFMainAPI
             datasets = BFBaseDataNode.createFromResponse(response, obj.session);
         end
         
-        function resp = getDataset(obj, id)
+        function resp = getDataset(obj, datasetId)
             
             % API provides full info about dataset including children.
-            endPoint = sprintf('%s/datasets/%s',obj.host,id);
+            endPoint = sprintf('%s/datasets/%s',obj.host, datasetId);
             params = {} ;
             resp = obj.session.request.get(endPoint, params);
         end
         
-        function dataset = createDataset(obj, name, description)
+        function resp = createDataset(obj, name, description)
             endPoint = sprintf('%s/datasets',obj.host);
             
             params = struct(...
@@ -78,18 +78,22 @@ classdef BFMainAPI
                 'properties', []);
             
             resp = obj.session.request.post(endPoint, params);
-            dataset = BFBaseDataNode.createFromResponse(resp, obj.session);
-
-            
+               
         end
         
         function success = updateDataset(obj, datasetId, name, description)
             endPoint = sprintf('%s/datasets/%s', obj.session.host, datasetId);
             params = struct(...
                 'name', name,...
-                'description', description,...
-                'properties', []);
+                'description', description);
             success = obj.session.request.put(endPoint, params);
+        end
+        
+        function success = deleteDataset(obj, datasetId)
+            
+            endPoint = sprintf('%s/datasets/%s', obj.host, datasetId);
+            params = {} ;
+            success = obj.session.request.delete(endPoint, params);
         end
 
         %% ORGANIZATIONS

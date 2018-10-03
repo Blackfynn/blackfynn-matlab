@@ -5,7 +5,7 @@ classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
     properties (Hidden)
         id          % ID on Blackfynn platform
     end
-    properties(Access = protected)
+    properties(Access = public)
         session     % Session ID
         
     end
