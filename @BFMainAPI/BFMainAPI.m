@@ -61,15 +61,15 @@ classdef BFMainAPI
             datasets = BFBaseDataNode.createFromResponse(response, obj.session);
         end
         
-        function resp = getDataset(obj, id)
+        function resp = getDataset(obj, datasetId)
             
             % API provides full info about dataset including children.
-            endPoint = sprintf('%s/datasets/%s',obj.host,id);
+            endPoint = sprintf('%s/datasets/%s',obj.host, datasetId);
             params = {} ;
             resp = obj.session.request.get(endPoint, params);
         end
         
-        function dataset = createDataset(obj, name, description)
+        function resp = createDataset(obj, name, description)
             endPoint = sprintf('%s/datasets',obj.host);
             
             params = struct(...
@@ -78,18 +78,22 @@ classdef BFMainAPI
                 'properties', []);
             
             resp = obj.session.request.post(endPoint, params);
-            dataset = BFBaseDataNode.createFromResponse(resp, obj.session);
-
-            
+               
         end
         
         function success = updateDataset(obj, datasetId, name, description)
             endPoint = sprintf('%s/datasets/%s', obj.session.host, datasetId);
             params = struct(...
                 'name', name,...
-                'description', description,...
-                'properties', []);
+                'description', description);
             success = obj.session.request.put(endPoint, params);
+        end
+        
+        function success = deleteDataset(obj, datasetId)
+            
+            endPoint = sprintf('%s/datasets/%s', obj.host, datasetId);
+            params = {} ;
+            success = obj.session.request.delete(endPoint, params);
         end
 
         %% ORGANIZATIONS
@@ -136,6 +140,7 @@ classdef BFMainAPI
         end
         
         %% DATA
+        
         function success = deletePackages(obj, ids)
             endPoint = sprintf('%s/data/delete',obj.host);
             
@@ -201,7 +206,7 @@ classdef BFMainAPI
         
         %% TABULAR
         
-        function resp = getTabularData(packageId, varargin)
+        function resp = getTabularData(obj, packageId, varargin)
             
             %load params
             defaultLimit = 1000;
@@ -229,6 +234,65 @@ classdef BFMainAPI
             
             endPoint = sprintf('%s/tabular/%s', obj.host,packageId);
             resp = obj.session.request.get(endPoint, params);
+        end
+        
+        %% TIMESERIES
+        
+        function resp = getAnnotationLayers(obj,packageId)
+            endPoint = sprintf('%s/timeseries/%s/layers',obj.host,packageId);
+            params = {};
+            resp = obj.session.request.get(endPoint, params);
+        end
+        
+        function resp = createAnnotationLayer(obj, packageId, name, description)
+            endPoint = sprintf('%s/timeseries/%s/layers', obj.host, packageId);
+            message = struct('name', name, 'description', description);
+            resp = obj.session.request.post(endPoint, message);
+        end
+        
+        function resp = deleteAnnotationLayer(obj, packageId, layerId)
+            endPoint = sprintf('%s/timeseries/%s/layers/%d', obj.host, 'timeseries/', ...
+            packageId, layerId);
+            message = '';
+            resp = obj.session.request.delete(endPoint, message);
+        end
+        
+        function resp = getTimeseriesChannels(obj, packageId)
+            endPoint = sprintf('%s/timeseries/%s/channels', obj.host, packageId);
+            params = {};
+            resp = obj.session.request.get(endPoint, params);
+        end
+        
+        function resp = getTimeseriesChannel(obj, packageId, channelId)
+            endPoint = sprintf('%s/timeseries/%s/channels/%s',obj.host, packageId, channelId);
+            params = {};
+            resp = obj.session.request.get(endPoint, params);
+        end
+        
+        function resp = createTimeseriesAnnotation(obj, packageId, layerId, name, label, channelIds, startTime, endTime, description)
+            
+            endPoint = sprintf('%s/timeseries/%s/layers/%d/annotations', obj.host, packageId, layerId);
+            
+            % create params
+            p = inputParser;
+            addParameter(p, 'name', name);
+            addParameter(p, 'label', label);
+            addParameter(p, 'start', startTime);
+            addParameter(p, 'end', endTime);
+            addParameter(p, 'layer_id', layer_id);
+            addParameter(p, 'channelIds', channelIds);
+            addParameter(p, 'description', description);
+
+            % format parsed parameters
+            results_cell = struct2cell(p.Results);    
+            params=struct();
+            for i = 1:length(p.Parameters)
+               params.(p.Parameters{i})=results_cell{i};
+            end
+            
+            % make request
+            resp = obj.session.request.post(endPoint, message);
+            
         end
         
     end

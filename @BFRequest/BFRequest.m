@@ -35,7 +35,12 @@ classdef BFRequest < handle
         obj.options.MediaType = 'application/json';
         obj.options.RequestMethod = 'put';
         try
-            response = webwrite(uri, message, obj.options);
+            header(1) = matlab.net.http.field.GenericField('X-SESSION-ID',obj.options.HeaderFields{1,2});
+            header(2) = matlab.net.http.field.GenericField('AUTHORIZATION',obj.options.HeaderFields{2,2});
+            header(3) = matlab.net.http.field.ContentTypeField('application/json');
+            message = matlab.net.http.MessageBody(message);
+            request = matlab.net.http.RequestMessage('put',header,message);
+            response = request.send( uri );
         catch ME
             obj.handleError(ME);
         end
@@ -85,9 +90,7 @@ classdef BFRequest < handle
         causeException = MException('MATLAB:Blackfynn:NotFound',msg);
         ME = addCause(ME, causeException);
       end
-      
-      
-      
+
       rethrow(ME);
     end
   end

@@ -39,25 +39,26 @@ classdef (Sealed) Blackfynn < BFBaseNode
             obj.session = BFSession();
             obj.session.request = BFRequest();
             
-            
             userProfile = '';
             if nargin == 1
                 userProfile = varargin{1};
             end
             
-            % Check version
+            % Check version if user is using an installed toolbox.
             toolboxes = matlab.addons.toolbox.installedToolboxes;
-            bfIndex = strcmp({toolboxes.Name},'blackfynn');
-            
-            if any(bfIndex)
-                version = toolboxes(bfIndex).Version;
-                latestVersion = strip(webread('http://data.blackfynn.io/public-downloads/blackfynn-matlab/latest/matlab_version.txt'));
-                if ~strcmp(version,latestVersion)
-                    fprintf(2, '\nThere is a newer version of the Blackfynn toolbox available. Please update.\n');
-                end
+            if ~isempty(toolboxes) 
+                bfIndex = strcmp({toolboxes.Name},'blackfynn');
+
+                if any(bfIndex)
+                    version = toolboxes(bfIndex).Version;
+                    latestVersion = strip(webread('http://data.blackfynn.io/public-downloads/blackfynn-matlab/latest/matlab_version.txt'));
+                    if ~strcmp(version,latestVersion)
+                        url = 'http://data.blackfynn.io/public-downloads/blackfynn-matlab/latest/blackfynn.mltbx';
+                        fprintf(2, '\nThere is a newer version of the Blackfynn toolbox available (%s).\nPlease download the <a href = "%s">latest version</a> and update the toolbox.\n',latestVersion, url);
+                    end
+                end    
             end
-            
-            
+                
             % Get username and pwd from file
             home = Blackfynn.getHome;
             bfdir = '.blackfynn';
@@ -143,7 +144,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             obj.datasets = obj.session.mainAPI.getDatasets();
         end
         
-        function dataset = createdataset(obj, name, varargin)   
+        function dataset = createDataset(obj, name, varargin)   
             % CREATEDATASET Creates a new dataset in organization
             %   DS = CREATEDATASET(OBJ, 'Name') creates a new dataset in
             %   the current organization with the provided 'Name'. The
@@ -165,9 +166,52 @@ classdef (Sealed) Blackfynn < BFBaseNode
                 description = varargin{1};
             end
 
-            dataset = obj.session.mainAPI.createDataset( name, description);
+            resp = obj.session.mainAPI.createDataset( name, description);
+            dataset = BFBaseDataNode.createFromResponse(resp, obj.session);
             obj.datasets = [obj.datasets dataset];
 
+        end
+        
+        function success = deleteDataset(obj, dataset, varargin)
+            
+            forceDelete = false;
+            
+            % Check for force
+            if nargin > 2
+                if strcmp(varargin{1}, 'force') && varargin{2}
+                    forceDelete = true;
+                end
+            end
+            
+            % Check dataset in Org
+            remIdx = find(obj.datasets == dataset, 1);
+            
+            % Ask user for confirmation by default
+            if ~forceDelete
+                url = sprintf('%s/%s/datasets/%s',obj.session.web_host,obj.session.org,dataset.id);
+                fprintf(2,['\nYou are about to delete the dataset: <a href = "%s">%s</a>' ...
+                    '\nThis will delete all data in this dataset from the Blackfynn platform.\n\n'...
+                    'Please type the name of the dataset to continue:\n'],url, dataset.name);
+      
+                in = input('Delete Dataset: ','s');
+                
+                if ~strcmp(in, dataset.name)
+                    error('Name does not match - canceling delete.')
+                end
+            end
+            
+            
+            resp = obj.session.mainAPI.deleteDataset(dataset.id);
+            sc = resp.StatusCode;
+            if sc == matlab.net.http.StatusCode.OK
+                % remove from datasets in Blackfynn object.
+                obj.datasets(remIdx) = [];
+                delete(dataset);
+                success = true;
+            else
+                error('There was an error deleting the dataset.')
+            end            
+            
         end
 
         function organizations = organizations(obj)         
@@ -320,7 +364,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             out = BFBaseDataNode.createFromResponse(resp, obj.session);
         end
         
-        function success = delete_items(obj, thingIds)  
+        function success = delete_items(obj, thingIds)     
             success = obj.session.mainAPI.delete_packages(thingIds);
         end
     end
@@ -342,9 +386,6 @@ classdef (Sealed) Blackfynn < BFBaseNode
     end
     
     methods(Static)
-        function version = toolboxVersion()
-            version = '1.1.1';
-        end
         function out = profiles()                           
             %PROFILES  Returns all Blackfynn configuration profiles.
             %   PROFILES() Static class-method that shows a list of all
@@ -441,7 +482,6 @@ classdef (Sealed) Blackfynn < BFBaseNode
         
         function gotoSite(url)
             %GOTOSITE  Opens the Blackfynn platform in an external browser.
-            
             web(url,'-browser');
         end
         
