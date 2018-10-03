@@ -39,25 +39,26 @@ classdef (Sealed) Blackfynn < BFBaseNode
             obj.session = BFSession();
             obj.session.request = BFRequest();
             
-            
             userProfile = '';
             if nargin == 1
                 userProfile = varargin{1};
             end
             
-            % Check version
+            % Check version if user is using an installed toolbox.
             toolboxes = matlab.addons.toolbox.installedToolboxes;
-            bfIndex = strcmp({toolboxes.Name},'blackfynn');
-            
-            if any(bfIndex)
-                version = toolboxes(bfIndex).Version;
-                latestVersion = strip(webread('http://data.blackfynn.io/public-downloads/blackfynn-matlab/latest/matlab_version.txt'));
-                if ~strcmp(version,latestVersion)
-                    fprintf(2, '\nThere is a newer version of the Blackfynn toolbox available. Please update.\n');
-                end
+            if ~isempty(toolboxes) 
+                bfIndex = strcmp({toolboxes.Name},'blackfynn');
+
+                if any(bfIndex)
+                    version = toolboxes(bfIndex).Version;
+                    latestVersion = strip(webread('http://data.blackfynn.io/public-downloads/blackfynn-matlab/latest/matlab_version.txt'));
+                    if ~strcmp(version,latestVersion)
+                        url = 'http://data.blackfynn.io/public-downloads/blackfynn-matlab/latest/blackfynn.mltbx';
+                        fprintf(2, '\nThere is a newer version of the Blackfynn toolbox available (%s).\nPlease download the <a href = "%s">latest version</a> and update the toolbox.\n',latestVersion, url);
+                    end
+                end    
             end
-            
-            
+                
             % Get username and pwd from file
             home = Blackfynn.getHome;
             bfdir = '.blackfynn';
@@ -342,9 +343,6 @@ classdef (Sealed) Blackfynn < BFBaseNode
     end
     
     methods(Static)
-        function version = toolboxVersion()
-            version = '1.1.1';
-        end
         function out = profiles()                           
             %PROFILES  Returns all Blackfynn configuration profiles.
             %   PROFILES() Static class-method that shows a list of all
@@ -441,7 +439,6 @@ classdef (Sealed) Blackfynn < BFBaseNode
         
         function gotoSite(url)
             %GOTOSITE  Opens the Blackfynn platform in an external browser.
-            
             web(url,'-browser');
         end
         
