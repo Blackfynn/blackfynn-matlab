@@ -34,21 +34,14 @@ Instead of installing the toolbox in MATLAB, you can also just point your MATLAB
 
 5. Add the path of the Blackfynn client folder to the MATLAB path. This can be done in MATLAB as follows:
 
-```shell
+```matlab
 >> addpath('/Users/preferred-path/blackfynn-matlab');
 ```
 
+6. Add the compiled JAVA libraries to your MATLAB dynamic Java classpath:
 
-For instance, if the Java version for MATLAB is 1.8, you can compile the code like this:
-
-```shell
-javac *.java -d build/ -target 1.8
-``` 
-
-4. Add the compiled code to your MATLAB dynamic Java path:
-
-```shell
->> javaaddpath('/Users/preferred-path/blackfynn-matlab/java/build');
+```matlab
+>> javaaddpath('/Users/preferred-path/blackfynn-matlab/java');
 ```
 
 **NOTE:** These instructions add the Java libraries to MATLAB's dynamic Java path. You will have to add this path every time you start a new MATLAB session or recompile the Java code. You can also add the code to the static path if you do not want to add the Java path for each new MATLAB session. To add the code to the static path, refer to the [MATLAB Documentation](https://www.mathworks.com/help/matlab/ref/javaclasspath.html).
