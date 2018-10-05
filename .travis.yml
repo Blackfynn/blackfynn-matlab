@@ -5,6 +5,8 @@ sudo: required # required to run docker
 services:
   - docker
 
+language: ruby
+
 env:
   - DOCKER_COMPOSE_VERSION=1.22.0
 
@@ -14,10 +16,14 @@ before_install:
   - chmod +x docker-compose
   - sudo mv docker-compose /usr/local/bin
 
+cache:
+  - bundler # caching bundler gem packages will speed up build
+
 script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker-compose build
   - docker-compose up --exit-code-from matlab
+  - set -e; bundle exec jekyll build
 
 before_deploy:
 - docker cp blackfynn-matlab_matlab_1:/blackfynn-matlab/setup/build/ .
@@ -27,13 +33,12 @@ before_deploy:
 - cp build/blackfynn.mltbx artifact-latest/blackfynn.mltbx
 - cp build/matlab_version.txt artifact-latest/matlab_version.txt
 
-
 deploy:
   - provider: s3
     access_key_id: "$AWS_ACCESS_KEY_ID"
     secret_access_key: "$AWS_SECRET_ACCESS_KEY"
     region: us-east-1
-    bucket: "$S3_BUCKET"
+    bucket: "$S3_BUCKET_CLIENT"
     skip_cleanup: true
     local-dir: artifact
     upload-dir: public-downloads/blackfynn-matlab/${TRAVIS_TAG}
@@ -43,12 +48,25 @@ deploy:
     access_key_id: "$AWS_ACCESS_KEY_ID"
     secret_access_key: "$AWS_SECRET_ACCESS_KEY"
     region: us-east-1
-    bucket: "$S3_BUCKET"
+    bucket: "$S3_BUCKET_CLIENT"
     skip_cleanup: true
     local-dir: artifact-latest
     upload-dir: public-downloads/blackfynn-matlab/latest
     on:
       tags: true
+  - provider: s3
+    access_key_id: "$AWS_ACCESS_KEY_ID"
+    secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+    bucket: "$S3_BUCKET_DOCS"
+    skip_cleanup: true
+    region: us-east-1
+    local_dir: _site
+    upload-dir: matlab
+    on:
+      tags: true
 
 after_deploy:
   - rm -rf build/ artifact/ artifact-latest/
+  - pip install --user awscli
+  - export PATH=$PATH:$HOME/.local/bin # put aws in the path
+  - set -e; aws cloudfront create-invalidation --distribution-id $CF_DISTRO_ID --paths /matlab/*
