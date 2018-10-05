@@ -121,8 +121,12 @@ classdef (Sealed) Blackfynn < BFBaseNode
                 error('Username and password not found: Use setup method');
             end
    
-            resp = obj.session.mainAPI.getSessionToken(keyValues{1},keyValues{2});
+            resp = obj.session.mainAPI.getSessionToken(keyValues{1}, keyValues{2});
             
+            % Login agent
+            obj.session.agent = BFAgent();
+            obj.session.agent.login(keyValues{1}, keyValues{2});
+
             % Set API key
             obj.session.api_key = resp.session_token;
             obj.session.org = resp.organization;
@@ -319,6 +323,11 @@ classdef (Sealed) Blackfynn < BFBaseNode
                 otherwise
                     fprintf(2, 'Incorrect object ID');
             end
+        end
+        
+        function success = upload(obj, datasetId, path, varargin)
+            
+            success = obj.session.agent.upload(datasetId, path);
         end
 
     end

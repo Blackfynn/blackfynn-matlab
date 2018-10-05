@@ -72,8 +72,7 @@ classdef (Sealed) BFAgentIO < WebSocketClient
             else
                 fprintf(2,'something is odd');
             end
-        end
-        
+        end  
         
         function onError(~,message)
             % This function simply displays the message received
