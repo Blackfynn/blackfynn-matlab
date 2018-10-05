@@ -1,0 +1,14 @@
+version: '2'
+services:
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: result/latest
+    environment:
+      - JEKYLL_GITHUB_TOKEN=${JEKYLL_GITHUB_TOKEN}
+      - SSL_CERT_FILE=${SSL_CERT_FILE}
+    ports:
+      - "4000:4000"
+    volumes:
+      - ".:/src"
