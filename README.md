@@ -6,15 +6,16 @@ This repository contains the source code for the Blackfynn MATLAB client.
 
 ## Installation
 
-The Blackfynn MATLAB client can be installed using two methods:
+The Blackfynn MATLAB client can be installed using three methods:
 
 1. Using the MATLAB Toolbox installer (recommended)
-2. Directly from the source code (must be able to compile Java files from the command line)
+2. Compiling and installing toolbox locally
+3. Working directly from the sourcecode
 
-## Downloading and installing toolbox (recommended)
+### 1. Downloading and installing toolbox (recommended)
 In order to install the latest release of the MATLAB client，follow the instructions on the Matlab quickstart quide: [MATLAB installation guide](http://help.blackfynn.com/developer-tools/matlab/installing-the-matlab-client). This method automatically handles the Java dependencies and adds the client to the MATLAB path. 
 
-## Installing toolbox from source code
+### 2. Installing toolbox from source code
 
 1. Download, or checkout the source code from the source code repository [MATLAB client repository](https://github.com/Blackfynn/blackfynn-matlab)
 2. (Only for download) Extract contents of the downloaded file into a folder
@@ -28,9 +29,9 @@ In order to install the latest release of the MATLAB client，follow the instruc
 
 5. Open the resulting toolbox installer to install the local toolbox. 
 
-### Using toolbox directly from source code 
+### 3. Using toolbox directly from source code 
 
-Instead of installing the toolbox in MATLAB, you can also just point your MATLAB path to the root of the toolbox folder. This can be useful if you are actively developing functionality for the toolbox. You will have to run the setup script to compile the JAVA files, but you can skip step 5 and instead:
+Instead of installing the toolbox in MATLAB, you can also just point your MATLAB path to the root of the toolbox folder. This can be useful if you are actively developing functionality for the toolbox. Follow the first 4 steps of the previous section, skip step 5 and instead:
 
 5. Add the compiled JAVA libraries to your MATLAB static Java classpath:
 
