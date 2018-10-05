@@ -1,6 +1,9 @@
 classdef BFAgent
-    %BFAGENT Summary of this class goes here
-    %   Detailed explanation goes here
+    %BFAGENT Representation of the Blackfynn Agent in Matlab
+    %   The Blackfynn Agent is an application that provides a high
+    %   performant CLI from the command line, and a deamon that runs in the
+    %   background to facilitate high bamdwidth communication with the
+    %   platform. 
     
     properties
         location
@@ -8,8 +11,7 @@ classdef BFAgent
     
     methods
         function obj = BFAgent()
-            %BFAGENT Construct an instance of this class
-            %   Detailed explanation goes here
+            %BFAGENT Construct an instance of the BFAgent
             
             % TODO: Make this work for windows/linus
             obj.location = '~/.blackfynn-agent/build/blackfynn-agent';
@@ -37,7 +39,7 @@ classdef BFAgent
             % Matlab.
             cmd = sprintf('%s upload %s --dataset %s',obj.location, ...
                 path, datasetId);
-            [status, ~] = system(cmd);
+            [status, info] = system(cmd);
             
         end
     end
