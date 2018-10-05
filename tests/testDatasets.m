@@ -1,6 +1,5 @@
 classdef testDatasets < matlab.unittest.TestCase
-    %TEST Summary of this class goes here
-    %   Detailed explanation goes here
+    %TESTDATASETS Test class for testing datasets functionality
     
     properties
         bf

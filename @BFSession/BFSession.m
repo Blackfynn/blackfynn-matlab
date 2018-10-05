@@ -11,6 +11,7 @@ classdef BFSession < handle
     org             % Organization ID
     conceptsAPI     % ConceptsAPI instance
     mainAPI         % MainAPI instance
+    agent           % Agent instance
   end
 
   properties (Access = private, Constant)
