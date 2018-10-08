@@ -1,6 +1,9 @@
 classdef BFModel < BFBaseModelNode
-    %BFMODEL A Metadata model
-    %   Detailed explanation goes here
+    %BFMODEL A metadata model on the Blackfynn platform 
+    %   The BFModel class represents metadatamodels on the Blackfynn
+    %   platform. Users can create models to define how metadata is
+    %   organized within a dataset. Users can then create records for each
+    %   of these models and link records to eachother.
     
     properties
         nrRecords = 0           % Number of records for this model
@@ -11,7 +14,6 @@ classdef BFModel < BFBaseModelNode
         nrProperties = 0        % Number of properties in the model
     end
 
-    
     methods
         function obj = BFModel(varargin)
             %BFBASEMODELNODE Construct an instance of this class
@@ -106,6 +108,53 @@ classdef BFModel < BFBaseModelNode
                 fprintf(2, '%i our of %i records could not be deleted. This could be because the records no longer exist on the platform.', diff_l, length(records));
             end
             
+        end
+        function resp = addPropery(obj, name, dataType, description, varargin)
+            %ADDPROPERTY  Adds a property to a specific model
+            %   OBJ = ADDPROPERTY(OBJ, 'Name', 'Datatype', 'Description')
+            %   add a single property to the model OBJ. 
+            %   OBJ = ADDPROPERTY(OBJ, NAME, DATATYPE, DESCRIPTION) adds
+            %   one of more properties to the current model OBJ. 
+            %
+            %   The 'Datatype' for each property has to be one of: ["String`",
+            %   "Boolean", "Date", "Number", or "Decimal"].
+            
+            % Check inputs
+            multiprop = false;
+            if isa(name,'char')
+                assert(isa(description,'char') && isa(dataType,'char'), 'When adding single property, input variables for name, datatype,and description need to be of type ''char''');
+            else
+                asert(isa(name,'cell'), 'When adding multiple properties, name, datatype and description input variables need to be of type cell-array');
+                asset(length(name) == length(dataType) && length(dataType)==length(description), 'All input variables need to be cell arrays with the same length.');
+                multiprop = true;
+            end
+            
+            existingProps = obj.session.conceptsAPI.getProperties(obj.datasetId, obj.id);
+            
+            setConceptTitle = true;
+            if ~isempty(existingProps)
+                setConceptTitle = false;
+            end
+            
+            newProp = struct();
+            if multiprop
+                
+            else
+                assert(any(strcmp(dataType,{'String' 'Boolean', 'Date', 'Number', 'Decimal'})), 'Datatype needs to be one of: [''Text'' ''Boolean'', ''Date'', ''Number'', ''Decimal''. ');
+                newProp.conceptTitle = setConceptTitle;
+                newProp.dataType = dataType;
+                newProp.default = true;
+                newProp.description = "";
+                newProp.displayName = name;
+                newProp.locked = false;
+                newProp.name = name;
+                newProp.value = "";
+                
+            end
+                        
+            resp = obj.session.conceptsAPI.updateModelProperties(obj.datasetId, obj.id, existingProps, newProp);
+            
+        
         end
     end
     

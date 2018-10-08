@@ -177,6 +177,18 @@ classdef (Sealed) Blackfynn < BFBaseNode
         end
         
         function success = deleteDataset(obj, dataset, varargin)
+            %DELETEDATASET  Delete a dataset from the platform
+            %   SUCCESS = DELETEDATASET(OBJ, DATASET) deletes a dataset
+            %   and all of its data from the platform. The user will be
+            %   asked to confirm this action.
+            %   SUCCESS = DELETEDATASET(OBJ, DATASET, 'force', true)
+            %   deletes a dataset and all of its data from the platform
+            %   without asking the user to confirm this action.
+            %
+            %   NOTE: This action is permanent and the data cannot be
+            %   recovered after deleting a dataset!
+            
+            
             
             forceDelete = false;
             
@@ -325,9 +337,21 @@ classdef (Sealed) Blackfynn < BFBaseNode
             end
         end
         
-        function success = upload(obj, datasetId, path, varargin)
+        function success = upload(obj, dataset, path, varargin)
+            %UPLOAD  Upload files to the Blackfynn platform
+            %   SUCCESS = UPLOAD(OBJ, DATASET, 'path') uploads the contents
+            %   from the folder specified in 'path' to the dataset
+            %   specified in DATASET. 
+            %
+            %   For example:
+            %       BF = Blackfynn();
+            %       SUCCESS = BF.upload(BF.datasets(1), '~/Desktop')
             
-            success = obj.session.agent.upload(datasetId, path);
+            if ~exist(path,'dir')
+                error('Provided PATH is not a folder');
+            end
+            
+            success = obj.session.agent.upload(dataset.id, path);
         end
 
     end
@@ -493,10 +517,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             %GOTOSITE  Opens the Blackfynn platform in an external browser.
             web(url,'-browser');
         end
-        
-        function displayID(id)
-            fprintf('\n ID: %s\n\n',id);
-        end
+       
     end
     
 end

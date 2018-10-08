@@ -27,6 +27,58 @@ classdef BFConceptsAPI
             
         end
         
+        function response = createModel(obj, datasetId, name, description)
+            %CREATEMODEL  Creates a model in the dataset
+            
+            name2 = strip(name);
+            slug = BFConceptsAPI.slugFromString(name2);
+            
+            message = struct( ...
+            'name', slug, ... 
+            'displayName', name2, ...
+            'description', description, ...
+            'locked', false);
+                
+            endPoint = sprintf('%s/datasets/%s/concepts',obj.host,datasetId);
+            params = jsonencode(message);
+            request = obj.session.request;
+
+            try
+                response = request.post(endPoint, params);  
+            catch ME
+                if (strcmp(ME.identifier,'MATLAB:webservices:HTTP409StatusCodeError'))
+                    fprintf(2, 'Unable to create model because a model with this name already exists.\n');
+                end
+                throwAsCaller(ME);
+            end   
+        end
+        
+        function response = updateModelProperties(obj, datasetId, modelId, existingProps, newProp)
+            % Propinfo needs to be a struct, or array of structs with the
+            % following structure:
+            %       conceptTitle: true
+            %       dataType: "String"
+            %       default: true
+            %       description: "description"
+            %       displayName: "name"
+            %       locked: "false"
+            %       name: "name"
+            %       value: ""
+            
+            message = cell.empty(length(existingProps)+1,0) ;
+            for i=1:length(existingProps)
+                message{i} = existingProps(i);
+            end
+            message{length(message)+1} = newProp;
+            
+            endPoint = sprintf('%s/datasets/%s/concepts/%s/properties',obj.host, datasetId, modelId);
+            params = (jsonencode(message));
+            params = strrep(params,',"id":[]','');
+            params2 = uint8(params);
+            request = obj.session.request;
+            response = request.put(endPoint, params2); 
+        end
+            
         function models = getModels(obj, datasetId)
             
             params = {};
@@ -123,6 +175,20 @@ classdef BFConceptsAPI
                 error('Unable to perform request.')
             end
             
+        end
+        
+    end
+    
+    methods(Static)
+        function str = slugFromString(input)
+            % lowercase and strip of whitespace
+            str1 = strip(lower(input));
+            
+            % replace characters
+            str = regexprep(str1,'[\s\\^/:;.]','_');
+            
+            % remove duplicates
+            str = regexprep(str,'_+','_');
         end
         
     end
