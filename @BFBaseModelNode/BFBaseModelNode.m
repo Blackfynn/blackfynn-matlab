@@ -3,7 +3,7 @@ classdef BFBaseModelNode < BFBaseNode
     %   Detailed explanation goes here
     
     properties
-        displayName     % Identifying property
+        name     % Identifying property
         description     % Description of the model
         locked          % Is model locked?
     end
@@ -25,7 +25,7 @@ classdef BFBaseModelNode < BFBaseNode
             
             if nargin
                 obj.type = varargin{3};
-                obj.displayName = varargin{4};
+                obj.name = varargin{4};
                 obj.description = varargin{5};
                 obj.locked = varargin{6};
                 obj.createDate = varargin{7};

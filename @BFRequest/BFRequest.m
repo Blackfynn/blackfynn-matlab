@@ -36,9 +36,12 @@ classdef BFRequest < handle
             header(1) = matlab.net.http.field.GenericField('X-SESSION-ID',obj.options.HeaderFields{1,2});
             header(2) = matlab.net.http.field.GenericField('AUTHORIZATION',obj.options.HeaderFields{2,2});
             header(3) = matlab.net.http.field.ContentTypeField('application/json');
-            message2 = matlab.net.http.MessageBody(message);
-            message2.Payload = message;
-            request = matlab.net.http.RequestMessage('PUT', header, message2);
+            params = matlab.net.http.MessageBody(message);
+            
+            if isa(message,'uint8')
+                params.Payload = message;
+            end
+            request = matlab.net.http.RequestMessage('PUT', header, params);
             response = request.send( uri );
         catch ME
             obj.handleError(ME);
