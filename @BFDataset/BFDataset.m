@@ -24,6 +24,33 @@ classdef BFDataset < BFBaseCollection
                 value = obj.models_;
             end
         end
+        
+        function obj = createModel(obj, name, description)
+            %CREATEMODEL  Creates a model in the dataset
+            %   OBJ = CREATEMODEL(OBJ, 'name', 'description) creates a
+            %   model in the dataset with 'name' and a 'description'. The
+            %   model name needs to be unique in the dataset.
+            %
+            %   NOTE: the name of the model will be modified to contain no
+            %   spaces or non-characters. However, the provided name will
+            %   always be used for visualization in the web application,
+            %
+            %   For example:
+            %       BF = Blackfynn()
+            %       DS = BF.datasets(1)
+            %       DS.createModel('Patient','This is a patient model')
+            %
+            %   See also: 
+            %       BFDataset.createRecord, BFDataset.deleteModel
+            
+            
+            response = obj.session.conceptsAPI.createModel(obj.id, name, description);
+            if isa(response,'struct')
+                obj.models_ = [];
+            else
+                error('Unable to create model');
+            end
+        end
     end
     
     methods (Sealed = true)

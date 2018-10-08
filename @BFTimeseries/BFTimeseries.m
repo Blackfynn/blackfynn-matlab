@@ -239,7 +239,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             layer = obj.create_layer(name, varargin{:});
 
             % Create annotation
-            resp = obj.session.mainAPI.createTimeseriesAnnotation(obj.id, layer.layerId, 
+            resp = obj.session.mainAPI.createTimeseriesAnnotation(obj.id, layer.layerId)
 
             uri = sprintf('%s%s%s%s%d%s', obj.session.host,'timeseries/', ...
                 obj.id,'/layers/', layer.layerId, '/annotations');

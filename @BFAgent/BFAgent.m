@@ -6,7 +6,7 @@ classdef BFAgent
     %   platform. 
     
     properties
-        location
+        location    % Path of the blackfynn agent
     end
     
     methods
@@ -19,10 +19,11 @@ classdef BFAgent
         
         function status = login(obj, token, secret)
             %LOGIN Login of the agent
+            %   This method sets the API key and secret for the Agent.
             
             % Login with agent if agent is installed
             status = 1;
-            if exist('~/.blackfynn-agent/build/blackfynn-agent','file')
+            if exist(obj.location,'file')
                 [status, ~] = system(sprintf('%s login --key %s --secret %s', obj.location, token, secret));
                 if status
                     warning('Blackfynn Agent could not be initialized; some functionality might not work');
@@ -34,6 +35,9 @@ classdef BFAgent
         end
         
         function status = upload(obj, datasetId, path)
+            %UPLOAD Upload data from MATLAB using the Blackfynn Agent
+            %   STATUS = UPLOAD(OBJ, 'datasetId', 'path') uploads all data
+            %   in the folder specified in 'path'. 
             
             % THIS IS VERY MUCH IN BETA -- Using the Agent to upload from
             % Matlab.
