@@ -23,7 +23,7 @@ script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker-compose build
   - docker-compose up --exit-code-from matlab
-  - set -e; bundle exec jekyll build
+  - set -e; cd docs && bundle exec jekyll build
 
 before_deploy:
 - docker cp blackfynn-matlab_matlab_1:/blackfynn-matlab/setup/build/ .
@@ -60,7 +60,7 @@ deploy:
     bucket: "$S3_BUCKET_DOCS"
     skip_cleanup: true
     region: us-east-1
-    local_dir: _site
+    local_dir: docs/_site
     upload-dir: matlab
     on:
       tags: true
