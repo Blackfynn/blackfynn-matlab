@@ -109,7 +109,7 @@ classdef BFModel < BFBaseModelNode
             end
             
         end
-        function resp = addPropery(obj, name, dataType, description, varargin)
+        function obj = addProperties(obj, name, dataType, description, varargin)
             %ADDPROPERTY  Adds a property to a specific model
             %   OBJ = ADDPROPERTY(OBJ, 'Name', 'Datatype', 'Description')
             %   add a single property to the model OBJ. 
@@ -118,43 +118,77 @@ classdef BFModel < BFBaseModelNode
             %
             %   The 'Datatype' for each property has to be one of: ["String`",
             %   "Boolean", "Date", "Number", or "Decimal"].
+            %
+            %   This function automatically sets the first property of a
+            %   model to be the 'Concept Title'. This can be modified in
+            %   the web-application.
+            
             
             % Check inputs
+            if nargin < 4
+                error('Incorrect number of input arguments.')
+            end
+            
             multiprop = false;
             if isa(name,'char')
                 assert(isa(description,'char') && isa(dataType,'char'), 'When adding single property, input variables for name, datatype,and description need to be of type ''char''');
             else
-                asert(isa(name,'cell'), 'When adding multiple properties, name, datatype and description input variables need to be of type cell-array');
-                asset(length(name) == length(dataType) && length(dataType)==length(description), 'All input variables need to be cell arrays with the same length.');
+                assert(isa(name,'cell'), 'When adding multiple properties, name, datatype and description input variables need to be of type cell-array');
+                assert(length(name) == length(dataType) && length(dataType)==length(description), 'All input variables need to be cell arrays with the same length.');
                 multiprop = true;
             end
             
+            % Get existing properties from webservice
             existingProps = obj.session.conceptsAPI.getProperties(obj.datasetId, obj.id);
             
+            % Set concept title if no other properties yet.
             setConceptTitle = true;
             if ~isempty(existingProps)
                 setConceptTitle = false;
             end
             
-            newProp = struct();
+            newProps = struct();
             if multiprop
+                for i=1:length(name)
+                    assert(any(strcmp(dataType{i},{'String' 'Boolean', 'Date', 'Double', 'Long'})), ...
+                    'Datatype needs to be one of: [''Text'' ''Boolean'', ''Date'', ''Double'', ''Long''. ');
+                
+                    newProps(i).conceptTitle = setConceptTitle;
+                    newProps(i).dataType = dataType{i};
+                    newProps(i).default = true;
+                    newProps(i).description = "";
+                    newProps(i).displayName = name{i};
+                    newProps(i).locked = false;
+                    newProps(i).name = BFConceptsAPI.slugFromString(name{i});
+                    newProps(i).value = "";
+                    
+                    setConceptTitle = false;
+                end
                 
             else
-                assert(any(strcmp(dataType,{'String' 'Boolean', 'Date', 'Number', 'Decimal'})), 'Datatype needs to be one of: [''Text'' ''Boolean'', ''Date'', ''Number'', ''Decimal''. ');
-                newProp.conceptTitle = setConceptTitle;
-                newProp.dataType = dataType;
-                newProp.default = true;
-                newProp.description = "";
-                newProp.displayName = name;
-                newProp.locked = false;
-                newProp.name = name;
-                newProp.value = "";
+                assert(any(strcmp(dataType,{'String' 'Boolean', 'Date', 'Double', 'Long'})), ...
+                    'Datatype needs to be one of: [''Text'' ''Boolean'', ''Date'', ''Double'', ''Long''. ');
+                newProps.conceptTitle = setConceptTitle;
+                newProps.dataType = dataType;
+                newProps.default = true;
+                newProps.description = "";
+                newProps.displayName = name;
+                newProps.locked = false;
+                newProps.name = BFConceptsAPI.slugFromString(name);
+                newProps.value = "";
                 
             end
                         
-            resp = obj.session.conceptsAPI.updateModelProperties(obj.datasetId, obj.id, existingProps, newProp);
+            resp = obj.session.conceptsAPI.updateModelProperties(...
+                obj.datasetId, obj.id, existingProps, newProps);
             
-        
+            if resp.StatusCode == matlab.net.http.StatusCode.BadRequest
+                error('There was an error creating the property, does another property with the same name already exist?');
+            end
+            
+            obj.props = BFModelProperty.createFromResponse(resp.Body.Data, obj.session);
+            obj.nrProperties = length(obj.props);
+             
         end
     end
     

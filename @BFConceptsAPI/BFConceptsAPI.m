@@ -53,7 +53,7 @@ classdef BFConceptsAPI
             end   
         end
         
-        function response = updateModelProperties(obj, datasetId, modelId, existingProps, newProp)
+        function response = updateModelProperties(obj, datasetId, modelId, existingProps, newProps)
             % Propinfo needs to be a struct, or array of structs with the
             % following structure:
             %       conceptTitle: true
@@ -65,15 +65,19 @@ classdef BFConceptsAPI
             %       name: "name"
             %       value: ""
             
-            message = cell.empty(length(existingProps)+1,0) ;
+            message = cell.empty(length(existingProps)+1,0);
+            idx = 1;
             for i=1:length(existingProps)
-                message{i} = existingProps(i);
+                message{idx} = existingProps(i);
+                idx = idx+1;
             end
-            message{length(message)+1} = newProp;
+            for i=1:length(newProps)
+                message{idx} = newProps(i);
+                idx = idx +1;
+            end
             
             endPoint = sprintf('%s/datasets/%s/concepts/%s/properties',obj.host, datasetId, modelId);
             params = (jsonencode(message));
-            params = strrep(params,',"id":[]','');
             params2 = uint8(params);
             request = obj.session.request;
             response = request.put(endPoint, params2); 

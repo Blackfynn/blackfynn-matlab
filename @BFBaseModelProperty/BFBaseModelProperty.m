@@ -1,22 +1,30 @@
-classdef BFBaseModelProperty
+classdef BFBaseModelProperty < BFBaseNode
     %BFBASEMODELPROPERTY Summary of this class goes here
-    %   Detailed explanation goes here
     
-    properties
-        Property1
+    properties        
+        index
+        locked
+        default
+        conceptTitle
+        createdAt
+        updatedAt
+        required
     end
     
     methods
-        function obj = BFBaseModelProperty(inputArg1,inputArg2)
+        function obj = BFBaseModelProperty(varargin)
             %BFBASEMODELPROPERTY Construct an instance of this class
-            %   Detailed explanation goes here
-            obj.Property1 = inputArg1 + inputArg2;
-        end
-        
-        function outputArg = method1(obj,inputArg)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
+            % Args: Empty, or [session, id, index, locked, default, conceptTitle, createdAt, updatedAt, required]
+            obj = obj@BFBaseNode(varargin{:});
+            
+            obj.index = varargin{3};
+            obj.locked = logical(varargin{4});
+            obj.default = logical(varargin{5});
+            obj.conceptTitle = logical(varargin{6});
+            obj.createdAt = varargin{7};
+            obj.updatedAt = varargin{8};
+            obj.required = logical(varargin{9});
+            
         end
     end
 end
