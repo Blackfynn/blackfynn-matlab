@@ -23,7 +23,7 @@ script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker-compose build
   - docker-compose up --exit-code-from matlab
-  - set -e; cd docs && bundle install && bundle exec jekyll build
+  - set -e; cd docs && bundle install && bundle exec jekyll build && cd ..
 
 before_deploy:
 - docker cp blackfynn-matlab_matlab_1:/blackfynn-matlab/setup/build/ .
