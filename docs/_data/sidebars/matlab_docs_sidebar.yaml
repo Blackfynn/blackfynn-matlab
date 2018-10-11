@@ -1,0 +1,85 @@
+entries:
+- title: Sidebar
+  levels: one
+  product: Developer docs
+  folders:
+  - title: Getting started
+    output: web
+    folderitems:
+    - title: Installation/Setup
+      url: /index.html
+      type: homepage
+      output: web
+  - title: Classes
+    output: web
+    folderitems:
+    - title: Blackfynn
+      url: /Blackfynn.html
+      output: web
+    - title: BFAgent
+      url: /BFAgent.html
+      output: web
+    - title: BFAgentIO
+      url: /BFAgentIO.html
+      output: web
+    - title: BFBaseCollection
+      url: /BFBaseCollection.html
+      output: web
+    - title: BFBaseDataNode
+      url: /BFBaseDataNode.html
+      output: web
+    - title: BFBaseModelNode
+      url: /BFBaseModelNode.html
+      output: web
+    - title: BFBaseModelProperty
+      url: /BFBaseModelProperty.html
+      output: web
+    - title: BFBaseNode
+      url: /BFBaseNode.html
+      output: web
+    - title: BFCollection
+      url: /BFCollection.html
+      output: web
+    - title: BFConceptsAPI
+      url: /BFConceptsAPI.html
+      output: web
+    - title: BFDataPackage
+      url: /BFDataPackage.html
+      output: web
+    - title: BFDataset
+      url: /BFDataset.html
+      output: web
+    - title: BFMainAPI
+      url: /BFMainAPI.html
+      output: web
+    - title: BFModel
+      url: /BFModel.html
+      output: web
+    - title: BFModelProperty
+      url: /BFModelProperty.html
+      output: web
+    - title: BFRecord
+      url: /BFRecord.html
+      output: web
+    - title: BFRequest
+      url: /BFRequest.html
+      output: web
+    - title: BFSession
+      url: /BFSession.html
+      output: web
+    - title: BFTabular
+      url: /BFTabular.html
+      output: web
+    - title: BFTimeseries
+      url: /BFTimeseries.html
+      output: web
+    - title: BFTimeseriesAnnotation
+      url: /BFTimeseriesAnnotation.html
+      output: web
+    - title: BFTimeseriesAnnotationLayer
+      url: /BFTimeseriesAnnotationLayer.html
+      output: web
+    - title: BFTimeseriesChannel
+      url: /BFTimeseriesChannel.html
+      output: web
+

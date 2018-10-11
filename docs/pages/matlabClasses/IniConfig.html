@@ -1,0 +1,416 @@
+---
+title: IniConfig
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: IniConfig.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext --> <span class="helptopic">IniConfig</span> - The class for working with configurations of settings and INI-files. 
+  This class allows you to create configurations of settings, and to manage them. 
+  The structure of the storage settings is similar to the structure of 
+  the storage the settings in the INI-file format. 
+  The class allows you to import settings from the INI-file and to export 
+  the settings in INI-file. 
+  Can be used for reading/writing data in the INI-file and managing 
+  settings of application.
+ 
+ 
+  Using:
+    ini = <span class="helptopic">IniConfig</span>()
+ 
+  Public Properties:
+    Enter this command to get the properties:
+    &gt;&gt; properties <span class="helptopic">IniConfig</span>
+ 
+  Public Methods:
+    Enter this command to get the methods:
+    &gt;&gt; methods <span class="helptopic">IniConfig</span>
+ 
+    Enter this command to get more info of method:
+    &gt;&gt; help <span class="helptopic">IniConfig</span>/methodname
+ 
+ 
+  Config Syntax:
+ 
+    ; some comments
+ 
+    [Section1] ; allowed the comment to section
+    ; comment on the section
+    key1 = value_1 ; allowed a comment to an individual parameter
+    key2 = value_2
+    
+    [Section2]
+    key1 = value_1.1, value_1.2     ; array data
+    key2 = value_2
+    ...
+ 
+  Note:
+    * There may be spaces in the names of sections and keys
+    * Keys should not be repeated in the section (will read the last)
+    * Sections should not be repeated in the config (will read the last)
+ 
+  Supported data types:
+    * numeric scalars and vectors
+    * strings
+ 
+ 
+  Example:
+    ini = <span class="helptopic">IniConfig</span>();
+    ini.ReadFile('example.ini')
+    ini.ToString()
+ 
+  Example:
+    ini = <span class="helptopic">IniConfig</span>();
+    ini.ReadFile('example.ini')
+    sections = ini.GetSections()
+    [keys, count_keys] = ini.GetKeys(sections{1})
+    values = ini.GetValues(sections{1}, keys)
+    new_values(:) = {rand()};
+    ini.SetValues(sections{1}, keys, new_values, '%.3f')
+    ini.WriteFile('example1.ini')
+ 
+  Example:
+    ini = <span class="helptopic">IniConfig</span>();
+    ini.AddSections({'Some Section 1', 'Some Section 2'})
+    ini.AddKeys('Some Section 1', {'some_key1', 'some_key2'}, {'hello!', [10, 20]})
+    ini.AddKeys('Some Section 2', 'some_key3', true)
+    ini.AddKeys('Some Section 2', 'some_key1')
+    ini.WriteFile('example2.ini')
+ 
+  Example:
+    ini = <span class="helptopic">IniConfig</span>();
+    ini.AddSections('Some Section 1')
+    ini.AddKeys('Some Section 1', 'some_key1', 'hello!')
+    ini.AddKeys('Some Section 1', {'some_key2', 'some_key3'}, {[10, 20], [false, true]})
+    ini.WriteFile('example31.ini')
+    ini.RemoveKeys('Some Section 1', {'some_key1', 'some_key3'})
+    ini.RenameKeys('Some Section 1', 'some_key2', 'renamed_some_key2')
+    ini.RenameSections('Some Section 1', 'Renamed Section 1')
+    ini.WriteFile('example32.ini')
+ 
+ 
+  
+ 
+ 
+  Author:         Iroln &lt;esp.home@gmail.com&gt;
+  Version:        1.2
+  First release:  25.07.09
+  Last revision:  21.03.10
+  Copyright:      (c) 2009-2010 Evgeny Prilepin aka Iroln
+ 
+  Bug reports, questions, etc. can be sent to the e-mail given above.</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink">
+    <a href="matlab:helpwin textscan">textscan</a>, <a href="matlab:helpwin containers.Map">containers.Map</a></div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="matlab:helpwin('handle')">handle</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="matlab:helpwin('IniConfig.IniConfig')">IniConfig</a></td>
+            <td class="m-help">constructor&nbsp;</td>
+         </tr>
+      </table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="matlab:helpwin('IniConfig.comment_style')">comment_style</a></td>
+            <td class="m-help">style of comments&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="matlab:helpwin('IniConfig.count_all_keys')">count_all_keys</a></td>
+            <td class="m-help">number of all keys&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name"><a href="matlab:helpwin('IniConfig.count_sections')">count_sections</a></td>
+            <td class="m-help">number of sections&nbsp;</td>
+         </tr>
+      </table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.AddKeys')">AddKeys</a></td>
+            <td class="m-help">add keys in a end given section&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.AddSections')">AddSections</a></td>
+            <td class="m-help">add sections to end configuration&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.CreateIni')">CreateIni</a></td>
+            <td class="m-help">create new empty configuration&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.GetKeys')">GetKeys</a></td>
+            <td class="m-help">get names of all keys from given section&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.GetSections')">GetSections</a></td>
+            <td class="m-help">get names of all sections&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.GetValues')">GetValues</a></td>
+            <td class="m-help">get values of keys from given section&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.InsertKeys')">InsertKeys</a></td>
+            <td class="m-help">insert keys into the specified positions in a given section&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.InsertSections')">InsertSections</a></td>
+            <td class="m-help">insert sections to given positions&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.IsKeys')">IsKeys</a></td>
+            <td class="m-help">determine whether there is a keys in a given section&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.IsSections')">IsSections</a></td>
+            <td class="m-help">determine whether there is a sections&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.ReadFile')">ReadFile</a></td>
+            <td class="m-help">to read in the object the config data from a INI file&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.RemoveKeys')">RemoveKeys</a></td>
+            <td class="m-help">remove the keys from a given section&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.RemoveSections')">RemoveSections</a></td>
+            <td class="m-help">remove given section&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.RenameKeys')">RenameKeys</a></td>
+            <td class="m-help">rename the keys in a given section&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.RenameSections')">RenameSections</a></td>
+            <td class="m-help">rename given sections&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.SetValues')">SetValues</a></td>
+            <td class="m-help">set values for given keys from given section&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.ToString')">ToString</a></td>
+            <td class="m-help">export configuration to string or display&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.WriteFile')">WriteFile</a></td>
+            <td class="m-help">write to the configuration INI file on disk&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.addlistener')">addlistener</a></td>
+            <td class="m-help">Add listener for event.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.delete')">delete</a></td>
+            <td class="m-help">Delete a handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.eq')">eq</a></td>
+            <td class="m-help">== (EQ)   Test handle equality.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.findobj')">findobj</a></td>
+            <td class="m-help">Find objects matching specified conditions.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.findprop')">findprop</a></td>
+            <td class="m-help">Find property of MATLAB handle object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.ge')">ge</a></td>
+            <td class="m-help">>= (GE)   Greater than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.gt')">gt</a></td>
+            <td class="m-help">> (GT)   Greater than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.isvalid')">isvalid</a></td>
+            <td class="m-help">Test handle validity.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.le')">le</a></td>
+            <td class="m-help"><= (LE)   Less than or equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.listener')">listener</a></td>
+            <td class="m-help">Add listener for event without binding the listener to the source object.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.lt')">lt</a></td>
+            <td class="m-help">< (LT)   Less than relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.ne')">ne</a></td>
+            <td class="m-help">~= (NE)   Not equal relation for handles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="matlab:helpwin('IniConfig.notify')">notify</a></td>
+            <td class="m-help">Notify listeners of event.&nbsp;</td>
+         </tr>
+      </table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="matlab:helpwin('IniConfig.ObjectBeingDestroyed')">ObjectBeingDestroyed</a></td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </table>
+   </body>
+</html>

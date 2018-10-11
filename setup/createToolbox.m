@@ -12,6 +12,7 @@ if isempty(newVersion)
     newVersion = '1.0';
 end
 
+% Make sure that version is > 1, per Matlab convention.
 if newVersion(1) == '0'
     newVersion(1) = '1';
 end
