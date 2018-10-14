@@ -1,0 +1,177 @@
+---
+title: Blackfynn
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: blackfynn.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">Blackfynn</span> Main class for interacting with <span class="helptopic">Blackfynn</span> platform.
+    OBJ = BLACKFYN() opens a <span class="helptopic">Blackfynn</span> session with your default
+    profile.
+    OBJ = <span class="helptopic">Blackfynn</span>('profile') opens a <span class="helptopic">Blackfynn</span> session with a
+    specific profile as defined by the <span class="helptopic">Blackfynn</span> configuration.
+ 
+    <span class="helptopic">Blackfynn</span>.SETUP() creates a configuration file for the client
+ 
+    <span class="helptopic">Blackfynn</span>.PROFILES() shows a list of profiles that have been
+    setup.</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink">
+        <a href="matlab:helpwin Blackfynn.setup">Blackfynn.setup</a>, <a href="matlab:helpwin Blackfynn.profiles">Blackfynn.profiles</a>
+</div>
+      <!--Class-->
+      <div class="sectiontitle">Class Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Superclasses</td>
+            <td><a href="bfbasenode.html">BFBaseNode</a></td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>true</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Construct on load</td>
+            <td>false</td>
+         </tr>
+      </table>
+      <!--Constructors-->
+      <div class="sectiontitle"><a name="constructors"></a>Constructor Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name"><a href="blackfynn_blackfynn.html">Blackfynn</a></td>
+            <td class="m-help">Main class for interacting with Blackfynn platform.&nbsp;</td>
+         </tr>
+      </table>
+      <!--Properties-->
+      <div class="sectiontitle"><a name="properties"></a>Property Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name">datasets</td>
+            <td class="m-help">Datasets available within this session&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">profile</td>
+            <td class="m-help">User profile of the active session&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">session</td>
+            <td class="m-help">Session ID&nbsp;</td>
+         </tr>
+      </table>
+      <!--Methods-->
+      <div class="sectiontitle"><a name="methods"></a>Method Summary
+      </div>
+      <table class="summary-list">
+         
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="blackfynn_createdataset.html">createDataset</a></td>
+            <td class="m-help">Creates a new dataset in organization&nbsp;</td>
+         </tr>
+         
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="blackfynn_deletedataset.html">deleteDataset</a></td>
+            <td class="m-help">Delete a dataset from the platform&nbsp;</td>
+         </tr>
+         
+         
+         
+         
+         
+         
+         
+         
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="blackfynn_get.html">get</a></td>
+            <td class="m-help">Returns any object based on its Blackfynn ID.&nbsp;</td>
+         </tr>
+         
+         
+         
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="blackfynn_gotosite.html">gotoSite</a></td>
+            <td class="m-help">Opens the Blackfynn platform in an external browser.&nbsp;</td>
+         </tr>
+         
+         
+         
+         
+         
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="bfbasenode_methods.html">methods</a></td>
+            <td class="m-help">Shows all methods associated with the object.&nbsp;</td>
+         </tr>
+         
+         
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="blackfynn_organizations.html">organizations</a></td>
+            <td class="m-help">Returns all organizations for the user.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="blackfynn_profiles.html">profiles</a></td>
+            <td class="m-help">Returns all Blackfynn configuration profiles.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">Static 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="blackfynn_setup.html">setup</a></td>
+            <td class="m-help">Setup a profile for the Blackfynn client.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="blackfynn_upload.html">upload</a></td>
+            <td class="m-help">Upload files to the Blackfynn platform&nbsp;</td>
+         </tr>
+      </table>
+      <!--Events-->
+      <div class="sectiontitle"><a name="events"></a>Event Summary
+      </div>
+      <table class="summary-list">
+         <tr class="summary-item">
+            <td class="name">ObjectBeingDestroyed</td>
+            <td class="m-help">Notifies listeners that a particular object has been destroyed.&nbsp;</td>
+         </tr>
+      </table>
+   </body>
+</html>

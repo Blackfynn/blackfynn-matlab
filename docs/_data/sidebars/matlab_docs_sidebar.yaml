@@ -13,73 +13,363 @@ entries:
   - title: Classes
     output: web
     folderitems:
-    - title: Blackfynn
-      url: /Blackfynn.html
-      output: web
     - title: BFAgent
-      url: /BFAgent.html
+      url: /bfagent.html
       output: web
     - title: BFAgentIO
-      url: /BFAgentIO.html
+      url: /bfagentio.html
       output: web
     - title: BFBaseCollection
-      url: /BFBaseCollection.html
+      url: /bfbasecollection.html
       output: web
     - title: BFBaseDataNode
-      url: /BFBaseDataNode.html
+      url: /bfbasedatanode.html
       output: web
     - title: BFBaseModelNode
-      url: /BFBaseModelNode.html
+      url: /bfbasemodelnode.html
       output: web
     - title: BFBaseModelProperty
-      url: /BFBaseModelProperty.html
+      url: /bfbasemodelproperty.html
       output: web
     - title: BFBaseNode
-      url: /BFBaseNode.html
+      url: /bfbasenode.html
       output: web
     - title: BFCollection
-      url: /BFCollection.html
+      url: /bfcollection.html
       output: web
     - title: BFConceptsAPI
-      url: /BFConceptsAPI.html
+      url: /bfconceptsapi.html
       output: web
     - title: BFDataPackage
-      url: /BFDataPackage.html
+      url: /bfdatapackage.html
       output: web
     - title: BFDataset
-      url: /BFDataset.html
+      url: /bfdataset.html
+      output: web
+    - title: BFJavaRequest
+      url: /bfjavarequest.html
       output: web
     - title: BFMainAPI
-      url: /BFMainAPI.html
+      url: /bfmainapi.html
       output: web
     - title: BFModel
-      url: /BFModel.html
+      url: /bfmodel.html
       output: web
     - title: BFModelProperty
-      url: /BFModelProperty.html
+      url: /bfmodelproperty.html
       output: web
     - title: BFRecord
-      url: /BFRecord.html
+      url: /bfrecord.html
       output: web
     - title: BFRequest
-      url: /BFRequest.html
+      url: /bfrequest.html
       output: web
     - title: BFSession
-      url: /BFSession.html
+      url: /bfsession.html
       output: web
     - title: BFTabular
-      url: /BFTabular.html
+      url: /bftabular.html
       output: web
     - title: BFTimeseries
-      url: /BFTimeseries.html
+      url: /bftimeseries.html
       output: web
     - title: BFTimeseriesAnnotation
-      url: /BFTimeseriesAnnotation.html
+      url: /bftimeseriesannotation.html
       output: web
     - title: BFTimeseriesAnnotationLayer
-      url: /BFTimeseriesAnnotationLayer.html
+      url: /bftimeseriesannotationlayer.html
       output: web
     - title: BFTimeseriesChannel
-      url: /BFTimeseriesChannel.html
+      url: /bftimeserieschannel.html
       output: web
-
+    - title: Blackfynn
+      url: /blackfynn.html
+      output: web
+  - title: Methods
+    output: web
+    folderitems:
+    - title: (BFAgent) BFAgent
+      url: /bfagent_bfagent.html
+      output: web
+    - title: (BFAgent) login
+      url: /bfagent_login.html
+      output: web
+    - title: (BFAgent) upload
+      url: /bfagent_upload.html
+      output: web
+    - title: (BFAgentIO) BFAgentIO
+      url: /bfagentio_bfagentio.html
+      output: web
+    - title: (BFBaseCollection) BFBaseCollection
+      url: /bfbasecollection_bfbasecollection.html
+      output: web
+    - title: (BFBaseCollection) createfolder
+      url: /bfbasecollection_createfolder.html
+      output: web
+    - title: (BFBaseCollection) listitems
+      url: /bfbasecollection_listitems.html
+      output: web
+    - title: (BFBaseDataNode) BFBaseDataNode
+      url: /bfbasedatanode_bfbasedatanode.html
+      output: web
+    - title: (BFBaseDataNode) update
+      url: /bfbasedatanode_update.html
+      output: web
+    - title: (BFBaseModelNode) BFBaseModelNode
+      url: /bfbasemodelnode_bfbasemodelnode.html
+      output: web
+    - title: (BFBaseModelProperty) BFBaseModelProperty
+      url: /bfbasemodelproperty_bfbasemodelproperty.html
+      output: web
+    - title: (BFBaseNode) BFBaseNode
+      url: /bfbasenode_bfbasenode.html
+      output: web
+    - title: (BFBaseNode) gotoSite
+      url: /bfbasenode_gotosite.html
+      output: web
+    - title: (BFBaseNode) methods
+      url: /bfbasenode_methods.html
+      output: web
+    - title: (BFCollection) BFCollection
+      url: /bfcollection_bfcollection.html
+      output: web
+    - title: (BFConceptsAPI) BFConceptsAPI
+      url: /bfconceptsapi_bfconceptsapi.html
+      output: web
+    - title: (BFConceptsAPI) createModel
+      url: /bfconceptsapi_createmodel.html
+      output: web
+    - title: (BFConceptsAPI) createRecords
+      url: /bfconceptsapi_createrecords.html
+      output: web
+    - title: (BFConceptsAPI) deleteRecords
+      url: /bfconceptsapi_deleterecords.html
+      output: web
+    - title: (BFConceptsAPI) getModels
+      url: /bfconceptsapi_getmodels.html
+      output: web
+    - title: (BFConceptsAPI) getProperties
+      url: /bfconceptsapi_getproperties.html
+      output: web
+    - title: (BFConceptsAPI) getRecords
+      url: /bfconceptsapi_getrecords.html
+      output: web
+    - title: (BFConceptsAPI) slugFromString
+      url: /bfconceptsapi_slugfromstring.html
+      output: web
+    - title: (BFConceptsAPI) updateModelProperties
+      url: /bfconceptsapi_updatemodelproperties.html
+      output: web
+    - title: (BFDataPackage) BFDataPackage
+      url: /bfdatapackage_bfdatapackage.html
+      output: web
+    - title: (BFDataPackage) move
+      url: /bfdatapackage_move.html
+      output: web
+    - title: (BFDataset) BFDataset
+      url: /bfdataset_bfdataset.html
+      output: web
+    - title: (BFDataset) createModel
+      url: /bfdataset_createmodel.html
+      output: web
+    - title: (BFDataset) update
+      url: /bfdataset_update.html
+      output: web
+    - title: (BFJavaRequest) BFJavaRequest
+      url: /bfjavarequest_bfjavarequest.html
+      output: web
+    - title: (BFJavaRequest) blackfynn_get
+      url: /bfjavarequest_blackfynn_get.html
+      output: web
+    - title: (BFJavaRequest) parse_response
+      url: /bfjavarequest_parse_response.html
+      output: web
+    - title: (BFMainAPI) BFMainAPI
+      url: /bfmainapi_bfmainapi.html
+      output: web
+    - title: (BFMainAPI) createAnnotationLayer
+      url: /bfmainapi_createannotationlayer.html
+      output: web
+    - title: (BFMainAPI) createDataset
+      url: /bfmainapi_createdataset.html
+      output: web
+    - title: (BFMainAPI) createFolder
+      url: /bfmainapi_createfolder.html
+      output: web
+    - title: (BFMainAPI) createTimeseriesAnnotation
+      url: /bfmainapi_createtimeseriesannotation.html
+      output: web
+    - title: (BFMainAPI) deleteAnnotationLayer
+      url: /bfmainapi_deleteannotationlayer.html
+      output: web
+    - title: (BFMainAPI) deleteDataset
+      url: /bfmainapi_deletedataset.html
+      output: web
+    - title: (BFMainAPI) deletePackages
+      url: /bfmainapi_deletepackages.html
+      output: web
+    - title: (BFMainAPI) getAnnotationLayers
+      url: /bfmainapi_getannotationlayers.html
+      output: web
+    - title: (BFMainAPI) getDataset
+      url: /bfmainapi_getdataset.html
+      output: web
+    - title: (BFMainAPI) getDatasets
+      url: /bfmainapi_getdatasets.html
+      output: web
+    - title: (BFMainAPI) getOrganizations
+      url: /bfmainapi_getorganizations.html
+      output: web
+    - title: (BFMainAPI) getPackage
+      url: /bfmainapi_getpackage.html
+      output: web
+    - title: (BFMainAPI) getSessionToken
+      url: /bfmainapi_getsessiontoken.html
+      output: web
+    - title: (BFMainAPI) getTabularData
+      url: /bfmainapi_gettabulardata.html
+      output: web
+    - title: (BFMainAPI) getTimeseriesChannel
+      url: /bfmainapi_gettimeserieschannel.html
+      output: web
+    - title: (BFMainAPI) getTimeseriesChannels
+      url: /bfmainapi_gettimeserieschannels.html
+      output: web
+    - title: (BFMainAPI) getUser
+      url: /bfmainapi_getuser.html
+      output: web
+    - title: (BFMainAPI) move
+      url: /bfmainapi_move.html
+      output: web
+    - title: (BFMainAPI) updateDataset
+      url: /bfmainapi_updatedataset.html
+      output: web
+    - title: (BFMainAPI) updatePackage
+      url: /bfmainapi_updatepackage.html
+      output: web
+    - title: (BFModel) BFModel
+      url: /bfmodel_bfmodel.html
+      output: web
+    - title: (BFModel) addProperties
+      url: /bfmodel_addproperties.html
+      output: web
+    - title: (BFModel) createRecords
+      url: /bfmodel_createrecords.html
+      output: web
+    - title: (BFModel) deleteRecords
+      url: /bfmodel_deleterecords.html
+      output: web
+    - title: (BFModel) getRecords
+      url: /bfmodel_getrecords.html
+      output: web
+    - title: (BFModelProperty) BFModelProperty
+      url: /bfmodelproperty_bfmodelproperty.html
+      output: web
+    - title: (BFRecord) BFRecord
+      url: /bfrecord_bfrecord.html
+      output: web
+    - title: (BFRecord) getAllRelationships
+      url: /bfrecord_getallrelationships.html
+      output: web
+    - title: (BFRecord) getRelationships
+      url: /bfrecord_getrelationships.html
+      output: web
+    - title: (BFRecord) update
+      url: /bfrecord_update.html
+      output: web
+    - title: (BFRequest) BFRequest
+      url: /bfrequest_bfrequest.html
+      output: web
+    - title: (BFSession) BFSession
+      url: /bfsession_bfsession.html
+      output: web
+    - title: (BFSession) getDefaultHosts
+      url: /bfsession_getdefaulthosts.html
+      output: web
+    - title: (BFSession) setAPIKey
+      url: /bfsession_setapikey.html
+      output: web
+    - title: (BFTabular) BFTabular
+      url: /bftabular_bftabular.html
+      output: web
+    - title: (BFTabular) getData
+      url: /bftabular_getdata.html
+      output: web
+    - title: (BFTimeseries) BFTimeseries
+      url: /bftimeseries_bftimeseries.html
+      output: web
+    - title: (BFTimeseries) create_layer
+      url: /bftimeseries_create_layer.html
+      output: web
+    - title: (BFTimeseries) delete_layer
+      url: /bftimeseries_delete_layer.html
+      output: web
+    - title: (BFTimeseries) getSpan
+      url: /bftimeseries_getspan.html
+      output: web
+    - title: (BFTimeseries) get_channel
+      url: /bftimeseries_get_channel.html
+      output: web
+    - title: (BFTimeseries) get_layers
+      url: /bftimeseries_get_layers.html
+      output: web
+    - title: (BFTimeseries) insert_annotation
+      url: /bftimeseries_insert_annotation.html
+      output: web
+    - title: (BFTimeseries) layers2table
+      url: /bftimeseries_layers2table.html
+      output: web
+    - title: (BFTimeseries) show_channels
+      url: /bftimeseries_show_channels.html
+      output: web
+    - title: (BFTimeseries) show_layers
+      url: /bftimeseries_show_layers.html
+      output: web
+    - title: (BFTimeseriesAnnotation) BFTimeseriesAnnotation
+      url: /bftimeseriesannotation_bftimeseriesannotation.html
+      output: web
+    - title: (BFTimeseriesAnnotationLayer) BFTimeseriesAnnotationLayer
+      url: /bftimeseriesannotationlayer_bftimeseriesannotationlayer.html
+      output: web
+    - title: (BFTimeseriesAnnotationLayer) annotations
+      url: /bftimeseriesannotationlayer_annotations.html
+      output: web
+    - title: (BFTimeseriesAnnotationLayer) annotations2table
+      url: /bftimeseriesannotationlayer_annotations2table.html
+      output: web
+    - title: (BFTimeseriesAnnotationLayer) delete_annotation
+      url: /bftimeseriesannotationlayer_delete_annotation.html
+      output: web
+    - title: (BFTimeseriesAnnotationLayer) show_annotations
+      url: /bftimeseriesannotationlayer_show_annotations.html
+      output: web
+    - title: (BFTimeseriesChannel) BFTimeseriesChannel
+      url: /bftimeserieschannel_bftimeserieschannel.html
+      output: web
+    - title: (Blackfynn) Blackfynn
+      url: /blackfynn_blackfynn.html
+      output: web
+    - title: (Blackfynn) createDataset
+      url: /blackfynn_createdataset.html
+      output: web
+    - title: (Blackfynn) deleteDataset
+      url: /blackfynn_deletedataset.html
+      output: web
+    - title: (Blackfynn) get
+      url: /blackfynn_get.html
+      output: web
+    - title: (Blackfynn) gotoSite
+      url: /blackfynn_gotosite.html
+      output: web
+    - title: (Blackfynn) organizations
+      url: /blackfynn_organizations.html
+      output: web
+    - title: (Blackfynn) profiles
+      url: /blackfynn_profiles.html
+      output: web
+    - title: (Blackfynn) setup
+      url: /blackfynn_setup.html
+      output: web
+    - title: (Blackfynn) upload
+      url: /blackfynn_upload.html
+      output: web

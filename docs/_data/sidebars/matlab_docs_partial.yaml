@@ -1,0 +1,12 @@
+entries:
+- title: Sidebar
+  levels: one
+  product: Developer docs
+  folders:
+  - title: Getting started
+    output: web
+    folderitems:
+    - title: Installation/Setup
+      url: /index.html
+      type: homepage
+      output: web

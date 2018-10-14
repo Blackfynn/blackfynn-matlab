@@ -1,0 +1,56 @@
+---
+title: (BFTimeseries) insert_annotation
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: bftimeseries_insert_annotation.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">insert_annotation</span> Adds an annotation in the layer specified by
+  the user.
+ 
+  Args:
+        name (str): Layer in which to create the annotation
+        label (str): Label for the annotation
+        start (int, optional): start time (in usecs) for the annotation (default start time of signal)
+        end (int, optional): end time (in usecs) for the annotation (default end time of signal)
+        channelIds (str, optional): channel IDs for the channels that are annotated (all channels default)
+        description (str, optional): description for the generated annotation
+ 
+  Example:
+ 
+            Add a new annotation with label "Atonic Seizure" in a layer called "Seizures" for
+            ``ts``, a timeseries object::
+ 
+                &gt;&gt; event = ts.insert_annotation('Seizures', 'Atonic Seizure', 'start', ts.startTime+10000000, 'end', ts.startTime+18000000);
+ 
+  Note:
+        If specific channels are selected for the annotations, they
+        must be defined as string arrays::
+ 
+            &gt;&gt; channels = ["N:channel:????????-????-????-????-????????????", "N:channel:????????-????-????-????-????????????"]</pre></div><!--after help -->
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>

@@ -12,7 +12,7 @@ classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
     
     methods
         function obj = BFBaseNode(varargin)            
-            if (nargin > 0)
+            if nargin
                 obj.session = varargin{1};
                 obj.id = varargin{2};
             end

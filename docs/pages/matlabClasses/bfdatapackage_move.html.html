@@ -1,0 +1,54 @@
+---
+title: (BFDataPackage) move
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: bfdatapackage_move.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">move</span>  Moves objects to a destination collection
+    OBJ = <span class="helptopic">move</span>(OBJ, DEST) moves OBJ to a new destination DEST
+    where DEST is a BFFOLDER, or BFDATASET object where the OBJ
+    will be moved to.
+    
+    OBJ = <span class="helptopic">move</span>(OBJ, 'dest') moves OBJ to new destination 'dest'
+    where 'dest' is the id of the folder or dataset that OBJ is
+    moved to.
+ 
+    Example:
+        
+        BF = Blackfynn()
+        PKG = BF.dataset(1).item(1)
+        FOLDER = BF.dataset(1),item(2)
+        PKG.<span class="helptopic">move</span>(FOLDER)
+ 
+        PKG.<span class="helptopic">move</span>(''N:package:ae8d7f6f-f35a', FOLDER)
+ 
+    Note:
+        Data Packages cannot be moved across datasets or
+        between organizations.</pre></div><!--after help -->
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>

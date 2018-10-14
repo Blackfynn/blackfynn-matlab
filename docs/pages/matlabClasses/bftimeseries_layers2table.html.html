@@ -1,0 +1,59 @@
+---
+title: (BFTimeseries) layers2table
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: bftimeseries_layers2table.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">layers2table</span> stores all of the layers associated with a
+  timeseries object in a MATLAB table. The output is a table that
+  looks as follows:
+ 
+          +----------+------------+-------------------+
+          | ID       | Name       | Description       |
+          +----------+------------+-------------------+
+          | layer_id | layer_name | layer_description |
+          +----------+------------+-------------------+
+ 
+  Examples:
+ 
+            Store all the layers associated with ``ts``, a
+            timeseries object in a MATLAB table::
+ 
+                &gt;&gt; out_table = ts.layers2table;
+                &gt;&gt; out_table
+ 
+                    3&#xD7;3 table
+ 
+                        ID                 Name                       Description
+                      _____    ___________________________    __________________________
+ 
+                      '387'    'Artifacts'                    'Layer for artifact annotations'
+                      '367'    'Default'                      'Default Annotation Layer'
+                      '390'    'Seizures'                     'Layer for seizure annotations'</pre></div><!--after help -->
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>

@@ -1,0 +1,63 @@
+---
+title: (BFTabular) getData
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: bftabular_getdata.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">getData</span>  get data from tabular package.
+ 
+  Args:
+        limit (int, optional): Max number of rows to return (1000 default)
+        offset (int, optional): row offset
+        orderBy (str, optional): column to order data
+        orderDirection (str, optional): Ascending 'ASC' or descending 'DESC'
+ 
+  Returns:
+ 
+        table: Tabular data
+ 
+  Example:
+ 
+           Get 4 rows of data starting from the 3rd row of
+           ``tab``, a ``BFTabular`` object::
+            
+                &gt;&gt; tab.<span class="helptopic">getData</span>('offset', 3, 'limit', 4)
+ 
+                ans =
+              
+                4&#xD7;4 table
+              
+                index      a     b     c
+                _______    __    __    __
+              
+                3          1     2     3
+                4          4     5     6
+                5          7     8     9
+                6          1     2     3</pre></div><!--after help -->
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>

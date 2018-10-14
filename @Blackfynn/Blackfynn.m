@@ -36,13 +36,21 @@ classdef (Sealed) Blackfynn < BFBaseNode
             
             narginchk(0,1);
             
+            userProfile = '';
+            if nargin == 1
+                if varargin{1} == 'empty'
+                    % allow for creation of empty object without making
+                    % web-requests.
+                    return
+                else
+                    userProfile = varargin{1};
+                end
+            end
+            
             obj.session = BFSession();
             obj.session.request = BFRequest();
             
-            userProfile = '';
-            if nargin == 1
-                userProfile = varargin{1};
-            end
+            
             
             % Check version if user is using an installed toolbox.
             toolboxes = matlab.addons.toolbox.installedToolboxes;
