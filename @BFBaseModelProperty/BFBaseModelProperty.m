@@ -17,13 +17,15 @@ classdef BFBaseModelProperty < BFBaseNode
             % Args: Empty, or [session, id, index, locked, default, conceptTitle, createdAt, updatedAt, required]
             obj = obj@BFBaseNode(varargin{:});
             
-            obj.index = varargin{3};
-            obj.locked = logical(varargin{4});
-            obj.default = logical(varargin{5});
-            obj.conceptTitle = logical(varargin{6});
-            obj.createdAt = varargin{7};
-            obj.updatedAt = varargin{8};
-            obj.required = logical(varargin{9});
+            if nargin
+                obj.index = varargin{3};
+                obj.locked = logical(varargin{4});
+                obj.default = logical(varargin{5});
+                obj.conceptTitle = logical(varargin{6});
+                obj.createdAt = varargin{7};
+                obj.updatedAt = varargin{8};
+                obj.required = logical(varargin{9});
+            end
             
         end
     end

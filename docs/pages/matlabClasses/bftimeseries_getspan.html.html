@@ -1,0 +1,54 @@
+---
+title: (BFTimeseries) getSpan
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: bftimeseries_getspan.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">getSpan</span> Returns data for a given span of time and channels.
+     RESULT = <span class="helptopic">getSpan</span>(OBJ, CHANNELS, START, STOP) returns a 2D
+     array for each channel with the time-stamps and the values of
+     the timeseries within the given range. CHANNELS is an array of
+     BFTIMESERIESCHANNEL objects, START is the start of the range
+     relative to the start-time of the timeseries object in
+     microseconds. STOP is the end of the range relative to the
+     start-time of the package in microseconds.
+ 
+ 
+     Examples:
+        % Return first 10 seconds of data on all channels
+        TS = BFTimeseries(...)
+        DATA = TS.<span class="helptopic">getSpan</span>(TS.channels, 0, 10e6)
+ 
+        % Return minute 5 through 10 on first two channels
+        START = 5*60*1e6
+        STOP = 10*60*1e6
+        DATA = TS.<span class="helptopic">getSpan</span>(TS.channels(1:2), START, STOP)</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">see also</div><div class="footerlink">
+        <a href="matlab:helpwin BFTimeseries">BFTimeseries</a>, <a href="matlab:helpwin BFTimeseriesChannel">BFTimeseriesChannel</a>
+</div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>

@@ -1,0 +1,48 @@
+---
+title: (BFDataset) createModel
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: bfdataset_createmodel.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext --> <span class="helptopic">createModel</span>  Creates a model in the dataset
+    OBJ = <span class="helptopic">createModel</span>(OBJ, 'name', 'description) creates a
+    model in the dataset with 'name' and a 'description'. The
+    model name needs to be unique in the dataset.
+ 
+    NOTE: the name of the model will be modified to contain no
+    spaces or non-characters. However, the provided name will
+    always be used for visualization in the web application,
+ 
+    For example:
+        BF = Blackfynn()
+        DS = BF.datasets(1)
+        DS.<span class="helptopic">createModel</span>('Patient','This is a patient model')</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> 
+        BFDataset.createRecord, BFDataset.deleteModel
+</div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>

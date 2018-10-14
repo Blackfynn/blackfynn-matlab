@@ -7,13 +7,12 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
   end
   
 
-  
   methods
     function obj = BFBaseDataNode(varargin)
       % Args: Empty, or [session, id, name, type]  
       obj = obj@BFBaseNode(varargin{:});
       
-      if nargin > 0
+      if nargin
         obj.name = varargin{3};
         obj.type = varargin{4};
       end

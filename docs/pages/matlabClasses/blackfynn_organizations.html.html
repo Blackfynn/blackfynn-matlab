@@ -1,0 +1,53 @@
+---
+title: (Blackfynn) organizations
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: blackfynn_organizations.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">organizations</span>  Returns all organizations for the user.
+    OUT = <span class="helptopic">organizations</span>(OBJ) returns all organizations that a
+    user belongs to.
+ 
+    Note:
+      The user will need to create a separate API token for
+      each organization in order to access the data through the
+      API. A session can only interact with data from a single
+      organization.
+ 
+    Example:
+ 
+       BF = BLACKFYNN('profile_name')
+       BF.<span class="helptopic">organizations</span>()
+ 
+       ans = 
+ 
+           Name                                 Id                          
+        ___________    ______________________________________
+        'Blackfynn'    'N:organization:c9055555-3333-4444-...</pre></div><!--after help -->
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>
