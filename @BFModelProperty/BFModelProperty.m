@@ -1,13 +1,19 @@
 classdef BFModelProperty < BFBaseModelProperty
-    %BFMODELPROPERTY Summary of this class goes here
-    %   Detailed explanation goes here
+    %BFMODELPROPERTY A class representing a Model Property on the platform
+    %   Models in the Blackfynn platform can have any number of
+    %   properties. Properties have have different types, and have various
+    %   attributes associated with them. These are reflected in the
+    %   MODELPROPERTY class.
+    %
+    %   See also:
+    %       BFModel, BFBaseModelProperty
     
     properties
-        name
-        displayName
-        dataType
-        description
-        defaultValue
+        name            % String with name of property
+        displayName     % String with pretty name of property
+        dataType        % Data type of property
+        description     % Description of property
+        defaultValue    % Default value of property
     end
     
     methods
@@ -17,7 +23,9 @@ classdef BFModelProperty < BFBaseModelProperty
             % conceptTitle, createdAt, updatedAt, required, name,
             % displayName, dataType, description, defaultValue]
 
-            obj = obj@BFBaseModelProperty(varargin{:});
+            narginchk(14,14);
+            
+            obj = obj@BFBaseModelProperty(varargin{1:9});
             obj.name = varargin{10};
             obj.displayName = varargin{11};
             obj.dataType = varargin{12};

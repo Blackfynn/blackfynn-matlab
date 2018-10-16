@@ -1,12 +1,15 @@
 classdef BFDataset < BFBaseCollection
-    %BFDATASET  Representation of a Dataset objet on the Blackfynn platform
+    % BFDATASET  Representation of a Dataset object.
+    %   A DATASET on the Blackfynn platform consists of a collection of
+    %   files, a series of metadata objects and users. A dataset is the
+    %   priciple container for data on the platform.
     
     properties
-        description
+        description     % Description of the dataset
     end
     
     properties (Dependent)
-        models
+        models          % Models that are defined within the dataset
     end
     
     properties (Access = private)
@@ -55,14 +58,34 @@ classdef BFDataset < BFBaseCollection
     
     methods (Sealed = true)
         
-        function obj = BFDataset(varargin)
-            % Args: Empty, or [session, id, name, type]
+        function obj = BFDataset(session, id, name)
+            % BFDATASET Constructor of the BFDATASET Class
+            %   OBJ = BFDATASET(SESSION, 'id', 'name') creates a
+            %   BFDATASET instance where SESSION is the BFSESSION object,
+            %   'id' is the id of the dataset and 'name' is the name of the
+            %   dataset.            
             
-            obj = obj@BFBaseCollection(varargin{:} );
+            narginchk(3,3);
+            obj = obj@BFBaseCollection(session, id, name, 'DataSet');
         end
         
         function obj = update(obj)
-            %UPDATE updates dataset on the platform.
+            % UPDATE updates dataset on the platform.
+            %   OBJ = UPDATE(OBJ) pushes changes to the object that were
+            %   created locally and updates the objects on the platform.
+            %
+            %   Changes to objects such as the name and the description are
+            %   not automatically pushed to the Blackfynn servers. Users
+            %   will have to call the update function manually to push
+            %   these changes.
+            %
+            %   For example:
+            %       DS = BF.datasets(1);
+            %       DS.name = 'Updated name';
+            %       DS.update();
+            %
+            %   See also:
+            %       Blackfynn
 
             obj.session.mainAPI.updateDataset(obj.id, obj.name, obj.description);
              
@@ -87,7 +110,7 @@ classdef BFDataset < BFBaseCollection
             % response.
             %
             content = resp.content;
-            out = BFDataset(session, content.id, content.name, content.packageType);
+            out = BFDataset(session, content.id, content.name);
             
             if isfield(content, 'description')
                 out.description = content.description;

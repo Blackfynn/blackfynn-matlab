@@ -17,8 +17,16 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
   
   methods
     function obj = BFTimeseriesAnnotationLayer(varargin)
-         %Args: [session, id, name, ts_id, descritpion)
-
+        % BFTIMESERIESANNOTATIONLAYER Constructor of
+        % BFTIMESERIESANNOTATIONLAYER class.
+        %   OBJ = BFTIMESERIESANNOTATIONLAYER(SESSION, 'id', 'name',
+        %   'ts_id', 'description') creates a timeseries annotationlayer
+        %   where SESSION is an instance of the BFSESSION class, 'id' is
+        %   the Blackfynn id of the layer, 'name' is the name of the
+        %   layer,'ts_id' is the Blackfynn id of the timeseries package the
+        %   channel belongs to and 'description' is a description of the
+        %   annotation layer.
+        
          obj = obj@BFBaseNode(varargin{:});
          if nargin
              obj.name = varargin{3};

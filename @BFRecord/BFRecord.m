@@ -1,16 +1,17 @@
 classdef BFRecord < BFBaseNode & dynamicprops
-    %BFRECORD Summary of this class goes here
-    %   Detailed explanation goes here
+    %BFRECORD A representation of a metadata record
+    %   
+    %   Supports local changes.
     
     properties
-        type
+        type        % Type of the record
     end
     
     properties (Hidden)
-        createdAt
-        updatedAt
-        createdBy
-        updatedBy
+        createdAt   % Indicates when record was created
+        updatedAt   % Indicates when record was updated
+        createdBy   % Indicates who created the record 
+        updatedBy   % Indicates who updated the record 
         
     end
     
@@ -22,15 +23,16 @@ classdef BFRecord < BFBaseNode & dynamicprops
     end
     
     methods
-        function obj = BFRecord(varargin)
-            %BFRECORD Construct an instance of this class
+        function obj = BFRecord(session, id, modelid, datasetid)
+            %BFRECORD Construct an instance of the BFRECORD Class
             %   Detailed explanation goes here
             
-            obj = obj@BFBaseNode(varargin{:});
+            narginchk(4,4);
+            obj = obj@BFBaseNode(session, id);
             
             if nargin
-                obj.modelId = varargin{3};
-                obj.datasetId = varargin{4};
+                obj.modelId = modelid;
+                obj.datasetId = datasetid;
             end
         end
         

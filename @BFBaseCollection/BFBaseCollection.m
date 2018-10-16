@@ -1,6 +1,13 @@
 classdef (Abstract) BFBaseCollection < BFBaseDataNode
-    % BFBASECOLLECTION Abstract class with is extended by both
+    % BFBASECOLLECTION Abstract class which is extended by both
     % BFCOLLECTIONS and BFDATASETS.
+    %
+    % Objects of this class have a set of 'items' which can either be a
+    % datapackage or a datacollection.
+    %
+    % See also:
+    %   BFCollection, BFDataset
+    
     
     properties (Dependent)
         items   % The contents of a folder or a dataset.
@@ -14,9 +21,13 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
     end
 
     methods
-        function obj = BFBaseCollection(varargin)       
-            % Args: Empty, or [session, id, name, type]
-            obj = obj@BFBaseDataNode(varargin{:});
+        function obj = BFBaseCollection(session, id, name, type)
+            % BFBASECOLLECTION Constructor of the BFBASECOLLECTION class
+            %   OBJ = BFBASECOLLECTION(SESSION, 'id','name','type') creates
+            %   an instance of the BFBASECOLLECTION class.
+            
+            narginchk(4,4);
+            obj = obj@BFBaseDataNode(session, id, name, type);
         end
         
         function out = listitems(obj)                   

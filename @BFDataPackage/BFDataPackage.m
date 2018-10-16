@@ -2,14 +2,19 @@ classdef BFDataPackage < BFBaseDataNode
   % BFDATAPACKAGE Represents any datapackage on the platform.
   
   properties (Hidden)
-      datasetId
-      state
-      props = struct()    % attributes associated with a data node
+      datasetId         % The ID of the dataset the package belongs to
+      state             % The state of the package in the platform
+      props = struct()  % Attributes associated with a data node
   end
   
   methods
     function obj = BFDataPackage(varargin)
-      % Args: Empty, or [session, id, name, type]
+        %BFDATAPACKAGE Constructor for BFDATAPACKAGE
+        %   OBJ = BFDATAPACKAGE(SESSION, 'id', 'name', 'type') creates a
+        %   BFDATAPACKAGE instance where SESSION is an instance of
+        %   BFSESSION, 'id' is the id of the package, 'name' is the name of
+        %   the package and 'type' is the type of the package.
+      
       obj = obj@BFBaseDataNode(varargin{:});
     end
     
