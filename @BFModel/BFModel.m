@@ -209,7 +209,8 @@ classdef BFModel < BFBaseModelNode
         end
         function props = getProperties(obj)
             
-            props = obj.session.conceptsAPI.getProperties(obj.datasetId, obj.id);
+            resp = obj.session.conceptsAPI.getProperties(obj.datasetId, obj.id);
+            props =  BFModelProperty.createFromResponse(resp, obj.session);
             
         end
     end

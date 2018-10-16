@@ -1,21 +1,29 @@
 classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
-    % BFBASEDATANODE Abstract class underlying all package representations. 
+    % BFBASEDATANODE Abstract class underlying all package representations.
+    %
+    %   All packages on the blackfynn platform share a number of
+    %   properties. These properties are captured in the BFBASEDATANODE
+    %   class. The BFBASEDATANODE class entends the BFBASENODE class.
     
   properties
-    name = ''           % Name of the data node
-    type = ''           % Type of the data node 
+    name = ''           % Name of the datanode
+    type = ''           % Type of the datanode 
   end
   
 
   methods
-    function obj = BFBaseDataNode(varargin)
-      % Args: Empty, or [session, id, name, type]  
-      obj = obj@BFBaseNode(varargin{:});
-      
-      if nargin
-        obj.name = varargin{3};
-        obj.type = varargin{4};
-      end
+    function obj = BFBaseDataNode(session, id, name, type)
+        %BFBASEDATANODE Constructor for BFBASEDATANODE class
+        %   OBJ = BFBASEDATANODE(SESSION, 'id', 'name', 'type') creates an
+        %   instance of the class BFBASEDATANODE. SESSION is an instance of
+        %   BFSESSION class, 'id' is the Blackfynn id of the object, 'name'
+        %   is the name of the datanode, and type is the type of datanode.
+        
+        narginchk(4,4);
+        
+        obj = obj@BFBaseNode(session, id);
+        obj.name = name;
+        obj.type = type;
     end
     
     function obj = update(obj)
@@ -55,7 +63,7 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
     function out = createFromResponse(resp, session)
       % Creates an object from a GET request's response.
        
-      out(length(resp)) = BFCollection();
+      out = BFCollection.empty(length(resp),0);
 
       for i = 1 : length(resp)
         item = resp(i);
@@ -98,9 +106,10 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
 
   methods (Static, Sealed, Access = protected)
       function default_object = getDefaultScalarElement
-          %GETDEFAULTSCALARELEMENT Get default scalar element
-          %
-          % This is required for Heterogeneous mixin
+          % GETDEFAULTSCALARELEMENT Get default scalar element
+          %     OBJ = GETDEFAULTSCALARELEMENT() returns the default object
+          %     for this class. The implementation of this method is
+          %     required by the Heterogeneous mixin class.
           
           default_object = BFCollection('','','','');
       end

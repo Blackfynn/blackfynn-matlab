@@ -1,17 +1,23 @@
 classdef (Sealed) BFTimeseriesChannel < BFBaseDataNode
+    %BFTIMESERIESCHANNEL Representation of a timeseries channel
   
   properties
-    startTime
-    endTime
-    unit
-    rate
-    channelType
-    group
+    startTime       % Start time of channel in us
+    endTime         % End time of channel in us
+    unit            % Boolean indicating channel is unit-data
+    rate            % Sampling rate of channel in Hz
+    channelType     % Type of channel
+    group           % Group that channel belongs to
   end
     
   methods (Sealed = true)
-    
     function obj = BFTimeseriesChannel(session, id, name)
+        % BFTIMESERIESCHANNEL Constructor of BFTIMESERIESCHANNEL class.
+        %   OBJ = BFTIMESERIESCHANNEL(SESSION, 'id', 'name') creates an
+        %   instance of the BFTIMESERIESCHANNEL class where SESSION is an
+        %   object of type BFSESSION, 'id' is the Blackfynn id of the
+        %   channel and 'name' is the name of the channel.
+        
          obj = obj@BFBaseDataNode(session, id, name, 'TimeseriesChannel' );
     end
 
@@ -31,9 +37,4 @@ classdef (Sealed) BFTimeseriesChannel < BFBaseDataNode
       
     end
   end
-  
-  methods (Static, Access = private, Sealed = true)
-
-  end
-
 end

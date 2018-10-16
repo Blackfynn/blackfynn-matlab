@@ -7,11 +7,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
     %
     %   BLACKFYNN.SETUP() creates a configuration file for the client
     %
-    %   BLACKFYNN.PROFILES() shows a list of profiles that have been
-    %   setup.
-    %
-    %   See also:
-    %       Blackfynn.setup, Blackfynn.profiles
+    %   BLACKFYNN.PROFILES() shows a list of profiles that have been setup.    
     
     properties(SetAccess = private)
         profile         % User profile of the active session
@@ -58,9 +54,9 @@ classdef (Sealed) Blackfynn < BFBaseNode
                 bfIndex = strcmp({toolboxes.Name},'blackfynn');
 
                 if any(bfIndex)
-                    version = toolboxes(bfIndex).Version;
-                    latestVersion = strip(webread('http://data.blackfynn.io/public-downloads/blackfynn-matlab/latest/matlab_version.txt'));
-                    if ~strcmp(version,latestVersion)
+                    version = split(toolboxes(bfIndex).Version,'.');
+                    latestVersion = split(strip(webread('http://data.blackfynn.io/public-downloads/blackfynn-matlab/latest/matlab_version.txt')),'.');
+                    if version{1}~=latestVersion{1} || version{2}~=latestVersion{2}
                         url = 'http://data.blackfynn.io/public-downloads/blackfynn-matlab/latest/blackfynn.mltbx';
                         fprintf(2, '\nThere is a newer version of the Blackfynn toolbox available (%s).\nPlease download the <a href = "%s">latest version</a> and update the toolbox.\n',latestVersion, url);
                     end

@@ -13,7 +13,21 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext --> <span class="helptopic">update</span> updates dataset on the platform.</pre></div><!--after help -->
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">update</span> updates dataset on the platform.
+    OBJ = <span class="helptopic">update</span>(OBJ) pushes changes to the object that were
+    created locally and updates the objects on the platform.
+ 
+    Changes to objects such as the name and the description are
+    not automatically pushed to the Blackfynn servers. Users
+    will have to call the update function manually to push
+    these changes.
+ 
+    For example:
+        DS = BF.datasets(1);
+        DS.name = 'Updated name';
+        DS.update();</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink">
+        <a href="matlab:helpwin Blackfynn">Blackfynn</a>
+</div>
       <!--Method-->
       <div class="sectiontitle">Method Details</div>
       <table class="class-details">

@@ -1,26 +1,34 @@
 classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
-    % Base class to serve all Blackfynn objects.
-    
+    % BFBASENODE Abstract base-class for all Blackfynn objects.
+    %   All objects stored on the blackfynn platform (including meta-data
+    %   and files) are derived from the abstract BFBASENODE class. Each
+    %   object will have an ID and an associated Blackfynn Session.
+    %
     
     properties (Hidden)
         id          % ID on Blackfynn platform
     end
     properties(Access = protected)
         session     % Session ID
-        
     end
     
     methods
-        function obj = BFBaseNode(varargin)            
+        function obj = BFBaseNode(session, id)
+            % BFBASENODE Constructor for the BFBASNODE CLASS
+            %   OBJ = BFBASENODE(SESSION, 'id') creates an object of class
+            %   BFBASENODE where SESSION is an object of class BFSESSION,
+            %   and 'id' is the Blackfynn ID of the object.
+            
+            narginchk(2,2)
             if nargin
-                obj.session = varargin{1};
-                obj.id = varargin{2};
+                obj.session = session;
+                obj.id = id;
             end
         end
     end
     
     methods (Sealed = true)    
-        function m = methods(obj)
+        function varargout = methods(obj)
             %METHODS  Shows all methods associated with the object.
             %   METHODS(OBJ) displays all methods of OBJ.
             %
@@ -33,10 +41,13 @@ classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
                 'listener' 'cat' 'horzcat' 'vertcat'};
             
             if nargout
-                fncs = builtin('methods', obj);
+                [fncs, full_fncs] = builtin('methods', obj);
                 blockIdx = cellfun(@(x) any(strcmp(x, blockmethods)), fncs);
                 fncs(blockIdx) = [];
-                m = fncs;
+                varargout{1} = fncs;
+                if nargout > 1
+                    varargout{2} = full_fncs;
+                end
                 return;
             end
             
@@ -96,9 +107,11 @@ classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
     
     methods (Static)
         function gotoSite()
-            %GOTOSITE  Opens the Blackfynn platform in an external browser.
+            % GOTOSITE  Opens the Blackfynn platform in an external browser.
+            %   GOTOSITE() opens a web browser and opens the platform
+            %   application in the browser.
             
-            web('app.blackfynn.io','-browser');
+            web('app.blackfynn.io', '-browser');
         end
     end
     
