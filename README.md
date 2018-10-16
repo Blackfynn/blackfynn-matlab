@@ -13,7 +13,7 @@ The Blackfynn MATLAB client can be installed using three methods:
 3. Working directly from the sourcecode
 
 ### 1. Downloading and installing toolbox (recommended)
-In order to install the latest release of the MATLAB client，follow the instructions on the Matlab quickstart quide: [MATLAB installation guide](http://help.blackfynn.com/developer-tools/matlab/installing-the-matlab-client). This method automatically handles the Java dependencies and adds the client to the MATLAB path. 
+In order to install the latest release of the MATLAB client，follow the instructions on the Matlab quickstart quide: [MATLAB installation guide](https://developer.blackfynn.io/matlab/index.html). This method automatically handles the Java dependencies and adds the client to the MATLAB path. 
 
 ### 2. Installing toolbox from source code
 
@@ -57,4 +57,4 @@ then add this lines (update path) and restart MATLAB:
 
 ## Documentation
 
-For more details about the client, please refer to the [documentation pages](http://help.blackfynn.com/developer-tools#matlab).
+For more details about the client, please refer to the [documentation pages](https://developer.blackfynn.io/matlab).
