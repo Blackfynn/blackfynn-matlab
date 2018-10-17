@@ -6,7 +6,10 @@ entries:
   - title: Getting started
     output: web
     folderitems:
-    - title: Installation/Setup
+    - title: Installation
       url: /index.html
       type: homepage
+      output: web
+    - title: Tutorial 1 - The basics
+      url: /tutorial1.html
       output: web

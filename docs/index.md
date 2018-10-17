@@ -1,13 +1,12 @@
 ---
-title: "Getting started with the MATLAB Toolbox"
+title: "Installation of the Blackfynn toolbox"
 keywords: MATLAB Blackfynn
-tags: [getting_started,installation,setup]
 sidebar: matlab_docs_sidebar
 permalink: index.html
-summary: The MATLAB toolbox for Blackfynn allows users to programmatically interact with the Blackfynn platform from MATLAB. This page describes how to install the toolbox and how to configure it to connect to an account on the Blackfynn platform.
+summary: Installing the Blackfynn toolbox
 ---
 
-The MATLAB toolbox for Blackfynn allows users to programmatically interact with the Blackfynn platform from MATLAB.
+The MATLAB toolbox for Blackfynn allows users to programmatically interact with the Blackfynn platform from MATLAB. This page describes how to install the toolbox from a precompiled toolbox, or using the source-code that is available on [Github](https://github.com/Blackfynn/blackfynn-matlab).
 
 
 ## Installing the MATLAB Client
@@ -69,19 +68,5 @@ then add this lines (update path) and restart MATLAB:
 ```
 
 {% include note.html content="For detailed information about changing the MATLAB java classpath, refer to the [MATLAB Documentation](https://www.mathworks.com/help/matlab/ref/javaclasspath.html)." %}
-
-
-
-## Configuring the MATLAB Toolbox
-
-In order to access your data programmatically, you'll have to create an API Token and secret using in the platform. You can find instructions on how to create this [here](http://help.blackfynn.com/developers/overview/creating-an-api-key-for-the-blackfynn-clients). Once you have generated an API token and secret in the platform, you will be able to configure your client and set up a profile from the MATLAB command line by using ```Blackfynn.setup```
-
-``` matlab
->> Blackfynn.setup
-Enter a profile name: testName
-Provide API key: xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
-Provide API secret: xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxx
-Make sure you copy and paste the credentials that you generated from the platform to the API key and secret respectively. Once you have installed the Matlab client, and configured the client for your account, you can start to interact with the data on our platform. 
-```
 
 {% include links.html %}
