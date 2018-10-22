@@ -1,0 +1,71 @@
+---
+title: (BFModel) addProperty
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: bfmodel_addproperty.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext --> <span class="helptopic">addProperty</span>  Adds a property to a specific model
+    PROP = <span class="helptopic">addProperty</span>(OBJ, 'Name', 'Datatype', 'Description')
+    add a single property to the model OBJ.
+ 
+    PROP = <span class="helptopic">addProperty</span>(..., 'mult', true) allows users to add
+    multiple values for the property in an instance.
+ 
+    PROP = <span class="helptopic">addProperty</span>(..., 'enum', [...]) restricts the values
+    of a property to the list specified in the array following
+    the 'enum' parameter. This array can either be a cell array
+    of strings when the 'dataType' is String, or a 1D array of
+    numeric values if the 'dataType' is Double, or Long. You
+    cannot use this attribute  for 'dataTypes' of Boolean, and
+    Date.
+ 
+    PROP = <span class="helptopic">addProperty</span>(..., 'required', true) makes the
+    property a required property. Users cannot create records
+    without specifying a value for this property.
+ 
+    The 'Datatype' for each property has to be one of:
+    ["String", "Boolean", "Date", "Double", or "Long"].
+ 
+    This function automatically sets the first property of a
+    model to be the 'Concept Title'. This can be modified in
+    the web-application.
+ 
+    For example:
+        M = dataset.models(1)
+        M.<span class="helptopic">addProperty</span>('newProp', 'String', 'Description')
+ 
+        M.<span class="helptopic">addProperty</span>('newProp', 'Number', 'Description',
+        'mult',true,'enum', [ 1.1 2.4 3 4.2 5 ])
+ 
+        M.<span class="helptopic">addProperty</span>('newProp', 'Decimal', 'Description',
+        'enum', int64([ 1 2 3 4 5 ]))
+ 
+        M.<span class="helptopic">addProperty</span>('newProp', 'Decimal', 'Description',
+        'enum', int64([ 1 2 3 4 5 ]), 'required', true)</pre></div><!--after help -->
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>

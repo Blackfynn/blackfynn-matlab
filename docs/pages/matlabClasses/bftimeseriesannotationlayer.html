@@ -1,9 +1,9 @@
 ---
-title: BFDataset
+title: BFTimeseriesAnnotationLayer
 keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
-last_updated: Oct 16, 2018
+last_updated: Oct 21, 2018
 sidebar: matlab_docs_sidebar
-permalink: bfdataset.html
+permalink: bftimeseriesannotationlayer.html
 folder: mydoc
 ---
 <html>
@@ -12,16 +12,17 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">BFDataset</span>  Representation of a Dataset object.
-    A DATASET on the Blackfynn platform consists of a collection of
-    files, a series of metadata objects and users. A dataset is the
-    priciple container for data on the platform.</pre></div><!--after help -->
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">BFTimeseriesAnnotationLayer</span> Object that represents a timeseries annotation layer
+ 
+  Annotation layers contain collections of annotations. A timeseries
+  package can have multiple annotation layers, and each annotation layer
+  can have multiple annotations.</pre></div><!--after help -->
       <!--Class-->
       <div class="sectiontitle">Class Details</div>
       <table class="class-details">
          <tr>
             <td class="class-detail-label">Superclasses</td>
-            <td><a href="bfbasecollection.html">BFBaseCollection</a></td>
+            <td><a href="bfbasenode.html">BFBaseNode</a></td>
          </tr>
          <tr>
             <td class="class-detail-label">Sealed</td>
@@ -37,8 +38,8 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name"><a href="bfdataset_bfdataset.html">BFDataset</a></td>
-            <td class="m-help">Constructor of the BFDATASET Class&nbsp;</td>
+            <td class="name"><a href="bftimeseriesannotationlayer_bftimeseriesannotationlayer.html">BFTimeseriesAnnotationLayer</a></td>
+            <td class="m-help">Constructor of&nbsp;</td>
          </tr>
       </table>
       <!--Properties-->
@@ -47,27 +48,15 @@ folder: mydoc
       <table class="summary-list">
          <tr class="summary-item">
             <td class="name">description</td>
-            <td class="m-help">Description of the dataset&nbsp;</td>
-         </tr>
-         <tr class="summary-item">
-            <td class="name">items</td>
-            <td class="m-help">The contents of a folder or a dataset.&nbsp;</td>
-         </tr>
-         <tr class="summary-item">
-            <td class="name">models</td>
-            <td class="m-help">Models that are defined within the dataset&nbsp;</td>
+            <td class="m-help">Layer's description&nbsp;</td>
          </tr>
          <tr class="summary-item">
             <td class="name">name</td>
-            <td class="m-help">Name of the datanode&nbsp;</td>
+            <td class="m-help">Layer's name&nbsp;</td>
          </tr>
          <tr class="summary-item">
             <td class="name">session</td>
             <td class="m-help">Session ID&nbsp;</td>
-         </tr>
-         <tr class="summary-item">
-            <td class="name">type</td>
-            <td class="m-help">Type of the datanode &nbsp;</td>
          </tr>
       </table>
       <!--Methods-->
@@ -75,25 +64,31 @@ folder: mydoc
       </div>
       <table class="summary-list">
          
-         
          <tr class="summary-item">
             <td class="attributes">
                &nbsp;
                
             </td>
-            <td class="name"><a href="bfdataset_createmodel.html">createModel</a></td>
-            <td class="m-help">Creates a model in the dataset&nbsp;</td>
+            <td class="name"><a href="bftimeseriesannotationlayer_annotations.html">annotations</a></td>
+            <td class="m-help">Gets all the annotations for a given layer.&nbsp;</td>
          </tr>
          <tr class="summary-item">
             <td class="attributes">
                &nbsp;
                
             </td>
-            <td class="name"><a href="bfbasecollection_createfolder.html">createfolder</a></td>
-            <td class="m-help">creates a new folder within the object.&nbsp;</td>
+            <td class="name"><a href="bftimeseriesannotationlayer_annotations2table.html">annotations2table</a></td>
+            <td class="m-help">stores all of the annotations associated with a&nbsp;</td>
          </tr>
          
-         
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="bftimeseriesannotationlayer_delete_annotation.html">delete_annotation</a></td>
+            <td class="m-help">Removes the specified annotation&nbsp;</td>
+         </tr>
          
          
          
@@ -119,15 +114,6 @@ folder: mydoc
          
          
          <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bfbasecollection_listitems.html">listitems</a></td>
-            <td class="m-help">Returns list of items in the dataset or collection. &nbsp;</td>
-         </tr>
-         
-         <tr class="summary-item">
             <td class="attributes">Sealed 
                &nbsp;
                
@@ -138,14 +124,13 @@ folder: mydoc
          
          
          <tr class="summary-item">
-            <td class="attributes">Sealed 
+            <td class="attributes">
                &nbsp;
                
             </td>
-            <td class="name"><a href="bfdataset_update.html">update</a></td>
-            <td class="m-help">updates dataset on the platform.&nbsp;</td>
+            <td class="name"><a href="bftimeseriesannotationlayer_show_annotations.html">show_annotations</a></td>
+            <td class="m-help">displays all the annotations for a given layer object in the console &nbsp;</td>
          </tr>
-         
       </table>
       <!--Events-->
       <div class="sectiontitle"><a name="events"></a>Event Summary

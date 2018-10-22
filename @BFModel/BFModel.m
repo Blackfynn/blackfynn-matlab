@@ -15,11 +15,15 @@ classdef BFModel < BFBaseModelNode
     end
 
     methods
-        function obj = BFModel(varargin)
-            %BFBASEMODELNODE Construct an instance of this class
-            %   args = [session, id, name, dataset_id, display_name,
-            %           description, locked, created_at, updated_at]
-            obj = obj@BFBaseModelNode(varargin{:});
+        function obj = BFModel(session, id, name, displayName, ...
+                description, locked,createdAt, updatedAt)
+            %BFModel Construct an instance of this class
+            %   OBJ = BFMODEL(SESSION, 'id', 'name', 'displayName',
+            %   'description', LOCKED, 'createdAt', 'updatedAt') creates an
+            %   object of class BFMODEL.
+            
+            obj = obj@BFBaseModelNode(session, id, name, displayName, ...
+                description, locked,createdAt, updatedAt);
         end
         function records = getRecords(obj, varargin)
             %GETRECORDS Returns records of the given model
@@ -87,6 +91,16 @@ classdef BFModel < BFBaseModelNode
             
         end
         function success = deleteRecords(obj, records)
+            % DELETERECORDS Deletes records from the platform
+            %   SUCCESS = DELETERECORDS(OBJ, RECORDS) deletes the RECORDS
+            %   from the platform. RECORDS is an object, or an array of
+            %   objects of type BFRECORD which should belong to the current
+            %   model.
+            %
+            %   For example:
+            %       M = dataset.models(1);
+            %       RECORDS = M.getRecords();
+            %       M.DELETERECORDS(RECORDS(1:10);
             
             if ~isa(records, 'BFRecord')
                 error('Need to supply records of type @BFRecord');
@@ -109,37 +123,94 @@ classdef BFModel < BFBaseModelNode
             end
             
         end
-        function obj = addProperties(obj, name, dataType, description, varargin)
+        function prop = addProperty(obj, name, dataType, description, varargin)
             %ADDPROPERTY  Adds a property to a specific model
-            %   OBJ = ADDPROPERTY(OBJ, 'Name', 'Datatype', 'Description')
-            %   add a single property to the model OBJ. 
-            %   OBJ = ADDPROPERTY(OBJ, NAME, DATATYPE, DESCRIPTION) adds
-            %   one of more properties to the current model OBJ. 
+            %   PROP = ADDPROPERTY(OBJ, 'Name', 'Datatype', 'Description')
+            %   add a single property to the model OBJ.
             %
-            %   The 'Datatype' for each property has to be one of: ["String`",
-            %   "Boolean", "Date", "Number", or "Decimal"].
+            %   PROP = ADDPROPERTY(..., 'mult', true) allows users to add
+            %   multiple values for the property in an instance.
+            %
+            %   PROP = ADDPROPERTY(..., 'enum', [...]) restricts the values
+            %   of a property to the list specified in the array following
+            %   the 'enum' parameter. This array can either be a cell array
+            %   of strings when the 'dataType' is String, or a 1D array of
+            %   numeric values if the 'dataType' is Double, or Long. You
+            %   cannot use this attribute  for 'dataTypes' of Boolean, and
+            %   Date.
+            %
+            %   PROP = ADDPROPERTY(..., 'required', true) makes the
+            %   property a required property. Users cannot create records
+            %   without specifying a value for this property.
+            %
+            %   The 'Datatype' for each property has to be one of:
+            %   ["String", "Boolean", "Date", "Double", or "Long"].
             %
             %   This function automatically sets the first property of a
             %   model to be the 'Concept Title'. This can be modified in
             %   the web-application.
+            %
+            %   For example:
+            %       M = dataset.models(1)
+            %       M.ADDPROPERTY('newProp', 'String', 'Description')
+            %
+            %       M.ADDPROPERTY('newProp', 'Number', 'Description',
+            %       'mult',true,'enum', [ 1.1 2.4 3 4.2 5 ])
+            %
+            %       M.ADDPROPERTY('newProp', 'Decimal', 'Description',
+            %       'enum', int64([ 1 2 3 4 5 ]))
+            %
+            %       M.ADDPROPERTY('newProp', 'Decimal', 'Description',
+            %       'enum', int64([ 1 2 3 4 5 ]), 'required', true)
             
             
             % Check inputs
+            multInput = false;
+            enumInput = [];
+            requiredInput = false;
             if nargin < 4
                 error('Incorrect number of input arguments.')
+            elseif ~isempty(varargin) 
+                assert(~mod(length(varargin),2), 'Incorrect number of input arguments.');
+                for i=1:2:length(varargin)
+                    switch varargin{i}
+                        case 'mult'
+                            multInput = varargin{i+1};
+                        case 'enum'
+                            enumInput = varargin{i+1};
+                        case 'required'
+                            requiredInput = varargin{i+1};
+                        otherwise
+                            error('Incorrect input arguments.')
+                    end
+                end
             end
             
-            multiprop = false;
-            if isa(name,'char')
-                assert(isa(description,'char') && isa(dataType,'char'), 'When adding single property, input variables for name, datatype,and description need to be of type ''char''');
-            else
-                assert(isa(name,'cell'), 'When adding multiple properties, name, datatype and description input variables need to be of type cell-array');
-                assert(length(name) == length(dataType) && length(dataType)==length(description), 'All input variables need to be cell arrays with the same length.');
-                multiprop = true;
-            end
+            assert(isa(description,'char') && isa(dataType,'char'), ...
+                'When adding single property, input variables for name, datatype,and description need to be of type ''char''');
+
+            % Check length enum/mult inputs
+            assert(isempty(multInput) || length(multInput) == 1, ...
+                'MULT input can only be of length 1 for a single property.');
+            assert(isempty(enumInput) || any(size(enumInput)== 1), ...
+                'Enum input has to be a vector');
+
+            % Check type of enum/mult
+            assert(isempty(multInput) || isa(multInput, 'logical'), 'MULT input must be of type ''logical''');
             
             % Get existing properties from webservice
             existingProps = obj.session.conceptsAPI.getProperties(obj.datasetId, obj.id);
+            
+            % Replace empty unit by empty string unit
+            for i=1: length(existingProps)
+                try
+                    ff = fieldnames(existingProps(i).dataType.items);
+                    if any(strcmp('unit',ff))
+                        existingProps(i).dataType.items.unit = "";
+                    end
+                catch
+                end
+            end
             
             % Set concept title if no other properties yet.
             setConceptTitle = true;
@@ -147,37 +218,46 @@ classdef BFModel < BFBaseModelNode
                 setConceptTitle = false;
             end
             
-            newProps = struct();
-            if multiprop
-                for i=1:length(name)
-                    assert(any(strcmp(dataType{i},{'String' 'Boolean', 'Date', 'Double', 'Long'})), ...
-                    'Datatype needs to be one of: [''Text'' ''Boolean'', ''Date'', ''Double'', ''Long''. ');
+            assert(any(strcmp(dataType,{'String' 'Boolean', 'Date', 'Double', 'Long'})), ...
+                'Datatype needs to be one of: [''Text'' ''Boolean'', ''Date'', ''Double'', ''Long''. ');
+            
+            % Set complex datatype for multivalue and enum.
+            dataTypeObj = dataType;
+            if multInput || ~isempty(enumInput)
+                dataTypeObj = struct('type','array','items', struct('type', dataType));
                 
-                    newProps(i).conceptTitle = setConceptTitle;
-                    newProps(i).dataType = dataType{i};
-                    newProps(i).default = true;
-                    newProps(i).description = "";
-                    newProps(i).displayName = name{i};
-                    newProps(i).locked = false;
-                    newProps(i).name = BFConceptsAPI.slugFromString(name{i});
-                    newProps(i).value = "";
-                    
-                    setConceptTitle = false;
+                if ~isempty(enumInput)
+                   dataTypeObj.items.enum = enumInput;
+                   
+                   % Check if enum type matches dataType
+                   assert(~any(strcmp(dataType, {'Date','Boolean'})), ...
+                       "Enum parameter is not allowed for dataTypes ''Date'' or ''Boolean''.");
+                   
+                   switch dataType
+                       case 'String'
+                            assert(isa(enumInput, 'cell'), 'Enum must be cell array of Strings for datatype: String');
+                            assert(all(cellfun(@(x) ischar(x),enumInput)), ...
+                                'Enum must be cell array of Strings for datatype: String');
+                       case 'Double'
+                            assert(isa(enumInput, 'double'), 'Enum must be 1xN numeric array of doubles for datatype: Double');
+                       case 'Long'
+                            assert(isa(enumInput, 'int64'), 'Enum must be 1xN numeric array of int64 for datatype: Long');
+                       otherwise
+                           error('Incorrect datatype.');
+                   end
                 end
-                
-            else
-                assert(any(strcmp(dataType,{'String' 'Boolean', 'Date', 'Double', 'Long'})), ...
-                    'Datatype needs to be one of: [''Text'' ''Boolean'', ''Date'', ''Double'', ''Long''. ');
-                newProps.conceptTitle = setConceptTitle;
-                newProps.dataType = dataType;
-                newProps.default = true;
-                newProps.description = "";
-                newProps.displayName = name;
-                newProps.locked = false;
-                newProps.name = BFConceptsAPI.slugFromString(name);
-                newProps.value = "";
-                
             end
+            
+            newProps = struct();
+            newProps.conceptTitle = setConceptTitle;
+            newProps.dataType = dataTypeObj;
+            newProps.default = requiredInput;
+            newProps.description = "";
+            newProps.displayName = name;
+            newProps.locked = false;
+            newProps.name = BFConceptsAPI.slugFromString(name);
+            newProps.value = "";
+            newProps.unit = "";
                         
             resp = obj.session.conceptsAPI.updateModelProperties(...
                 obj.datasetId, obj.id, existingProps, newProps);
@@ -188,7 +268,11 @@ classdef BFModel < BFBaseModelNode
             
             obj.props = BFModelProperty.createFromResponse(resp.Body.Data, obj.session);
             obj.nrProperties = length(obj.props);
-             
+            
+            % find created property and return
+            propNames = {obj.props.name};
+            prop = obj.props(strcmp(newProps.name, propNames));
+            
         end
     end
     
@@ -196,7 +280,7 @@ classdef BFModel < BFBaseModelNode
         function s = getFooter(obj)
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id,class(obj));
+                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id,class(obj));
             else
                 s = '';
             end

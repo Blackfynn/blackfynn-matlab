@@ -1,9 +1,9 @@
 ---
-title: BFModel
+title: BFDataset
 keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
-last_updated: Oct 16, 2018
+last_updated: Oct 21, 2018
 sidebar: matlab_docs_sidebar
-permalink: bfmodel.html
+permalink: bfdataset.html
 folder: mydoc
 ---
 <html>
@@ -12,17 +12,16 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext --> <span class="helptopic">BFModel</span> A metadata model on the Blackfynn platform 
-    The <span class="helptopic">BFModel</span> class represents metadatamodels on the Blackfynn
-    platform. Users can create models to define how metadata is
-    organized within a dataset. Users can then create records for each
-    of these models and link records to eachother.</pre></div><!--after help -->
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">BFDataset</span>  Representation of a Dataset object.
+    A DATASET on the Blackfynn platform consists of a collection of
+    files, a series of metadata objects and users. A dataset is the
+    priciple container for data on the platform.</pre></div><!--after help -->
       <!--Class-->
       <div class="sectiontitle">Class Details</div>
       <table class="class-details">
          <tr>
             <td class="class-detail-label">Superclasses</td>
-            <td><a href="bfbasemodelnode.html">BFBaseModelNode</a></td>
+            <td><a href="bfbasecollection.html">BFBaseCollection</a></td>
          </tr>
          <tr>
             <td class="class-detail-label">Sealed</td>
@@ -38,8 +37,8 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name"><a href="bfmodel_bfmodel.html">BFModel</a></td>
-            <td class="m-help">BFBASEMODELNODE Construct an instance of this class&nbsp;</td>
+            <td class="name"><a href="bfdataset_bfdataset.html">BFDataset</a></td>
+            <td class="m-help">Constructor of the BFDATASET Class&nbsp;</td>
          </tr>
       </table>
       <!--Properties-->
@@ -48,41 +47,33 @@ folder: mydoc
       <table class="summary-list">
          <tr class="summary-item">
             <td class="name">description</td>
-            <td class="m-help">Description of the model&nbsp;</td>
+            <td class="m-help">Description of the dataset&nbsp;</td>
          </tr>
          <tr class="summary-item">
-            <td class="name">locked</td>
-            <td class="m-help">Is model locked?&nbsp;</td>
+            <td class="name">items</td>
+            <td class="m-help">The contents of a folder or a dataset.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">models</td>
+            <td class="m-help">Models that are defined within the dataset&nbsp;</td>
          </tr>
          <tr class="summary-item">
             <td class="name">name</td>
-            <td class="m-help">Identifying property&nbsp;</td>
-         </tr>
-         <tr class="summary-item">
-            <td class="name">nrRecords</td>
-            <td class="m-help">Number of records for this model&nbsp;</td>
-         </tr>
-         <tr class="summary-item">
-            <td class="name">props</td>
-            <td class="m-help">Array of property details&nbsp;</td>
+            <td class="m-help">Name of the datanode&nbsp;</td>
          </tr>
          <tr class="summary-item">
             <td class="name">session</td>
             <td class="m-help">Session ID&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">type</td>
+            <td class="m-help">Type of the datanode &nbsp;</td>
          </tr>
       </table>
       <!--Methods-->
       <div class="sectiontitle"><a name="methods"></a>Method Summary
       </div>
       <table class="summary-list">
-         <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bfmodel_addproperties.html">addProperties</a></td>
-            <td class="m-help">ADDPROPERTY  Adds a property to a specific model&nbsp;</td>
-         </tr>
          
          
          <tr class="summary-item">
@@ -90,17 +81,16 @@ folder: mydoc
                &nbsp;
                
             </td>
-            <td class="name"><a href="bfmodel_createrecords.html">createRecords</a></td>
-            <td class="m-help">CREATE  Create a record for a particular model&nbsp;</td>
+            <td class="name"><a href="bfdataset_createmodel.html">createModel</a></td>
+            <td class="m-help">Creates a model in the dataset&nbsp;</td>
          </tr>
-         
          <tr class="summary-item">
             <td class="attributes">
                &nbsp;
                
             </td>
-            <td class="name"><a href="bfmodel_deleterecords.html">deleteRecords</a></td>
-            <td class="m-help">&nbsp;</td>
+            <td class="name"><a href="bfbasecollection_createfolder.html">createfolder</a></td>
+            <td class="m-help">creates a new folder within the object.&nbsp;</td>
          </tr>
          
          
@@ -112,23 +102,9 @@ folder: mydoc
          
          
          
-         <tr class="summary-item">
-            <td class="attributes">protected 
-               &nbsp;
-               
-            </td>
-            <td class="name">getProperties</td>
-            <td class="m-help">&nbsp;</td>
-         </tr>
          
-         <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bfmodel_getrecords.html">getRecords</a></td>
-            <td class="m-help">Returns records of the given model&nbsp;</td>
-         </tr>
+         
+         
          <tr class="summary-item">
             <td class="attributes">Static 
                &nbsp;
@@ -138,17 +114,18 @@ folder: mydoc
             <td class="m-help">Opens the Blackfynn platform in an external browser.&nbsp;</td>
          </tr>
          
+         
+         
+         
+         
          <tr class="summary-item">
-            <td class="attributes">protected 
+            <td class="attributes">
                &nbsp;
                
             </td>
-            <td class="name">handleGetRecords</td>
-            <td class="m-help">&nbsp;</td>
+            <td class="name"><a href="bfbasecollection_listitems.html">listitems</a></td>
+            <td class="m-help">Returns list of items in the dataset or collection. &nbsp;</td>
          </tr>
-         
-         
-         
          
          <tr class="summary-item">
             <td class="attributes">Sealed 
@@ -159,6 +136,15 @@ folder: mydoc
             <td class="m-help">Shows all methods associated with the object.&nbsp;</td>
          </tr>
          
+         
+         <tr class="summary-item">
+            <td class="attributes">Sealed 
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="bfdataset_update.html">update</a></td>
+            <td class="m-help">updates dataset on the platform.&nbsp;</td>
+         </tr>
          
       </table>
       <!--Events-->

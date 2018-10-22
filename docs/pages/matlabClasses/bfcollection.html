@@ -1,9 +1,9 @@
 ---
-title: BFDataPackage
+title: BFCollection
 keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
-last_updated: Oct 16, 2018
+last_updated: Oct 21, 2018
 sidebar: matlab_docs_sidebar
-permalink: bfdatapackage.html
+permalink: bfcollection.html
 folder: mydoc
 ---
 <html>
@@ -12,17 +12,18 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">BFDataPackage</span> Represents any datapackage on the platform.</pre></div><!--after help -->
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">BFCollection</span>  An object that contains other collections or
+  packages.</pre></div><!--after help -->
       <!--Class-->
       <div class="sectiontitle">Class Details</div>
       <table class="class-details">
          <tr>
             <td class="class-detail-label">Superclasses</td>
-            <td><a href="bfbasedatanode.html">BFBaseDataNode</a></td>
+            <td><a href="bfbasecollection.html">BFBaseCollection</a></td>
          </tr>
          <tr>
             <td class="class-detail-label">Sealed</td>
-            <td>false</td>
+            <td>true</td>
          </tr>
          <tr>
             <td class="class-detail-label">Construct on load</td>
@@ -34,8 +35,8 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name"><a href="bfdatapackage_bfdatapackage.html">BFDataPackage</a></td>
-            <td class="m-help">Constructor for BFDATAPACKAGE&nbsp;</td>
+            <td class="name"><a href="bfcollection_bfcollection.html">BFCollection</a></td>
+            <td class="m-help">Base class used for ``BFCollection`` objects&nbsp;</td>
          </tr>
       </table>
       <!--Properties-->
@@ -43,12 +44,24 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
+            <td class="name">datasetId</td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">items</td>
+            <td class="m-help">The contents of a folder or a dataset.&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
             <td class="name">name</td>
             <td class="m-help">Name of the datanode&nbsp;</td>
          </tr>
          <tr class="summary-item">
             <td class="name">session</td>
             <td class="m-help">Session ID&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">state</td>
+            <td class="m-help">&nbsp;</td>
          </tr>
          <tr class="summary-item">
             <td class="name">type</td>
@@ -61,7 +74,14 @@ folder: mydoc
       <table class="summary-list">
          
          
-         
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="bfbasecollection_createfolder.html">createfolder</a></td>
+            <td class="m-help">creates a new folder within the object.&nbsp;</td>
+         </tr>
          
          
          
@@ -88,6 +108,14 @@ folder: mydoc
          
          
          
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="bfbasecollection_listitems.html">listitems</a></td>
+            <td class="m-help">Returns list of items in the dataset or collection. &nbsp;</td>
+         </tr>
          
          <tr class="summary-item">
             <td class="attributes">Sealed 
@@ -96,14 +124,6 @@ folder: mydoc
             </td>
             <td class="name"><a href="bfbasenode_methods.html">methods</a></td>
             <td class="m-help">Shows all methods associated with the object.&nbsp;</td>
-         </tr>
-         <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bfdatapackage_move.html">move</a></td>
-            <td class="m-help">Moves objects to a destination collection&nbsp;</td>
          </tr>
          
          

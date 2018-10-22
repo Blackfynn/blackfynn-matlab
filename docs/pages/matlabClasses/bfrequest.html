@@ -1,9 +1,9 @@
 ---
-title: BFBaseDataNode
+title: BFRequest
 keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
-last_updated: Oct 16, 2018
+last_updated: Oct 21, 2018
 sidebar: matlab_docs_sidebar
-permalink: bfbasedatanode.html
+permalink: bfrequest.html
 folder: mydoc
 ---
 <html>
@@ -12,17 +12,13 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">BFBaseDataNode</span> Abstract class underlying all package representations.
- 
-    All packages on the blackfynn platform share a number of
-    properties. These properties are captured in the <span class="helptopic">BFBaseDataNode</span>
-    class. The <span class="helptopic">BFBaseDataNode</span> class entends the BFBASENODE class.</pre></div><!--after help -->
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">BFRequest</span> Class representing a web-request to Blackfynn.</pre></div><!--after help -->
       <!--Class-->
       <div class="sectiontitle">Class Details</div>
       <table class="class-details">
          <tr>
             <td class="class-detail-label">Superclasses</td>
-            <td><a href="bfbasenode.html">BFBaseNode</a>, matlab.mixin.Heterogeneous</td>
+            <td>handle</td>
          </tr>
          <tr>
             <td class="class-detail-label">Sealed</td>
@@ -38,8 +34,8 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name"><a href="bfbasedatanode_bfbasedatanode.html">BFBaseDataNode</a></td>
-            <td class="m-help">Constructor for BFBASEDATANODE class&nbsp;</td>
+            <td class="name"><a href="bfrequest_bfrequest.html">BFRequest</a></td>
+            <td class="m-help">Class representing a web-request to Blackfynn.&nbsp;</td>
          </tr>
       </table>
       <!--Properties-->
@@ -47,16 +43,12 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name">name</td>
-            <td class="m-help">Name of the datanode&nbsp;</td>
+            <td class="name">getRequest</td>
+            <td class="m-help">&nbsp;</td>
          </tr>
          <tr class="summary-item">
-            <td class="name">session</td>
-            <td class="m-help">Session ID&nbsp;</td>
-         </tr>
-         <tr class="summary-item">
-            <td class="name">type</td>
-            <td class="m-help">Type of the datanode &nbsp;</td>
+            <td class="name">options</td>
+            <td class="m-help">&nbsp;</td>
          </tr>
       </table>
       <!--Methods-->
@@ -69,37 +61,27 @@ folder: mydoc
          
          
          
-         
-         
-         
-         
-         
-         
-         
-         
-         
          <tr class="summary-item">
-            <td class="attributes">Static 
+            <td class="attributes">
                &nbsp;
                
             </td>
-            <td class="name"><a href="bfbasenode_gotosite.html">gotoSite</a></td>
-            <td class="m-help">Opens the Blackfynn platform in an external browser.&nbsp;</td>
+            <td class="name"><a href="bfrequest_get.html">get</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="bfrequest_handleerror.html">handleError</a></td>
+            <td class="m-help">&nbsp;</td>
          </tr>
          
          
          
          
-         
-         
-         <tr class="summary-item">
-            <td class="attributes">Sealed 
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bfbasenode_methods.html">methods</a></td>
-            <td class="m-help">Shows all methods associated with the object.&nbsp;</td>
-         </tr>
          
          
          <tr class="summary-item">
@@ -107,10 +89,33 @@ folder: mydoc
                &nbsp;
                
             </td>
-            <td class="name"><a href="bfbasedatanode_update.html">update</a></td>
-            <td class="m-help">Updates the current object in the platform.&nbsp;</td>
+            <td class="name"><a href="bfrequest_post.html">post</a></td>
+            <td class="m-help">&nbsp;</td>
          </tr>
-         
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="bfrequest_put.html">put</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="bfrequest_setapikey.html">setAPIKey</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="attributes">
+               &nbsp;
+               
+            </td>
+            <td class="name"><a href="bfrequest_setorganization.html">setOrganization</a></td>
+            <td class="m-help">&nbsp;</td>
+         </tr>
       </table>
       <!--Events-->
       <div class="sectiontitle"><a name="events"></a>Event Summary

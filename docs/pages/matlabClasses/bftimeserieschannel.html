@@ -1,9 +1,9 @@
 ---
-title: BFTimeseriesAnnotationLayer
+title: BFTimeseriesChannel
 keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
-last_updated: Oct 16, 2018
+last_updated: Oct 21, 2018
 sidebar: matlab_docs_sidebar
-permalink: bftimeseriesannotationlayer.html
+permalink: bftimeserieschannel.html
 folder: mydoc
 ---
 <html>
@@ -12,21 +12,17 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">BFTimeseriesAnnotationLayer</span> Object that represents a timeseries annotation layer
- 
-  Annotation layers contain collections of annotations. A timeseries
-  package can have multiple annotation layers, and each annotation layer
-  can have multiple annotations.</pre></div><!--after help -->
+      <div class="helptext"><pre><!--helptext --> <span class="helptopic">BFTimeseriesChannel</span> Representation of a timeseries channel</pre></div><!--after help -->
       <!--Class-->
       <div class="sectiontitle">Class Details</div>
       <table class="class-details">
          <tr>
             <td class="class-detail-label">Superclasses</td>
-            <td><a href="bfbasenode.html">BFBaseNode</a></td>
+            <td><a href="bfbasedatanode.html">BFBaseDataNode</a></td>
          </tr>
          <tr>
             <td class="class-detail-label">Sealed</td>
-            <td>false</td>
+            <td>true</td>
          </tr>
          <tr>
             <td class="class-detail-label">Construct on load</td>
@@ -38,8 +34,8 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name"><a href="bftimeseriesannotationlayer_bftimeseriesannotationlayer.html">BFTimeseriesAnnotationLayer</a></td>
-            <td class="m-help">Args: [session, id, name, ts_id, descritpion)&nbsp;</td>
+            <td class="name"><a href="bftimeserieschannel_bftimeserieschannel.html">BFTimeseriesChannel</a></td>
+            <td class="m-help">Constructor of BFTIMESERIESCHANNEL class.&nbsp;</td>
          </tr>
       </table>
       <!--Properties-->
@@ -47,16 +43,40 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name">description</td>
-            <td class="m-help">Layer's description&nbsp;</td>
+            <td class="name">channelType</td>
+            <td class="m-help">Type of channel&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">endTime</td>
+            <td class="m-help">End time of channel in us&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">group</td>
+            <td class="m-help">Group that channel belongs to&nbsp;</td>
          </tr>
          <tr class="summary-item">
             <td class="name">name</td>
-            <td class="m-help">Layer's name&nbsp;</td>
+            <td class="m-help">Name of the datanode&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">rate</td>
+            <td class="m-help">Sampling rate of channel in Hz&nbsp;</td>
          </tr>
          <tr class="summary-item">
             <td class="name">session</td>
             <td class="m-help">Session ID&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">startTime</td>
+            <td class="m-help">Start time of channel in us&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">type</td>
+            <td class="m-help">Type of the datanode &nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">unit</td>
+            <td class="m-help">Boolean indicating channel is unit-data&nbsp;</td>
          </tr>
       </table>
       <!--Methods-->
@@ -64,31 +84,10 @@ folder: mydoc
       </div>
       <table class="summary-list">
          
-         <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bftimeseriesannotationlayer_annotations.html">annotations</a></td>
-            <td class="m-help">Gets all the annotations for a given layer.&nbsp;</td>
-         </tr>
-         <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bftimeseriesannotationlayer_annotations2table.html">annotations2table</a></td>
-            <td class="m-help">stores all of the annotations associated with a&nbsp;</td>
-         </tr>
          
-         <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bftimeseriesannotationlayer_delete_annotation.html">delete_annotation</a></td>
-            <td class="m-help">Removes the specified annotation&nbsp;</td>
-         </tr>
+         
+         
+         
          
          
          
@@ -113,6 +112,7 @@ folder: mydoc
          
          
          
+         
          <tr class="summary-item">
             <td class="attributes">Sealed 
                &nbsp;
@@ -128,9 +128,10 @@ folder: mydoc
                &nbsp;
                
             </td>
-            <td class="name"><a href="bftimeseriesannotationlayer_show_annotations.html">show_annotations</a></td>
-            <td class="m-help">displays all the annotations for a given layer object in the console &nbsp;</td>
+            <td class="name"><a href="bfbasedatanode_update.html">update</a></td>
+            <td class="m-help">Updates the current object in the platform.&nbsp;</td>
          </tr>
+         
       </table>
       <!--Events-->
       <div class="sectiontitle"><a name="events"></a>Event Summary

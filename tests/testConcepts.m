@@ -36,28 +36,44 @@ classdef testConcepts < matlab.unittest.TestCase
         function testCreateModel(testCase)
             % Create a model
             testCase.ds.createModel('Patient','This is a patient model');
-            testCase.verifyEqual(length(testCase.ds.models),1);
-            testCase.verifyEqual(testCase.ds.models(1).name, 'Patient'); 
-            
+            testCase.assertEqual(length(testCase.ds.models),1);
+            testCase.assertEqual(testCase.ds.models(1).name, 'Patient'); 
             model = testCase.ds.models(1);
             
             % Add a single property
-            model.addProperties('prop 1','String', 'Property 1');
-            prop = model.props(1);
+            prop = model.addProperty('prop 1','String', 'Property 1');
             testCase.verifyEqual(prop.name, 'prop_1');
             testCase.verifyEqual(prop.displayName, 'prop 1');
+            testCase.verifyEqual(prop.default, false);
+            testCase.verifyEqual(length(model.props), 1);
             
-            % Add a set of properties
-            model.addProperties({'prop 2' 'prop 3'},{'Long' 'Double'}, {'Property 2' 'Property 3'});
-            testCase.verifyEqual(model.nrProperties,3);
-            testCase.verifyEqual(model.props(3).dataType,'Double');
+            % Add property with multiple values for String
+            prop = model.addProperty('prop 2', 'String', 'String Info', 'mult', true);
+            testCase.verifyEqual(prop.dataType.type, 'array');
+            testCase.verifyEqual(length(model.props), 2);
+
+            % Add property with enumerated values for String 
+            prop = model.addProperty('prop 3', 'String', 'String Info', 'enum', {'1' '2' '3'});
+            testCase.verifyEqual(prop.dataType.type, 'array');
+            testCase.verifyEqual(prop.dataType.items.enum, {'1'; '2'; '3'});
+            testCase.verifyEqual(length(model.props), 3);
             
-            % Update a property
-            
-            
-            % Delete a property
-            
-            
+            % Add property with enumerated values for Double 
+            prop = model.addProperty('prop 4', 'Double', 'Double Info', 'enum', [1 2 3]);
+            testCase.verifyEqual(prop.dataType.type, 'array');
+            testCase.verifyEqual(prop.dataType.items.enum, [1; 2; 3]);
+            testCase.verifyEqual(length(model.props), 4);
+
+            % Add property with enumerated values for Long 
+            prop = model.addProperty('prop 5', 'Long', 'Long Info', 'enum', int64([1 2 3]));
+            testCase.verifyEqual(prop.dataType.type, 'array');
+            testCase.verifyEqual(prop.dataType.items.enum, [1; 2; 3]);
+            testCase.verifyEqual(length(model.props), 5);
+
+            % Add a required property
+            prop = model.addProperty('prop 6','String', 'Property 1','required', true);
+            testCase.verifyEqual(prop.default, true);
+            testCase.verifyEqual(length(model.props), 6);
             
         end
         function testLinkingRecords(testCase)

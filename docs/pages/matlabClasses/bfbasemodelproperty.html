@@ -1,9 +1,9 @@
 ---
-title: BFBaseNode
+title: BFBaseModelProperty
 keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
-last_updated: Oct 16, 2018
+last_updated: Oct 21, 2018
 sidebar: matlab_docs_sidebar
-permalink: bfbasenode.html
+permalink: bfbasemodelproperty.html
 folder: mydoc
 ---
 <html>
@@ -12,13 +12,15 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext -->  Base class to serve all Blackfynn objects.</pre></div><!--after help -->
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">BFBaseModelProperty</span> Base representation for model properties
+    This class captures attributes for properties of models in the
+    Blackfynn platform. It is extended by the BFMODELPROPERTY class.</pre></div><!--after help -->
       <!--Class-->
       <div class="sectiontitle">Class Details</div>
       <table class="class-details">
          <tr>
             <td class="class-detail-label">Superclasses</td>
-            <td>handle, matlab.mixin.CustomDisplay</td>
+            <td><a href="bfbasenode.html">BFBaseNode</a></td>
          </tr>
          <tr>
             <td class="class-detail-label">Sealed</td>
@@ -34,8 +36,8 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name"><a href="bfbasenode_bfbasenode.html">BFBaseNode</a></td>
-            <td class="m-help">Base class to serve all Blackfynn objects.&nbsp;</td>
+            <td class="name"><a href="bfbasemodelproperty_bfbasemodelproperty.html">BFBaseModelProperty</a></td>
+            <td class="m-help">Construct an instance of this class&nbsp;</td>
          </tr>
       </table>
       <!--Properties-->
@@ -43,8 +45,36 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
+            <td class="name">conceptTitle</td>
+            <td class="m-help">Boolean indicating property is concept title&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">createdAt</td>
+            <td class="m-help">String with property creation date&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">default</td>
+            <td class="m-help">Boolean indicating property is default&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">index</td>
+            <td class="m-help">Index of the property in the class&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">locked</td>
+            <td class="m-help">Boolean indicating property is locked&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">required</td>
+            <td class="m-help">Boolean indicating property is required&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
             <td class="name">session</td>
             <td class="m-help">Session ID&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">updatedAt</td>
+            <td class="m-help">String with property update data&nbsp;</td>
          </tr>
       </table>
       <!--Methods-->
