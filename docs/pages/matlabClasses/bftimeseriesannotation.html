@@ -1,9 +1,9 @@
 ---
-title: BFTabular
+title: BFTimeseriesAnnotation
 keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
-last_updated: Oct 16, 2018
+last_updated: Oct 21, 2018
 sidebar: matlab_docs_sidebar
-permalink: bftabular.html
+permalink: bftimeseriesannotation.html
 folder: mydoc
 ---
 <html>
@@ -12,13 +12,13 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext --> <span class="helptopic">BFTabular</span>  Object that represents a tabular package</pre></div><!--after help -->
+      <div class="helptext"><pre><!--helptext -->  Object that represents a timeseries annotation</pre></div><!--after help -->
       <!--Class-->
       <div class="sectiontitle">Class Details</div>
       <table class="class-details">
          <tr>
             <td class="class-detail-label">Superclasses</td>
-            <td><a href="bfdatapackage.html">BFDataPackage</a></td>
+            <td><a href="bfbasenode.html">BFBaseNode</a></td>
          </tr>
          <tr>
             <td class="class-detail-label">Sealed</td>
@@ -34,8 +34,8 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name"><a href="bftabular_bftabular.html">BFTabular</a></td>
-            <td class="m-help">Base class used for ``BFTabular`` objects&nbsp;</td>
+            <td class="name"><a href="bftimeseriesannotation_bftimeseriesannotation.html">BFTimeseriesAnnotation</a></td>
+            <td class="m-help">Base class used for&nbsp;</td>
          </tr>
       </table>
       <!--Properties-->
@@ -43,16 +43,48 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
+            <td class="name">annotationId</td>
+            <td class="m-help">Annotation's ID&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">channelIds</td>
+            <td class="m-help">IDs for the channels the annotation is associated to&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">description</td>
+            <td class="m-help">Annotation's description&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">endTime</td>
+            <td class="m-help">Annotation's end time&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">label</td>
+            <td class="m-help">Annotation's label&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">layerId</td>
+            <td class="m-help">ID of the layer the annotation is associated to&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
             <td class="name">name</td>
-            <td class="m-help">Name of the datanode&nbsp;</td>
+            <td class="m-help">Name of the layer the annotation is associated to&nbsp;</td>
          </tr>
          <tr class="summary-item">
             <td class="name">session</td>
             <td class="m-help">Session ID&nbsp;</td>
          </tr>
          <tr class="summary-item">
-            <td class="name">type</td>
-            <td class="m-help">Type of the datanode &nbsp;</td>
+            <td class="name">startTime</td>
+            <td class="m-help">Annotation's start time&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">timeSeriesId</td>
+            <td class="m-help">ID of the timeseries package the annotation is associated to&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">userId</td>
+            <td class="m-help">ID of the user that created the annotation&nbsp;</td>
          </tr>
       </table>
       <!--Methods-->
@@ -71,17 +103,6 @@ folder: mydoc
          
          
          
-         <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bftabular_getdata.html">getData</a></td>
-            <td class="m-help">get data from tabular package.&nbsp;</td>
-         </tr>
-         
-         
-         
          
          <tr class="summary-item">
             <td class="attributes">Static 
@@ -96,7 +117,6 @@ folder: mydoc
          
          
          
-         
          <tr class="summary-item">
             <td class="attributes">Sealed 
                &nbsp;
@@ -105,24 +125,7 @@ folder: mydoc
             <td class="name"><a href="bfbasenode_methods.html">methods</a></td>
             <td class="m-help">Shows all methods associated with the object.&nbsp;</td>
          </tr>
-         <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bfdatapackage_move.html">move</a></td>
-            <td class="m-help">Moves objects to a destination collection&nbsp;</td>
-         </tr>
          
-         
-         <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bfbasedatanode_update.html">update</a></td>
-            <td class="m-help">Updates the current object in the platform.&nbsp;</td>
-         </tr>
          
       </table>
       <!--Events-->

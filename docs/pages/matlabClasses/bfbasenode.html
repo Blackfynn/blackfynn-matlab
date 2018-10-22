@@ -1,9 +1,9 @@
 ---
-title: BFBaseCollection
+title: BFBaseNode
 keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
-last_updated: Oct 16, 2018
+last_updated: Oct 21, 2018
 sidebar: matlab_docs_sidebar
-permalink: bfbasecollection.html
+permalink: bfbasenode.html
 folder: mydoc
 ---
 <html>
@@ -12,19 +12,16 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">BFBaseCollection</span> Abstract class which is extended by both
-  BFCOLLECTIONS and BFDATASETS.
- 
-  Objects of this class have a set of 'items' which can either be a
-  datapackage or a datacollection.</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink">
-    <a href="matlab:helpwin BFCollection">BFCollection</a>, <a href="matlab:helpwin BFDataset">BFDataset</a>
-</div>
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">BFBaseNode</span> Abstract base-class for all Blackfynn objects.
+    All objects stored on the blackfynn platform (including meta-data
+    and files) are derived from the abstract <span class="helptopic">BFBaseNode</span> class. Each
+    object will have an ID and an associated Blackfynn Session.</pre></div><!--after help -->
       <!--Class-->
       <div class="sectiontitle">Class Details</div>
       <table class="class-details">
          <tr>
             <td class="class-detail-label">Superclasses</td>
-            <td><a href="bfbasedatanode.html">BFBaseDataNode</a></td>
+            <td>handle, matlab.mixin.CustomDisplay</td>
          </tr>
          <tr>
             <td class="class-detail-label">Sealed</td>
@@ -40,8 +37,8 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name"><a href="bfbasecollection_bfbasecollection.html">BFBaseCollection</a></td>
-            <td class="m-help">Constructor of the BFBASECOLLECTION class&nbsp;</td>
+            <td class="name"><a href="bfbasenode_bfbasenode.html">BFBaseNode</a></td>
+            <td class="m-help">Constructor for the BFBASNODE CLASS&nbsp;</td>
          </tr>
       </table>
       <!--Properties-->
@@ -49,36 +46,14 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name">items</td>
-            <td class="m-help">The contents of a folder or a dataset.&nbsp;</td>
-         </tr>
-         <tr class="summary-item">
-            <td class="name">name</td>
-            <td class="m-help">Name of the datanode&nbsp;</td>
-         </tr>
-         <tr class="summary-item">
             <td class="name">session</td>
             <td class="m-help">Session ID&nbsp;</td>
-         </tr>
-         <tr class="summary-item">
-            <td class="name">type</td>
-            <td class="m-help">Type of the datanode &nbsp;</td>
          </tr>
       </table>
       <!--Methods-->
       <div class="sectiontitle"><a name="methods"></a>Method Summary
       </div>
       <table class="summary-list">
-         
-         
-         <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bfbasecollection_createfolder.html">createfolder</a></td>
-            <td class="m-help">creates a new folder within the object.&nbsp;</td>
-         </tr>
          
          
          
@@ -106,15 +81,6 @@ folder: mydoc
          
          
          <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bfbasecollection_listitems.html">listitems</a></td>
-            <td class="m-help">Returns list of items in the dataset or collection. &nbsp;</td>
-         </tr>
-         
-         <tr class="summary-item">
             <td class="attributes">Sealed 
                &nbsp;
                
@@ -123,15 +89,6 @@ folder: mydoc
             <td class="m-help">Shows all methods associated with the object.&nbsp;</td>
          </tr>
          
-         
-         <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bfbasedatanode_update.html">update</a></td>
-            <td class="m-help">Updates the current object in the platform.&nbsp;</td>
-         </tr>
          
       </table>
       <!--Events-->

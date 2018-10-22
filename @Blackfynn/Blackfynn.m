@@ -15,7 +15,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
     end
     
     methods
-        function obj = Blackfynn(varargin)                  
+        function obj = Blackfynn(varargin)                      
             % BLACKFYNN Main class for interacting with Blackfynn platform.
             %   OBJ = BLACKFYN() opens a Blackfynn session with your default
             %   profile.
@@ -31,6 +31,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             %       Blackfynn.setup, Blackfynn.profiles
             
             narginchk(0,1);
+            obj = obj@BFBaseNode('','');
             
             userProfile = '';
             if nargin == 1
@@ -234,7 +235,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             
         end
 
-        function organizations = organizations(obj)         
+        function organizations = organizations(obj)             
             % ORGANIZATIONS  Returns all organizations for the user.
             %   OUT = ORGANIZATIONS(OBJ) returns all organizations that a
             %   user belongs to.
@@ -267,7 +268,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             end
         end
         
-        function delete(obj, delobjs)                       
+        function delete(obj, delobjs)                           
             % DELETE Deletes an object from the platform.
             %   DELETE(OBJ, DELOBJS) deletes the objects in the array
             %   DELOBJS. DELOBJS can be a combination of data packages,
@@ -310,7 +311,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             obj.delete_items(things);
         end
         
-        function out = get(obj, thing)                      
+        function out = get(obj, thing)                          
             % GET Returns any object based on its Blackfynn ID.
             %   OBJECT = GET(OBJ, 'id') returns the object associated with
             %   the provided Blackfynn ID. Object ids from datasets,
@@ -341,7 +342,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             end
         end
         
-        function success = upload(obj, dataset, path, varargin)
+        function success = upload(obj, dataset, path, varargin) 
             %UPLOAD  Upload files to the Blackfynn platform
             %   SUCCESS = UPLOAD(OBJ, DATASET, 'path') uploads the contents
             %   from the folder specified in 'path' to the dataset
@@ -360,12 +361,12 @@ classdef (Sealed) Blackfynn < BFBaseNode
 
     end
     
-    methods (Access = protected)                            
+    methods (Access = protected)                                
         function s = getFooter(obj)
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
                 url = sprintf('%s/%s/datasets',obj.session.web_host,obj.session.org);
-                s = sprintf('  <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',url,class(obj));
+                s = sprintf('  <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',url,class(obj));
             else
                 s = '';
             end
@@ -374,7 +375,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
     
     methods (Hidden, Access = {?BFBaseNode})
         
-        function out = getDataset(obj, id)                 
+        function out = getDataset(obj, id)                      
             % GETDATASET  Returns single dataset
             % OUT = GETDATASET(OBJ, 'id') returns a single dataset based on the
             % provided 'id'
@@ -383,7 +384,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             out = BFBaseDataNode.createFromResponse(resp, obj.session);
         end
         
-        function out = getPackage(obj, id)                 
+        function out = getPackage(obj, id)                      
             % GET_PACKAGE  Returns single package
             % OUT = GET_PACKAGE(OBJ, 'id') returns a single package based on the
             % provided 'id'
@@ -392,7 +393,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             out = BFBaseDataNode.createFromResponse(resp, obj.session);
         end
         
-        function out = getCollection(obj, id)              
+        function out = getCollection(obj, id)                   
             % GET_PACKAGE  Returns collection
             % OUT = GET_PACKAGE(OBJ, 'id') returns a single package based on the
             % provided 'id'
@@ -401,7 +402,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             out = BFBaseDataNode.createFromResponse(resp, obj.session);
         end
         
-        function success = delete_items(obj, thingIds)     
+        function success = delete_items(obj, thingIds)          
             success = obj.session.mainAPI.delete_packages(thingIds);
         end
     end

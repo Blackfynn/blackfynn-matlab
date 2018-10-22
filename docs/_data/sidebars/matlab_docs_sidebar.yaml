@@ -253,8 +253,8 @@ entries:
     - title: (BFModel) BFModel
       url: /bfmodel_bfmodel.html
       output: web
-    - title: (BFModel) addProperties
-      url: /bfmodel_addproperties.html
+    - title: (BFModel) addProperty
+      url: /bfmodel_addproperty.html
       output: web
     - title: (BFModel) createRecords
       url: /bfmodel_createrecords.html

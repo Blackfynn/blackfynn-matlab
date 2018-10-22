@@ -13,8 +13,16 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext --><span class="helptopic">BFModel/deleteRecords</span> is a function.
-    success = <span class="helptopic">deleteRecords</span>(obj, records)</pre></div><!--after help -->
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">deleteRecords</span> Deletes records from the platform
+    SUCCESS = <span class="helptopic">deleteRecords</span>(OBJ, RECORDS) deletes the RECORDS
+    from the platform. RECORDS is an object, or an array of
+    objects of type BFRECORD which should belong to the current
+    model.
+ 
+    For example:
+        M = dataset.models(1);
+        RECORDS = M.getRecords();
+        M.<span class="helptopic">deleteRecords</span>(RECORDS(1:10);</pre></div><!--after help -->
       <!--Method-->
       <div class="sectiontitle">Method Details</div>
       <table class="class-details">
