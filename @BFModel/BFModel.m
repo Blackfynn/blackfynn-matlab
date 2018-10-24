@@ -82,10 +82,10 @@ classdef BFModel < BFBaseModelNode
             % validate property names
             providedProps = fieldnames(data(1));
             if ~all(cellfun(@(x) any(strcmp(x,{obj.props.name})), providedProps))
-                fprintf(2, 'incorrect property names for object of type: %s\n', upper(obj.displayName));
+                fprintf(2, 'incorrect property names for object of type: %s\n', upper(obj.name));
                 return
             end
-            
+                        
             % validate property types
             records = obj.session.conceptsAPI.createRecords(obj.datasetId, obj.id, data);
             
@@ -301,9 +301,7 @@ classdef BFModel < BFBaseModelNode
     
     methods (Static)
         function out = createFromResponse(resp, session, datasetid)
-          %CREATEFROMRESPONSE  Create object from server response
-          % args = [session, id, name, display_name,
-            %           description, locked, created_at, updated_at ]  
+          %CREATEFROMRESPONSE  Create object from server response 
           
           out = BFModel(session, resp.id, resp.name, ...
               resp.displayName, resp.description, resp.locked,...

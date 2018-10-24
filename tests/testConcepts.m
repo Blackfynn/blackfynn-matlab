@@ -76,6 +76,37 @@ classdef testConcepts < matlab.unittest.TestCase
             testCase.verifyEqual(length(model.props), 6);
             
         end
+        
+        function createRecords(testCase)
+            
+            % Create record setting only one property
+            record = struct(...
+                'prop_6', 'This is a name');
+            
+            m = testCase.ds.models(1);
+            result = m.createRecords(record);
+            testCase.verifyEqual(result.prop_6, 'This is a name');
+            
+            % Create record for model with multiple properties
+            record = struct(...
+                'prop_1', 'this is a string', ...
+                'prop_3', '1', ...
+                'prop_4', 4, ... 
+                'prop_6', 'This is a name');
+            record.prop_2 = {'string 1' 'string2'};
+            
+            m = testCase.ds.models(1);
+            result = m.createRecords(record);
+            
+            testCase.verifyEqual(result.prop_6, 'This is a name');
+            
+            % Create multiple records with multiple properties
+            
+            
+            
+        end
+        
+        
         function testLinkingRecords(testCase)
         end
         

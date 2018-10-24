@@ -125,9 +125,17 @@ classdef BFConceptsAPI
                 
                 rec_array = struct('name',{},'value',{});
                 for j=1: length(fields)
-                    rec_array(j) = struct('name',fields{j}, 'value', curItem.(fields{j}));
+                    item = struct();
+                    item.name = fields{j};
+                    item.value = curItem.(fields{j});
+                    rec_array(j) = item;
                 end
-                batch_array{i} = sprintf('{"values": %s }',jsonencode(rec_array)); %#ok<AGROW>
+                jsonArray = jsonencode(rec_array);
+                if length(fields) == 1
+                    jsonArray = ['[' jsonArray ']']; %#ok<AGROW>
+                end
+                
+                batch_array{i} = sprintf('{"values": %s }',jsonArray); %#ok<AGROW>
             end
                     
             message = sprintf('%s,',batch_array{:});

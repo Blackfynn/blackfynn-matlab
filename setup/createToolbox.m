@@ -2,6 +2,15 @@
 projectFile = 'blackfynn.prj';
 outputFile = 'build/blackfynn';
 
+% Run tests
+setupFolder = pwd;
+cd ../tests
+out = runtests();
+if ~all([out.Passed])
+    quit()
+end
+cd(setupFolder);
+
 % Get version from Github tag (saved in version.txt)
 h = fopen('build/matlab_version.txt');
 newVersion = fscanf(h,'%s');
