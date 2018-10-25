@@ -54,26 +54,32 @@ classdef testConcepts < matlab.unittest.TestCase
 
             % Add property with enumerated values for String 
             prop = model.addProperty('prop 3', 'String', 'String Info', 'enum', {'1' '2' '3'});
-            testCase.verifyEqual(prop.dataType.type, 'array');
+            testCase.verifyEqual(prop.dataType.type, 'enum');
             testCase.verifyEqual(prop.dataType.items.enum, {'1'; '2'; '3'});
             testCase.verifyEqual(length(model.props), 3);
             
             % Add property with enumerated values for Double 
-            prop = model.addProperty('prop 4', 'Double', 'Double Info', 'enum', [1 2 3]);
-            testCase.verifyEqual(prop.dataType.type, 'array');
-            testCase.verifyEqual(prop.dataType.items.enum, [1; 2; 3]);
+            prop = model.addProperty('prop 4', 'Double', 'Double Info', 'enum', [1.1 2.2 3.3]);
+            testCase.verifyEqual(prop.dataType.type, 'enum');
+            testCase.verifyEqual(prop.dataType.items.enum, [1.1; 2.2; 3.3]);
             testCase.verifyEqual(length(model.props), 4);
 
             % Add property with enumerated values for Long 
             prop = model.addProperty('prop 5', 'Long', 'Long Info', 'enum', int64([1 2 3]));
-            testCase.verifyEqual(prop.dataType.type, 'array');
+            testCase.verifyEqual(prop.dataType.type, 'enum');
             testCase.verifyEqual(prop.dataType.items.enum, [1; 2; 3]);
             testCase.verifyEqual(length(model.props), 5);
+            
+            % Add property with multiple enumerated values for Double 
+            prop = model.addProperty('prop 6', 'Long', 'Long Info', 'mult', true, 'enum', int64([1 2 3]));
+            testCase.verifyEqual(prop.dataType.type, 'array');
+            testCase.verifyEqual(prop.dataType.items.enum, [1; 2; 3]);
+            testCase.verifyEqual(length(model.props), 6);
 
             % Add a required property
-            prop = model.addProperty('prop 6','String', 'Property 1','required', true);
+            prop = model.addProperty('prop 7','String', 'Property 1','required', true);
             testCase.verifyEqual(prop.default, true);
-            testCase.verifyEqual(length(model.props), 6);
+            testCase.verifyEqual(length(model.props), 7);
             
         end
         
@@ -81,31 +87,40 @@ classdef testConcepts < matlab.unittest.TestCase
             
             % Create record setting only one property
             record = struct(...
-                'prop_6', 'This is a name');
+                'prop_7', 'This is a name');
             
             m = testCase.ds.models(1);
             result = m.createRecords(record);
-            testCase.verifyEqual(result.prop_6, 'This is a name');
+            testCase.verifyEqual(result.prop_7, 'This is a name');
             
             % Create record for model with multiple properties
             record = struct(...
-                'prop_1', 'this is a string', ...
+                'prop_1', 'This is a string', ...
                 'prop_3', '1', ...
-                'prop_4', 4, ... 
-                'prop_6', 'This is a name');
-            record.prop_2 = {'string 1' 'string2'};
+                'prop_4', 1.1, ...
+                'prop_5', 1, ...
+                'prop_6', [1 2 3], ...
+                'prop_7', 'This is a required string');
+            record.prop_2 = {'string 1' 'string 2'};
             
             m = testCase.ds.models(1);
             result = m.createRecords(record);
-            
-            testCase.verifyEqual(result.prop_6, 'This is a name');
+            testCase.verifyEqual(result.prop_1, 'This is a string');
+            testCase.verifyEqual(result.prop_2, {'string 1'; 'string 2'});
+            testCase.verifyEqual(result.prop_3, '1');
+            testCase.verifyEqual(result.prop_4, 1.1);
+            testCase.verifyEqual(result.prop_5, 1 );
+            testCase.verifyEqual(result.prop_7, 'This is a required string');
             
             % Create multiple records with multiple properties
+            record(2) = record;
+            record(2).prop_1 = 'This is the second object';
             
-            
-            
+            result = m.createRecords(record);
+            testCase.verifyEqual(length(result),2);
+            testCase.verifyEqual(result(2).prop_1, 'This is the second object');
+               
         end
-        
         
         function testLinkingRecords(testCase)
         end

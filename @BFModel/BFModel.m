@@ -224,7 +224,12 @@ classdef BFModel < BFBaseModelNode
             % Set complex datatype for multivalue and enum.
             dataTypeObj = dataType;
             if multInput || ~isempty(enumInput)
-                dataTypeObj = struct('type','array','items', struct('type', dataType));
+                type = 'enum';
+                if multInput
+                    type = 'array';
+                end
+                
+                dataTypeObj = struct('type', type,'items', struct('type', dataType));
                 
                 if ~isempty(enumInput)
                    dataTypeObj.items.enum = enumInput;
