@@ -1,6 +1,7 @@
 classdef BFConceptsAPI
-    %BFCONCEPTSAPI Summary of this class goes here
-    %   Detailed explanation goes here
+    %BFCONCEPTSAPI Class interacting with the Blackfynn API
+    %   The BFCONCEPTSAPI class implements all methods that are available
+    %   in the concepts API. 
     
     properties
         session
@@ -83,24 +84,20 @@ classdef BFConceptsAPI
             response = request.put(endPoint, params2); 
         end
             
-        function models = getModels(obj, datasetId)
+        function response = getModels(obj, datasetId)
             
             params = {};
             endPoint = sprintf('%s/datasets/%s/concepts',obj.host, datasetId);
             
             request = obj.session.request;
-            response = request.get(endPoint, params);
-            
-            models = BFModel.empty(length(response),0);
-            for i=1: length(response)
-                models(i) = BFModel.createFromResponse(response(i), obj.session, datasetId);
-            end
+            response = request.get(endPoint, params);            
         end
         
-        function records = getRecords(obj, datasetId, modelId, varargin)
+        function response = getRecords(obj, datasetId, modelId, varargin)
 
             params = {};
-            if nargin >1
+            if nargin > 3
+                assert(length(varargin) == 2, 'Incorrect number of input arguments');
                 params = {'limit',varargin{1}, 'offset',varargin{2}};
             end
             
@@ -109,14 +106,9 @@ classdef BFConceptsAPI
             
             response = obj.session.request.get(endPoint, params);
             
-            records = BFRecord.empty(length(response),0);
-            for i=1: length(response)
-                records(i) = BFRecord.createFromResponse(response(i), ...
-                    obj.session, modelId, datasetId);
-            end
         end
         
-        function records = createRecords(obj, datasetId, modelId, data)
+        function records = createRecords(obj, dataset, modelId, data)
             
             batch_array = {};
             for i=1: length(data)
@@ -142,20 +134,20 @@ classdef BFConceptsAPI
             message = ['[' message(1:end-1) ']'];
 
             % Create object from response
-            endpoint = sprintf('%s/datasets/%s/concepts/%s/instances/batch', obj.host, datasetId, modelId);
+            endpoint = sprintf('%s/datasets/%s/concepts/%s/instances/batch', obj.host, dataset.id, modelId);
             response = obj.session.request.post(endpoint, message);
             
             records = BFRecord.empty(length(response),0);
             if (isa(response,'struct'))
                 % All records could be created
                 for i=1: length(response)
-                    records(i) = BFRecord.createFromResponse(response(i), obj.session, modelId, datasetId);
+                    records(i) = BFRecord.createFromResponse(response(i), obj.session, modelId, dataset);
                 end
             else
                 % Some records could not be created
                 for i=1: length(response)
                     if (isa(response{i},'struct'))
-                        records(i) = BFRecord.createFromResponse(response{i}, obj.session, modelId, datasetId);
+                        records(i) = BFRecord.createFromResponse(response{i}, obj.session, modelId, dataset);
                     else
                         fprintf(2, 'Unable to create record from index: %i\n', i);
                     end
@@ -186,6 +178,28 @@ classdef BFConceptsAPI
             else
                 error('Unable to perform request.')
             end
+            
+        end
+        
+        function response = getRelationCountsForRecord(obj, datasetId, modelId, recordId)
+            params = {};
+            endPoint = sprintf('%s/datasets/%s/concepts/%s/instances/%s/relationCounts', ...
+                obj.host, datasetId, modelId, recordId);
+            
+            response = obj.session.request.get(endPoint, params);
+        end
+        
+        function response = getRelated(obj, datasetId, modelId, recordId, targetModelId, varargin)
+            params = {};
+            if nargin > 5
+                assert(length(varargin) == 2, 'Incorrect number of input arguments');
+                params = {'limit',varargin{1}, 'offset',varargin{2}};
+            end
+            
+            endPoint = sprintf('%s/datasets/%s/concepts/%s/instances/%s/relations/%s', ...
+                obj.host, datasetId, modelId, recordId, targetModelId);
+            
+            response = obj.session.request.get(endPoint, params);
             
         end
         

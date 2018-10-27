@@ -9,7 +9,7 @@ classdef BFBaseModelNode < BFBaseNode
     end
     
     properties( Hidden)
-        datasetId       % Id of the dataset
+        dataset         %  dataset
         type            % Type of the model
         createDate      % Creation data
         updateDate      % Updated date

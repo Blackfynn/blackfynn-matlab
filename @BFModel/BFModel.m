@@ -25,6 +25,7 @@ classdef BFModel < BFBaseModelNode
             obj = obj@BFBaseModelNode(session, id, name, displayName, ...
                 description, locked,createdAt, updatedAt);
         end
+
         function records = getRecords(obj, varargin)
             %GETRECORDS Returns records of the given model
             %   RECORDS = GETRECORDS(OBJ) returns the first 100 records for the
@@ -51,10 +52,17 @@ classdef BFModel < BFBaseModelNode
                 offset = varargin{2};
             end
             
-            records = obj.session.conceptsAPI.getRecords(obj.datasetId, ...
+            response = obj.session.conceptsAPI.getRecords(obj.dataset.id, ...
                 obj.id, maxCount, offset);
+            
+            records = BFRecord.empty(length(response),0);
+            for i=1: length(response)
+                records(i) = BFRecord.createFromResponse(response(i), ...
+                    obj.session, obj.id, obj.dataset);
+            end
 
         end
+        
         function records = createRecords(obj, data)
             %CREATE  Create a record for a particular model
             %   RECORDS = CREATE(OBJ, DATA) creates a
@@ -87,9 +95,10 @@ classdef BFModel < BFBaseModelNode
             end
                         
             % validate property types
-            records = obj.session.conceptsAPI.createRecords(obj.datasetId, obj.id, data);
+            records = obj.session.conceptsAPI.createRecords(obj.dataset, obj.id, data);
             
         end
+        
         function success = deleteRecords(obj, records)
             % DELETERECORDS Deletes records from the platform
             %   SUCCESS = DELETERECORDS(OBJ, RECORDS) deletes the RECORDS
@@ -107,7 +116,7 @@ classdef BFModel < BFBaseModelNode
             end
             
             recordIds = {records.id};
-            success = obj.session.conceptsAPI.deleteRecords(obj.datasetId, obj.id, recordIds);
+            success = obj.session.conceptsAPI.deleteRecords(obj.dataset.id, obj.id, recordIds);
             
             % delete matlab objects if platform delete is successfull
             for i=1:length(records)
@@ -123,6 +132,7 @@ classdef BFModel < BFBaseModelNode
             end
             
         end
+        
         function prop = addProperty(obj, name, dataType, description, varargin)
             %ADDPROPERTY  Adds a property to a specific model
             %   PROP = ADDPROPERTY(OBJ, 'Name', 'Datatype', 'Description')
@@ -199,7 +209,7 @@ classdef BFModel < BFBaseModelNode
             assert(isempty(multInput) || isa(multInput, 'logical'), 'MULT input must be of type ''logical''');
             
             % Get existing properties from webservice
-            existingProps = obj.session.conceptsAPI.getProperties(obj.datasetId, obj.id);
+            existingProps = obj.session.conceptsAPI.getProperties(obj.dataset.id, obj.id);
             
             % Replace empty unit by empty string unit
             for i=1: length(existingProps)
@@ -265,7 +275,7 @@ classdef BFModel < BFBaseModelNode
             newProps.unit = "";
                         
             resp = obj.session.conceptsAPI.updateModelProperties(...
-                obj.datasetId, obj.id, existingProps, newProps);
+                obj.dataset.id, obj.id, existingProps, newProps);
             
             if resp.StatusCode == matlab.net.http.StatusCode.BadRequest
                 error('There was an error creating the property, does another property with the same name already exist?');
@@ -279,6 +289,36 @@ classdef BFModel < BFBaseModelNode
             prop = obj.props(strcmp(newProps.name, propNames));
             
         end
+        
+        function relationship = createRelationship(obj, targetModel, name)
+            % CREATERELATIONSHIP  Creates a relationship between models
+            %   REL = CREATERELATIONSHIP(OBJ, TARGET, 'name') creates a
+            %   relationship between the current model and the TARGETMODEL
+            %   with a specified 'name'. 
+            %
+            %   A relationship needs to be created in order to link records
+            %   to eachother. Relationships between records always adhere
+            %   to one of the defined relationships that are created for
+            %   a model.
+            %
+            %   For example:
+            %       MODEL1 = DS.CREATEMODEL('model1', 'description 1');
+            %       MODEL2 = DS.CREATEMODEL('model2', 'description 2');
+            %       REL = MODEL1.CREATERELATIONSHIP(MODEL2, 'contains');
+            %
+            %       Once a relationship is created, you can use the
+            %       relationship to link between records of the respective
+            %       models.
+            %       
+            %       model1Record.link(model2record, REL);
+            %
+            %   See also:
+            %       BFRECORD.LINK
+            
+            
+            %TODO
+            
+        end
     end
     
     methods (Access = protected)                            
@@ -290,22 +330,17 @@ classdef BFModel < BFBaseModelNode
                 s = '';
             end
         end
-        function records = handleGetRecords(obj,resp)
-            records = BFRecord.empty(length(resp),0);
-            for i=1: length(resp)
-                records(i) = BFRecord.createFromResponse(resp(i), obj.session, obj.id, obj.datasetId);
-            end
-        end
+        
         function props = getProperties(obj)
             
-            resp = obj.session.conceptsAPI.getProperties(obj.datasetId, obj.id);
+            resp = obj.session.conceptsAPI.getProperties(obj.dataset.id, obj.id);
             props =  BFModelProperty.createFromResponse(resp, obj.session);
             
         end
     end
     
     methods (Static)
-        function out = createFromResponse(resp, session, datasetid)
+        function out = createFromResponse(resp, session, dataset)
           %CREATEFROMRESPONSE  Create object from server response 
           
           out = BFModel(session, resp.id, resp.name, ...
@@ -313,7 +348,7 @@ classdef BFModel < BFBaseModelNode
               resp.createdAt, resp.updatedAt);
           out.nrRecords = resp.count;
           out.nrProperties = resp.propertyCount;
-          out.datasetId = datasetid;
+          out.dataset = dataset;
           out.props = out.getProperties();
           
         end

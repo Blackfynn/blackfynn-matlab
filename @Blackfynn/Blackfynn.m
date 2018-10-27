@@ -362,7 +362,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
     end
     
     methods (Access = protected)                                
-        function s = getFooter(obj)
+        function s = getFooter(obj)                             
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
                 url = sprintf('%s/%s/datasets',obj.session.web_host,obj.session.org);
@@ -408,7 +408,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
     end
     
     methods(Static, Hidden)                                 
-        function home = getHome()
+        function home = getHome()                               
             % GETHOME gets home directory, and BF config
             % path for the OS in use.
             
@@ -424,7 +424,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
     end
     
     methods(Static)
-        function out = profiles()                           
+        function out = profiles()                               
             %PROFILES  Returns all Blackfynn configuration profiles.
             %   PROFILES() Static class-method that shows a list of all
             %   Blackfynn profiles.
@@ -463,7 +463,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             end
         end
         
-        function setup()                                    
+        function setup()                                        
             %SETUP  Setup a profile for the Blackfynn client.
             %   SETUP() Static method to create a profile that contains an
             %   API token and secret to use as credentials for using the

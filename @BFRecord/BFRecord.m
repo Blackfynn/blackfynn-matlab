@@ -18,12 +18,12 @@ classdef BFRecord < BFBaseNode & dynamicprops
     properties (Access = private)
         updated = false     % Flag to see if record changed
         modelId = ''        % Id for model
-        datasetId = ''      % Id for dataset
+        dataset = ''        % The dataset that the record belongs to
         propNames = {}      % Cell array with dynamic property names
     end
     
     methods
-        function obj = BFRecord(session, id, modelid, datasetid)
+        function obj = BFRecord(session, id, modelid, dataset)
             %BFRECORD Construct an instance of the BFRECORD Class
             %   Detailed explanation goes here
             
@@ -32,7 +32,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
             
             if nargin
                 obj.modelId = modelid;
-                obj.datasetId = datasetid;
+                obj.dataset = dataset;
             end
         end
         
@@ -44,10 +44,12 @@ classdef BFRecord < BFBaseNode & dynamicprops
             content = cell(1, length(obj.propNames));
             
             for i=1:length(obj.propNames)
-                content{i} = struct('name',obj.propNames{i}, 'value',obj.(obj.propNames{i}));
+                content{i} = struct('name',obj.propNames{i}, 'value',...
+                    obj.(obj.propNames{i}));
             end
             
-            uri = sprintf('%s/datasets/%s/concepts/%s/instances/%s', obj.session.concepts_host, obj.datasetId,obj.modelId,obj.id);
+            uri = sprintf('%s/datasets/%s/concepts/%s/instances/%s', ...
+                obj.session.concepts_host, obj.dataset.id,obj.modelId,obj.id);
             params = struct('values',[]);
             params.values = content;
             obj.session.request.put(uri, params);
@@ -55,20 +57,136 @@ classdef BFRecord < BFBaseNode & dynamicprops
             obj.updated = false;
         end
         
-        function out = getAllRelationships(obj)
-            uri = sprintf('%s/datasets/%s/concepts/%s/related', obj.session.concepts_host, obj.datasetId,obj.modelId);
+        function obj = link(obj, target, relationship)
+        end
+        
+        function out = getRelatedCount(obj)
+            % GETRELATEDCOUNT Returns relationship info for object
+            %   INFO = GETRELATEDCOUNT(OBJ) returns an structure array with
+            %   all models that are related to the current object and the
+            %   number of records that are related to this object for each
+            %   of the models.
+            
+            uri = sprintf('%s/datasets/%s/concepts/%s/related', ...
+                obj.session.concepts_host, obj.dataset.id,obj.modelId);
             params = {};
             out = obj.session.request.get(uri, params);
         end
         
-        function out = getRelationships(obj)
-            uri = sprintf('%s/datasets/%s/concepts/%s/instances/%s/relationCounts', obj.session.concepts_host, obj.datasetId,obj.modelId,obj.id);
-            params = {};
-            out = obj.session.request.get(uri, params);
+        function [relatedRecords, info] = getRelated(obj, model, limit, offset)
+            % GETRELATED Returns an array of related records
+            %   RECORDS = GETRELATED(OBJ) returns the first 100 records
+            %   of each type of model that is related to the current
+            %   object.
+            %
+            %   [RECORDS, INFO] = GETRELATED(OBJ) returns an INFO
+            %   structure in addition to the records that contains the
+            %   total number of records that are related to the current
+            %   record per model, and the number of returned records. 
+            %
+            %   [RECORDS, INFO] = GETRELATED(OBJ, MODEL) Returns the
+            %   first 100 records for the provided MODEL where MODEL can be
+            %   an object of class BFMODEL, or a string with the name of
+            %   the model.
+            %
+            %   [RECORDS, INFO] = GETRELATED(OBJ, MODEL, LIMIT, OFFSET)
+            %   returns n number of records as specified by the LIMIT and
+            %   OFFSET parameters. LIMIT is a number indicating the
+            %   maximum number of records that should be returned, and
+            %   OFFSET is the index of the first object that should be
+            %   returned. 
+            %
+            %   For example:
+            %       [RECORDS, INFO] = GETRELATED(obj, 'disease', 100, 1)
+            
+            allModels = true;
+            modelName = '';
+            offset_ = 0;
+            limit_ = 100;
+            switch nargin
+                case 1
+                case 2
+                    allModels = false;
+                    if isa(model,'BFModel')
+                        modelName = model.name;
+                    else
+                        modelName = model;
+                    end
+                    
+                case 4
+                    allModels = false;
+                    if isa(model,'BFModel')
+                        modelName = model.name;
+                    else
+                        modelName = model;
+                    end
+                    
+                    assert(offset > 0, 'OFFSET is required to be > 0');
+                    offset_ = offset - 1; % convert to 0-based indexing
+                    
+                    assert(limit <= 200, 'LIMIT cannot be greater than 200.');
+                    limit_ = limit;
+                otherwise
+                    error('Incorrect number of input arguments.')
+            end
+                        
+            response = obj.session.conceptsAPI.getRelationCountsForRecord( ...
+                obj.dataset.id, obj.modelId, obj.id);
+            
+            info = struct( ...
+                'name',{response.name}, ...
+                'totalCount',{response.count},...
+                'returnedCount', 0);
+            
+            modelNames = {obj.dataset.models.name};
+            
+            relatedRecords = BFRecord.empty();
+            if allModels            
+                idx = 1;
+                for i = 1: length(response)
+                    recs = obj.session.conceptsAPI.getRelated(...
+                        obj.dataset.id, obj.modelId, obj.id, response(i).name);
+
+                    % Set info
+                    info(i).returnedCount = length(recs);
+
+                    % Get ModelId
+                    targetModelId = obj.dataset.models(strcmp(recs{1}{2}.type,...
+                        modelNames)).id;
+
+                    % Parse response
+                    for j = 1: length(recs)
+                        relatedRecords(idx) = BFRecord.createFromResponse(...
+                            recs{j}{2}, obj.session, targetModelId, obj.dataset);
+                        idx = idx + 1;
+                    end
+
+                end
+            else
+                recs = obj.session.conceptsAPI.getRelated(...
+                        obj.dataset.id, obj.modelId, obj.id, modelName, limit_, offset_);
+                    
+                % Get ModelId
+                targetModelId = obj.dataset.models(strcmp(recs{1}{2}.type,...
+                    modelNames)).id;
+                
+                % Set info
+                infoNames = {info.name};
+                info(strcmp(modelName,infoNames)).returnedCount = length(recs);
+                
+                % Parse response
+                idx = 1;
+                for j = 1: length(recs)
+                    relatedRecords(idx) = BFRecord.createFromResponse(...
+                        recs{j}{2}, obj.session, targetModelId, obj.dataset);
+                    idx = idx + 1;
+                end
+
+            end
+
         end
         
         function obj = delete(obj)
-
             % check all records from same model
             if ~all(strcmp({obj.modelId}, obj(1).modelId))
                 sprintf(2, 'All records should belong to the same model.');
@@ -76,13 +194,14 @@ classdef BFRecord < BFBaseNode & dynamicprops
             end
             
             % check all records in single dataset
-            if ~all(strcmp({obj.datasetId}, obj(1).datasetId))
+            if ~all(strcmp({obj.dataset.id}, obj(1).dataset.id))
                 sprintf(2, 'All records should belong to the same dataset.');
                 return
             end
             
             recordIds = {obj.id};
-            success = obj(1).session.conceptsAPI.deleteRecords(obj(1).datasetId, obj(1).modelId, recordIds);
+            success = obj(1).session.conceptsAPI.deleteRecords( ...
+                obj(1).dataset.id, obj(1).modelId, recordIds);
             
             % delete matlab objects if platform delete is successfull
             for i=1:length(obj)
@@ -105,7 +224,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
         function s = getFooter(obj)
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                url = sprintf('%s/%s/datasets/%s/explore/%s/%s',obj.session.web_host,obj.session.org,obj.datasetId,obj.modelId,obj.id);
+                url = sprintf('%s/%s/datasets/%s/explore/%s/%s',obj.session.web_host,obj.session.org,obj.dataset.id,obj.modelId,obj.id);
                 if obj.updated
                     s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id,url,class(obj));
                 else
@@ -115,6 +234,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
                 s = '';
             end
         end
+        
         function s = getHeader(obj)
             if ~isscalar(obj)
                 s = getHeader@matlab.mixin.CustomDisplay(obj);
@@ -124,7 +244,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
                 if obj.updated
                     updatedStr = '*local changes*';
                 end
-                s = sprintf('  %s with properties: %s\n', classNameStr, updatedStr);
+                s = sprintf(' %s(%s) with properties: %s\n',  classNameStr, obj.type, updatedStr);
 
             end
             
@@ -132,12 +252,12 @@ classdef BFRecord < BFBaseNode & dynamicprops
     end
     
     methods (Static, Hidden)
-        function out = createFromResponse(resp, session, modelId, datasetId)
+        function out = createFromResponse(resp, session, modelId, dataset)
             %CREATEFROMRESPONSE  Create object from server response
             % args = [session, id, name, display_name,
             %           description, locked, created_at, updated_at ]  
           
-            out = BFRecord(session, resp.id, modelId, datasetId);
+            out = BFRecord(session, resp.id, modelId, dataset);
             out.type = resp.type;
             out.id = resp.id;
             out.createdAt = resp.createdAt;
@@ -152,7 +272,8 @@ classdef BFRecord < BFBaseNode & dynamicprops
                 p = out.addprop(curProp.name);
                 out.(curProp.name) = curProp.value;
                 p.SetObservable = true;
-                addlistener(out,curProp.name,'PostSet',@BFRecord.handlePropEvents);
+                addlistener(out,curProp.name,'PostSet', ...
+                    @BFRecord.handlePropEvents);
 
             end
         end

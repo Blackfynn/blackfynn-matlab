@@ -23,7 +23,12 @@ classdef BFDataset < BFBaseCollection
             if ~isempty(obj.models_)
                 value = obj.models_;
             else
-                obj.models_ = obj.session.conceptsAPI.getModels(obj.id);
+                response = obj.session.conceptsAPI.getModels(obj.id);
+                m = BFModel.empty(length(response),0);
+                for i=1: length(response)
+                    m(i) = BFModel.createFromResponse(response(i), obj.session, obj);
+                end
+                obj.models_ = m;
                 value = obj.models_;
             end
         end
