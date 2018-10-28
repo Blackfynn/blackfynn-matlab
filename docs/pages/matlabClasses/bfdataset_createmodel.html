@@ -14,9 +14,10 @@ folder: mydoc
       
       
       <div class="helptext"><pre><!--helptext --> <span class="helptopic">createModel</span>  Creates a model in the dataset
-    OBJ = <span class="helptopic">createModel</span>(OBJ, 'name', 'description) creates a
+    MODEL = <span class="helptopic">createModel</span>(OBJ, 'name', 'description) creates a
     model in the dataset with 'name' and a 'description'. The
-    model name needs to be unique in the dataset.
+    model name needs to be unique in the dataset. It returns
+    the created model.
  
     NOTE: the name of the model will be modified to contain no
     spaces or non-characters. However, the provided name will
@@ -25,7 +26,7 @@ folder: mydoc
     For example:
         BF = Blackfynn()
         DS = BF.datasets(1)
-        DS.<span class="helptopic">createModel</span>('Patient','This is a patient model')</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> 
+        DS.<span class="helptopic">createModel</span>('Patient', 'This is a patient model')</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink"> 
         BFDataset.createRecord, BFDataset.deleteModel
 </div>
       <!--Method-->

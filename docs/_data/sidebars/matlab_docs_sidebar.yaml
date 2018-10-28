@@ -28,14 +28,14 @@ entries:
     - title: BFBaseDataNode
       url: /bfbasedatanode.html
       output: web
-    - title: BFBaseModelNode
-      url: /bfbasemodelnode.html
-      output: web
     - title: BFBaseModelProperty
       url: /bfbasemodelproperty.html
       output: web
     - title: BFBaseNode
       url: /bfbasenode.html
+      output: web
+    - title: BFBaseSchemaNode
+      url: /bfbaseschemanode.html
       output: web
     - title: BFCollection
       url: /bfcollection.html
@@ -63,6 +63,9 @@ entries:
       output: web
     - title: BFRecord
       url: /bfrecord.html
+      output: web
+    - title: BFRelationship
+      url: /bfrelationship.html
       output: web
     - title: BFRequest
       url: /bfrequest.html
@@ -118,9 +121,6 @@ entries:
     - title: (BFBaseDataNode) update
       url: /bfbasedatanode_update.html
       output: web
-    - title: (BFBaseModelNode) BFBaseModelNode
-      url: /bfbasemodelnode_bfbasemodelnode.html
-      output: web
     - title: (BFBaseModelProperty) BFBaseModelProperty
       url: /bfbasemodelproperty_bfbasemodelproperty.html
       output: web
@@ -132,6 +132,9 @@ entries:
       output: web
     - title: (BFBaseNode) methods
       url: /bfbasenode_methods.html
+      output: web
+    - title: (BFBaseSchemaNode) BFBaseSchemaNode
+      url: /bfbaseschemanode_bfbaseschemanode.html
       output: web
     - title: (BFCollection) BFCollection
       url: /bfcollection_bfcollection.html
@@ -168,6 +171,9 @@ entries:
       output: web
     - title: (BFConceptsAPI) getRelationships
       url: /bfconceptsapi_getrelationships.html
+      output: web
+    - title: (BFConceptsAPI) link
+      url: /bfconceptsapi_link.html
       output: web
     - title: (BFConceptsAPI) slugFromString
       url: /bfconceptsapi_slugfromstring.html
@@ -300,6 +306,9 @@ entries:
       output: web
     - title: (BFRecord) update
       url: /bfrecord_update.html
+      output: web
+    - title: (BFRelationship) BFRelationship
+      url: /bfrelationship_bfrelationship.html
       output: web
     - title: (BFRequest) BFRequest
       url: /bfrequest_bfrequest.html

@@ -1,9 +1,9 @@
 ---
-title: BFDataPackage
+title: BFBaseSchemaNode
 keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
 last_updated: Oct 28, 2018
 sidebar: matlab_docs_sidebar
-permalink: bfdatapackage.html
+permalink: bfbaseschemanode.html
 folder: mydoc
 ---
 <html>
@@ -12,13 +12,13 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">BFDataPackage</span> Represents any datapackage on the platform.</pre></div><!--after help -->
+      <div class="helptext"><pre><!--helptext --> <span class="helptopic">BFBaseSchemaNode</span> Base class for models and relationships</pre></div><!--after help -->
       <!--Class-->
       <div class="sectiontitle">Class Details</div>
       <table class="class-details">
          <tr>
             <td class="class-detail-label">Superclasses</td>
-            <td><a href="bfbasedatanode.html">BFBaseDataNode</a></td>
+            <td><a href="bfbasenode.html">BFBaseNode</a></td>
          </tr>
          <tr>
             <td class="class-detail-label">Sealed</td>
@@ -34,8 +34,8 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name"><a href="bfdatapackage_bfdatapackage.html">BFDataPackage</a></td>
-            <td class="m-help">Constructor for BFDATAPACKAGE&nbsp;</td>
+            <td class="name"><a href="bfbaseschemanode_bfbaseschemanode.html">BFBaseSchemaNode</a></td>
+            <td class="m-help">Constructs an instance of this class&nbsp;</td>
          </tr>
       </table>
       <!--Properties-->
@@ -43,25 +43,22 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
+            <td class="name">description</td>
+            <td class="m-help">Description of the model&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
             <td class="name">name</td>
-            <td class="m-help">Name of the datanode&nbsp;</td>
+            <td class="m-help">Identifying property&nbsp;</td>
          </tr>
          <tr class="summary-item">
             <td class="name">session</td>
             <td class="m-help">Session ID&nbsp;</td>
-         </tr>
-         <tr class="summary-item">
-            <td class="name">type</td>
-            <td class="m-help">Type of the datanode &nbsp;</td>
          </tr>
       </table>
       <!--Methods-->
       <div class="sectiontitle"><a name="methods"></a>Method Summary
       </div>
       <table class="summary-list">
-         
-         
-         
          
          
          
@@ -88,7 +85,6 @@ folder: mydoc
          
          
          
-         
          <tr class="summary-item">
             <td class="attributes">Sealed 
                &nbsp;
@@ -97,25 +93,16 @@ folder: mydoc
             <td class="name"><a href="bfbasenode_methods.html">methods</a></td>
             <td class="m-help">Shows all methods associated with the object.&nbsp;</td>
          </tr>
-         <tr class="summary-item">
-            <td class="attributes">
-               &nbsp;
-               
-            </td>
-            <td class="name"><a href="bfdatapackage_move.html">move</a></td>
-            <td class="m-help">Moves objects to a destination collection&nbsp;</td>
-         </tr>
          
          
          <tr class="summary-item">
-            <td class="attributes">
+            <td class="attributes">protected 
                &nbsp;
                
             </td>
-            <td class="name"><a href="bfbasedatanode_update.html">update</a></td>
-            <td class="m-help">Updates the current object in the platform.&nbsp;</td>
+            <td class="name">setDates</td>
+            <td class="m-help">sets the create/update dates for the object&nbsp;</td>
          </tr>
-         
       </table>
       <!--Events-->
       <div class="sectiontitle"><a name="events"></a>Event Summary

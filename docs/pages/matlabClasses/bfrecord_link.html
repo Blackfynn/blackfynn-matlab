@@ -13,8 +13,25 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext --><span class="helptopic">BFRecord/link</span> is a function.
-    obj = link(obj, target, relationship)</pre></div><!--after help -->
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">link</span> create relationships between records
+    OBJ = <span class="helptopic">link</span>(OBJ, TARGETS, 'relationship') creates a
+    relationship between the current object and the TARGETS
+    objects. TARGETS can be a single record, or an array of
+    records of the same model. RELATIONSHIP is string
+    indicating the relationship-type. 
+ 
+    You will need to first create a relationship between the
+    models of the record using the BFMODEL.CREATERELATIONSHIP
+    before you can assign this relationship to records.
+ 
+    For example:
+        m1 = ds.models(1)
+        m2 = ds.models(2)
+        m1.createRelationship(m2, 'contains')
+ 
+        records1 = m1.getRecords()
+        records2 = m2.getRecords()
+        record1(1).link(record2(1), 'contains)</pre></div><!--after help -->
       <!--Method-->
       <div class="sectiontitle">Method Details</div>
       <table class="class-details">

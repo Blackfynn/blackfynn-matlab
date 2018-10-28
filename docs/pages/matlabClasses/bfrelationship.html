@@ -1,9 +1,9 @@
 ---
-title: BFBaseModelNode
+title: BFRelationship
 keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
-last_updated: Oct 27, 2018
+last_updated: Oct 28, 2018
 sidebar: matlab_docs_sidebar
-permalink: bfbasemodelnode.html
+permalink: bfrelationship.html
 folder: mydoc
 ---
 <html>
@@ -12,14 +12,13 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext --> <span class="helptopic">BFBaseModelNode</span> Summary of this class goes here
-    Detailed explanation goes here</pre></div><!--after help -->
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">BFRelationship</span>  An object representing a relationship between models</pre></div><!--after help -->
       <!--Class-->
       <div class="sectiontitle">Class Details</div>
       <table class="class-details">
          <tr>
             <td class="class-detail-label">Superclasses</td>
-            <td><a href="bfbasenode.html">BFBaseNode</a></td>
+            <td><a href="bfbaseschemanode.html">BFBaseSchemaNode</a></td>
          </tr>
          <tr>
             <td class="class-detail-label">Sealed</td>
@@ -35,8 +34,8 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name"><a href="bfbasemodelnode_bfbasemodelnode.html">BFBaseModelNode</a></td>
-            <td class="m-help">Constructs an instance of this class&nbsp;</td>
+            <td class="name"><a href="bfrelationship_bfrelationship.html">BFRelationship</a></td>
+            <td class="m-help">Constructor for objects of this class.&nbsp;</td>
          </tr>
       </table>
       <!--Properties-->
@@ -48,8 +47,8 @@ folder: mydoc
             <td class="m-help">Description of the model&nbsp;</td>
          </tr>
          <tr class="summary-item">
-            <td class="name">locked</td>
-            <td class="m-help">Is model locked?&nbsp;</td>
+            <td class="name">from</td>
+            <td class="m-help">Model ID &nbsp;</td>
          </tr>
          <tr class="summary-item">
             <td class="name">name</td>
@@ -58,6 +57,10 @@ folder: mydoc
          <tr class="summary-item">
             <td class="name">session</td>
             <td class="m-help">Session ID&nbsp;</td>
+         </tr>
+         <tr class="summary-item">
+            <td class="name">to</td>
+            <td class="m-help">&nbsp;</td>
          </tr>
       </table>
       <!--Methods-->
@@ -100,6 +103,14 @@ folder: mydoc
          </tr>
          
          
+         <tr class="summary-item">
+            <td class="attributes">protected 
+               &nbsp;
+               
+            </td>
+            <td class="name">setDates</td>
+            <td class="m-help">sets the create/update dates for the object&nbsp;</td>
+         </tr>
       </table>
       <!--Events-->
       <div class="sectiontitle"><a name="events"></a>Event Summary

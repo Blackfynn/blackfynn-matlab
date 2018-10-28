@@ -12,7 +12,6 @@ classdef BFRecord < BFBaseNode & dynamicprops
         updatedAt   % Indicates when record was updated
         createdBy   % Indicates who created the record 
         updatedBy   % Indicates who updated the record 
-        
     end
     
     properties (Access = protected)
