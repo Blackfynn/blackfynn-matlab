@@ -35,10 +35,9 @@ classdef testConcepts < matlab.unittest.TestCase
         %% Test Function
         function testCreateModel(testCase)
             % Create a model
-            testCase.ds.createModel('Patient','This is a patient model');
+            model = testCase.ds.createModel('Patient','This is a patient model');
             testCase.assertEqual(length(testCase.ds.models),1);
-            testCase.assertEqual(testCase.ds.models(1).name, 'Patient'); 
-            model = testCase.ds.models(1);
+            testCase.assertEqual(model.name, 'Patient'); 
             
             % Add a single property
             prop = model.addProperty('prop 1','String', 'Property 1');
@@ -123,6 +122,23 @@ classdef testConcepts < matlab.unittest.TestCase
         end
         
         function testLinkingRecords(testCase)
+            
+            model = testCase.ds.models(1);
+            records = model.getRecords();
+            
+            % Create relationship with records of same model
+            rel = model.createRelationship(model, 'isSameModelAs');
+            testCase.verifyEqual(rel.name, 'isSameModelAs');
+            testCase.verifyEqual(rel.from, model);
+            
+            rel2 = model.createRelationship(model, 'isNotSameModelAs');
+            
+            records(1).link(records(2),'isSameModelAs');
+            
+            related = records(1).getRelated();
+            testCase.verifyEqual(length(related),1);
+            testCase.verifyEqual(related(1).id, records(2).id); 
+
         end
         
     end

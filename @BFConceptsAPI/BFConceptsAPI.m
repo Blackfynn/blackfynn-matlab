@@ -108,7 +108,7 @@ classdef BFConceptsAPI
             
         end
         
-        function records = createRecords(obj, dataset, modelId, data)
+        function records = createRecords(obj, dataset, model, data)
             
             batch_array = {};
             for i=1: length(data)
@@ -134,20 +134,20 @@ classdef BFConceptsAPI
             message = ['[' message(1:end-1) ']'];
 
             % Create object from response
-            endpoint = sprintf('%s/datasets/%s/concepts/%s/instances/batch', obj.host, dataset.id, modelId);
+            endpoint = sprintf('%s/datasets/%s/concepts/%s/instances/batch', obj.host, dataset.id, model.id);
             response = obj.session.request.post(endpoint, message);
             
             records = BFRecord.empty(length(response),0);
             if (isa(response,'struct'))
                 % All records could be created
                 for i=1: length(response)
-                    records(i) = BFRecord.createFromResponse(response(i), obj.session, modelId, dataset);
+                    records(i) = BFRecord.createFromResponse(response(i), obj.session, model, dataset);
                 end
             else
                 % Some records could not be created
                 for i=1: length(response)
                     if (isa(response{i},'struct'))
-                        records(i) = BFRecord.createFromResponse(response{i}, obj.session, modelId, dataset);
+                        records(i) = BFRecord.createFromResponse(response{i}, obj.session, model, dataset);
                     else
                         fprintf(2, 'Unable to create record from index: %i\n', i);
                     end
@@ -230,6 +230,13 @@ classdef BFConceptsAPI
         end
         
         function response = getRelationships(obj, datasetId, modelId)
+            % GETRELATIONSHIPS  Return relationships for dataset
+            %   RESPONSE = GETRELATIONSHIPS(OBJ, 'datasetId') returns all
+            %   defined relationships for the dataset.
+            %
+            %   RESPONSE = GETRELATIONSHIPS(OBJ, 'datasetId', 'modelId')
+            %   only returns relationships for the provided model.
+            
             params = {};
             if nargin > 2
                 params = {'from', modelId};
@@ -240,6 +247,33 @@ classdef BFConceptsAPI
             
             response = obj.session.request.get(endPoint, params);
             
+        end
+        
+        function response = link(obj, datasetId, relationshipId, fromId, toIds)
+            % LINK Creates relationships between records
+            
+            endPoint = sprintf('%s/datasets/%s/relationships/%s/instances/batch',...
+                obj.host, datasetId, relationshipId);
+            
+            
+            batchArray = {};
+            for i = 1: length(toIds)
+                item = struct( ...
+                    'from', fromId, ...
+                    'to', toIds(i), ...
+                    'values', []);
+                batchArray{i} = jsonencode(item); %#ok<AGROW>
+                
+ 
+            end
+            
+            message = sprintf('%s,', batchArray{:});
+            message = ['[' message(1:end-1) ']'];
+           
+            
+            params = message;
+            request = obj.session.request;
+            response = request.post(endPoint, params);         
         end
         
     end
