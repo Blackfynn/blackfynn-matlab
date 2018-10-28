@@ -129,6 +129,9 @@ classdef testConcepts < matlab.unittest.TestCase
             % Create relationship with records of same model
             rel = model.createRelationship(model, 'isSameModelAs');
             testCase.verifyEqual(rel.name, 'isSameModelAs');
+            testCase.verifyEqual(rel.from, model);
+            
+            rel2 = model.createRelationship(model, 'isNotSameModelAs');
             
             records(1).link(records(2),'isSameModelAs');
             

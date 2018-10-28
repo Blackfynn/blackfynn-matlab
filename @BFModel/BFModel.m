@@ -25,13 +25,13 @@ classdef BFModel < BFBaseSchemaNode
     end
     
     methods
-        function obj = BFModel(session, id, name, displayName, ...
+        function obj = BFModel(session, dataset, id, name, displayName, ...
                 description, locked)               
             %BFMODEL Construct an instance of this class
-            %   OBJ = BFMODEL(SESSION, 'id', 'name', 'displayName',
+            %   OBJ = BFMODEL(SESSION, DATASET, 'id', 'name', 'displayName',
             %   'description', LOCKED) creates an object of class BFMODEL.
             
-            obj = obj@BFBaseSchemaNode(session, id, name, displayName, ...
+            obj = obj@BFBaseSchemaNode(session, dataset, id, name, displayName, ...
                 description);
             
             obj.locked = locked;
@@ -345,8 +345,10 @@ classdef BFModel < BFBaseSchemaNode
             %   See also:
             %       BFRECORD.LINK
             
-            relationship = obj.session.conceptsAPI.createRelationship(...
+            response = obj.session.conceptsAPI.createRelationship(...
                 obj.dataset.id, obj.id, targetModel.id, name, '');
+            
+            relationship = BFRelationship.createFromResponse(response, obj.session, obj.dataset);
                         
         end
     end
@@ -373,11 +375,10 @@ classdef BFModel < BFBaseSchemaNode
         function out = createFromResponse(resp, session, dataset)       
           %CREATEFROMRESPONSE  Create object from server response 
           
-          out = BFModel(session, resp.id, resp.name, ...
+          out = BFModel(session, dataset, resp.id, resp.name, ...
               resp.displayName, resp.description, resp.locked);
           out.nrRecords = resp.count;
           out.nrProperties = resp.propertyCount;
-          out.dataset = dataset;
           
           out.setDates(resp.createdAt, resp.createdBy, resp.updatedAt, resp.updatedBy); 
           

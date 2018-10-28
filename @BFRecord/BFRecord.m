@@ -15,7 +15,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
         
     end
     
-    properties (Access = private)
+    properties (Access = protected)
         updated = false     % Flag to see if record changed
         model               % Associated model
         dataset = ''        % The dataset that the record belongs to
@@ -84,16 +84,23 @@ classdef BFRecord < BFBaseNode & dynamicprops
             assert(all(strcmp(targetType, {targets.type})), 'All target records should be of the same type.');
             
             % Find relationship object
-            relNames = {obj.model.relationships.name};
-            relIndeces = strcmp(relationship, relNames);
-            
-            if ~any(relIndeces)
-                error('There is no relationship defined with that name. Use the BFMODEL.CREATERELATIONSHIP method to create the relationship');
+            if isa(relationship, 'BFRelationship')
+                assert(relationship.from.id == obj.model.id, 'This relationship is not defined for records of this model.');
+                assert(relationship.to.id == targets(1).model.id, 'This relationship is not defined for records of this model.');
             else
-                % Check targetType
-                targetIndeces = strcmp(targetModel.id, {obj.model.relationships.to});
-                relationship = obj.model.relationships(relIndeces & targetIndeces);
-                assert(~isempty(relationship), 'Relationship does not exist.');                
+                relNames = {obj.model.relationships.name};
+                relIndeces = strcmp(relationship, relNames);
+
+                if ~any(relIndeces)
+                    error('There is no relationship defined with that name. Use the BFMODEL.CREATERELATIONSHIP method to create the relationship');
+                else
+                    % Check targetType
+                    allToModels =  [obj.model.relationships.to];
+                    
+                    targetIndeces = strcmp(targetModel.id, {allToModels.id});
+                    relationship = obj.model.relationships(relIndeces & targetIndeces);
+                    assert(~isempty(relationship), 'Relationship does not exist.');                
+                end
             end
             
             response = obj.session.conceptsAPI.link(obj.dataset.id, ...
@@ -268,7 +275,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
         function s = getFooter(obj)                                     
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                url = sprintf('%s/%s/datasets/%s/explore/%s/%s',obj.session.web_host,obj.session.org,obj.dataset.id,obj.modelId,obj.id);
+                url = sprintf('%s/%s/datasets/%s/explore/%s/%s',obj.session.web_host,obj.session.org,obj.dataset.id,obj.model.id,obj.id);
                 if obj.updated
                     s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id,url,class(obj));
                 else
