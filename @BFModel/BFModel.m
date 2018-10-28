@@ -14,10 +14,18 @@ classdef BFModel < BFBaseModelNode
         nrProperties = 0        % Number of properties in the model
     end
 
+    properties (Dependent)
+        relationships           % Relationships available for the model
+    end
+    
+    properties (Access = private)
+        relationships_
+    end
+    
     methods
         function obj = BFModel(session, id, name, displayName, ...
-                description, locked,createdAt, updatedAt)
-            %BFModel Construct an instance of this class
+                description, locked,createdAt, updatedAt)               
+            %BFMODEL Construct an instance of this class
             %   OBJ = BFMODEL(SESSION, 'id', 'name', 'displayName',
             %   'description', LOCKED, 'createdAt', 'updatedAt') creates an
             %   object of class BFMODEL.
@@ -25,8 +33,19 @@ classdef BFModel < BFBaseModelNode
             obj = obj@BFBaseModelNode(session, id, name, displayName, ...
                 description, locked,createdAt, updatedAt);
         end
+        
+        function value = get.relationships(obj)                         
+            % GET_RELATIONSHIPS gets and caches the models for dataset.
+            
+            if ~isempty(obj.relationships_)
+                value = obj.relationships_;
+            else
+                response = obj.session.conceptsAPI.getRelationships(obj.dataset.id, obj.id);
+                value = response;
+            end
+        end
 
-        function records = getRecords(obj, varargin)
+        function records = getRecords(obj, varargin)                    
             %GETRECORDS Returns records of the given model
             %   RECORDS = GETRECORDS(OBJ) returns the first 100 records for the
             %   given model.
@@ -63,7 +82,7 @@ classdef BFModel < BFBaseModelNode
 
         end
         
-        function records = createRecords(obj, data)
+        function records = createRecords(obj, data)                     
             %CREATE  Create a record for a particular model
             %   RECORDS = CREATE(OBJ, DATA) creates a
             %   record of type MODEL and populate the record with the
@@ -99,7 +118,7 @@ classdef BFModel < BFBaseModelNode
             
         end
         
-        function success = deleteRecords(obj, records)
+        function success = deleteRecords(obj, records)                  
             % DELETERECORDS Deletes records from the platform
             %   SUCCESS = DELETERECORDS(OBJ, RECORDS) deletes the RECORDS
             %   from the platform. RECORDS is an object, or an array of
@@ -290,6 +309,10 @@ classdef BFModel < BFBaseModelNode
             
         end
         
+        function resp = getRelationships(obj)                           
+            resp = obj.session.conceptsAPI.getRelationships(obj.dataset.id, obj.id);
+        end
+        
         function relationship = createRelationship(obj, targetModel, name)
             % CREATERELATIONSHIP  Creates a relationship between models
             %   REL = CREATERELATIONSHIP(OBJ, TARGET, 'name') creates a
@@ -315,13 +338,13 @@ classdef BFModel < BFBaseModelNode
             %   See also:
             %       BFRECORD.LINK
             
-            
-            %TODO
-            
+            relationship = obj.session.conceptsAPI.createRelationship(...
+                obj.dataset.id, obj.id, targetModel.id, name, '');
+                        
         end
     end
     
-    methods (Access = protected)                            
+    methods (Access = protected)                                        
         function s = getFooter(obj)
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
@@ -340,7 +363,7 @@ classdef BFModel < BFBaseModelNode
     end
     
     methods (Static)
-        function out = createFromResponse(resp, session, dataset)
+        function out = createFromResponse(resp, session, dataset)       
           %CREATEFROMRESPONSE  Create object from server response 
           
           out = BFModel(session, resp.id, resp.name, ...

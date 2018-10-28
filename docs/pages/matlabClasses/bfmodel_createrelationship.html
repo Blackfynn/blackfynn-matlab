@@ -1,0 +1,55 @@
+---
+title: (BFModel) createRelationship
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: bfmodel_createrelationship.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">createRelationship</span>  Creates a relationship between models
+    REL = <span class="helptopic">createRelationship</span>(OBJ, TARGET, 'name') creates a
+    relationship between the current model and the TARGETMODEL
+    with a specified 'name'. 
+ 
+    A relationship needs to be created in order to link records
+    to eachother. Relationships between records always adhere
+    to one of the defined relationships that are created for
+    a model.
+ 
+    For example:
+        MODEL1 = DS.CREATEMODEL('model1', 'description 1');
+        MODEL2 = DS.CREATEMODEL('model2', 'description 2');
+        REL = MODEL1.<span class="helptopic">createRelationship</span>(MODEL2, 'contains');
+ 
+        Once a relationship is created, you can use the
+        relationship to link between records of the respective
+        models.
+        
+        model1Record.link(model2record, REL);</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink">
+        <a href="matlab:helpwin BFRecord/link">BFRecord/link</a>
+</div>
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>

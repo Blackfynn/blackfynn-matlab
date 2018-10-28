@@ -1,0 +1,57 @@
+---
+title: (BFRecord) getRelated
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: bfrecord_getrelated.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">getRelated</span> Returns an array of related records
+    RECORDS = <span class="helptopic">getRelated</span>(OBJ) returns the first 100 records
+    of each type of model that is related to the current
+    object.
+ 
+    [RECORDS, INFO] = <span class="helptopic">getRelated</span>(OBJ) returns an INFO
+    structure in addition to the records that contains the
+    total number of records that are related to the current
+    record per model, and the number of returned records. 
+ 
+    [RECORDS, INFO] = <span class="helptopic">getRelated</span>(OBJ, MODEL) Returns the
+    first 100 records for the provided MODEL where MODEL can be
+    an object of class BFMODEL, or a string with the name of
+    the model.
+ 
+    [RECORDS, INFO] = <span class="helptopic">getRelated</span>(OBJ, MODEL, LIMIT, OFFSET)
+    returns n number of records as specified by the LIMIT and
+    OFFSET parameters. LIMIT is a number indicating the
+    maximum number of records that should be returned, and
+    OFFSET is the index of the first object that should be
+    returned. 
+ 
+    For example:
+        [RECORDS, INFO] = <span class="helptopic">getRelated</span>(obj, 'disease', 100, 1)</pre></div><!--after help -->
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>

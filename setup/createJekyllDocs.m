@@ -185,7 +185,7 @@ for i = 1: length(classes)
                 end
             end
 
-            h = fopen(sprintf('docs/pages/matlabClasses/%s.html',methodLoc),'wt');
+            h = fopen(sprintf('docs/pages/matlabClasses/%s',methodLoc),'wt');
             fprintf(h, preface);
             fprintf(h,'%s',html);
             fclose(h);

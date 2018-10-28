@@ -145,6 +145,9 @@ entries:
     - title: (BFConceptsAPI) createRecords
       url: /bfconceptsapi_createrecords.html
       output: web
+    - title: (BFConceptsAPI) createRelationship
+      url: /bfconceptsapi_createrelationship.html
+      output: web
     - title: (BFConceptsAPI) deleteRecords
       url: /bfconceptsapi_deleterecords.html
       output: web
@@ -156,6 +159,15 @@ entries:
       output: web
     - title: (BFConceptsAPI) getRecords
       url: /bfconceptsapi_getrecords.html
+      output: web
+    - title: (BFConceptsAPI) getRelated
+      url: /bfconceptsapi_getrelated.html
+      output: web
+    - title: (BFConceptsAPI) getRelationCountsForRecord
+      url: /bfconceptsapi_getrelationcountsforrecord.html
+      output: web
+    - title: (BFConceptsAPI) getRelationships
+      url: /bfconceptsapi_getrelationships.html
       output: web
     - title: (BFConceptsAPI) slugFromString
       url: /bfconceptsapi_slugfromstring.html
@@ -259,11 +271,17 @@ entries:
     - title: (BFModel) createRecords
       url: /bfmodel_createrecords.html
       output: web
+    - title: (BFModel) createRelationship
+      url: /bfmodel_createrelationship.html
+      output: web
     - title: (BFModel) deleteRecords
       url: /bfmodel_deleterecords.html
       output: web
     - title: (BFModel) getRecords
       url: /bfmodel_getrecords.html
+      output: web
+    - title: (BFModel) getRelationships
+      url: /bfmodel_getrelationships.html
       output: web
     - title: (BFModelProperty) BFModelProperty
       url: /bfmodelproperty_bfmodelproperty.html
@@ -271,11 +289,14 @@ entries:
     - title: (BFRecord) BFRecord
       url: /bfrecord_bfrecord.html
       output: web
-    - title: (BFRecord) getAllRelationships
-      url: /bfrecord_getallrelationships.html
+    - title: (BFRecord) getRelated
+      url: /bfrecord_getrelated.html
       output: web
-    - title: (BFRecord) getRelationships
-      url: /bfrecord_getrelationships.html
+    - title: (BFRecord) getRelatedCount
+      url: /bfrecord_getrelatedcount.html
+      output: web
+    - title: (BFRecord) link
+      url: /bfrecord_link.html
       output: web
     - title: (BFRecord) update
       url: /bfrecord_update.html
