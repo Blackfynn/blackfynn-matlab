@@ -1,4 +1,4 @@
-classdef BFModel < BFBaseModelNode
+classdef BFModel < BFBaseSchemaNode
     %BFMODEL A metadata model on the Blackfynn platform 
     %   The BFModel class represents metadatamodels on the Blackfynn
     %   platform. Users can create models to define how metadata is
@@ -8,6 +8,7 @@ classdef BFModel < BFBaseModelNode
     properties
         nrRecords = 0           % Number of records for this model
         props = []              % Array of property details
+        locked = false
     end
     
     properties (Hidden)
@@ -20,29 +21,35 @@ classdef BFModel < BFBaseModelNode
     
     properties (Access = private)
         relationships_
+        relationshipChecked = false
     end
     
     methods
         function obj = BFModel(session, id, name, displayName, ...
-                description, locked,createdAt, updatedAt)               
+                description, locked)               
             %BFMODEL Construct an instance of this class
             %   OBJ = BFMODEL(SESSION, 'id', 'name', 'displayName',
-            %   'description', LOCKED, 'createdAt', 'updatedAt') creates an
-            %   object of class BFMODEL.
+            %   'description', LOCKED) creates an object of class BFMODEL.
             
-            obj = obj@BFBaseModelNode(session, id, name, displayName, ...
-                description, locked,createdAt, updatedAt);
+            obj = obj@BFBaseSchemaNode(session, id, name, displayName, ...
+                description);
+            
+            obj.locked = locked;
+            
         end
         
         function value = get.relationships(obj)                         
             % GET_RELATIONSHIPS gets and caches the models for dataset.
             
-            if ~isempty(obj.relationships_)
+            if obj.relationshipChecked
                 value = obj.relationships_;
             else
                 response = obj.session.conceptsAPI.getRelationships(obj.dataset.id, obj.id);
-                value = response;
+                value = BFRelationship.createFromResponse(response, obj.session, obj.dataset);
+                obj.relationships_ = value;
+                obj.relationshipChecked = true;
             end
+            
         end
 
         function records = getRecords(obj, varargin)                    
@@ -77,7 +84,7 @@ classdef BFModel < BFBaseModelNode
             records = BFRecord.empty(length(response),0);
             for i=1: length(response)
                 records(i) = BFRecord.createFromResponse(response(i), ...
-                    obj.session, obj.id, obj.dataset);
+                    obj.session, obj, obj.dataset);
             end
 
         end
@@ -114,7 +121,7 @@ classdef BFModel < BFBaseModelNode
             end
                         
             % validate property types
-            records = obj.session.conceptsAPI.createRecords(obj.dataset, obj.id, data);
+            records = obj.session.conceptsAPI.createRecords(obj.dataset, obj, data);
             
         end
         
@@ -367,12 +374,16 @@ classdef BFModel < BFBaseModelNode
           %CREATEFROMRESPONSE  Create object from server response 
           
           out = BFModel(session, resp.id, resp.name, ...
-              resp.displayName, resp.description, resp.locked,...
-              resp.createdAt, resp.updatedAt);
+              resp.displayName, resp.description, resp.locked);
           out.nrRecords = resp.count;
           out.nrProperties = resp.propertyCount;
           out.dataset = dataset;
+          
+          out.setDates(resp.createdAt, resp.createdBy, resp.updatedAt, resp.updatedBy); 
+          
           out.props = out.getProperties();
+          
+          
           
         end
     end
