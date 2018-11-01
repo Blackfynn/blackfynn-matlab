@@ -2,11 +2,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
     %BFRECORD A representation of a metadata record
     %   
     %   Supports local changes.
-    
-    properties
-        type        % Type of the record
-    end
-    
+        
     properties (Hidden)
         createdAt   % Indicates when record was created
         updatedAt   % Indicates when record was updated
@@ -15,8 +11,9 @@ classdef BFRecord < BFBaseNode & dynamicprops
     end
     
     properties (Access = protected)
+        type_               % Type of the record
         updated = false     % Flag to see if record changed
-        model               % Associated model
+        model_               % Associated model
         dataset = ''        % The dataset that the record belongs to
         propNames = {}      % Cell array with dynamic property names
     end
@@ -30,7 +27,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
             obj = obj@BFBaseNode(session, id);
             
             if nargin
-                obj.model = model;
+                obj.model_ = model;
                 obj.dataset = dataset;
             end
         end
@@ -78,26 +75,26 @@ classdef BFRecord < BFBaseNode & dynamicprops
             %       record1(1).link(record2(1), 'contains)
             
             % Check al targets are same model
-            targetType = targets(1).type;
-            targetModel = targets(1).model;
-            assert(all(strcmp(targetType, {targets.type})), 'All target records should be of the same type.');
+            targetType = targets(1).type_;
+            targetModel = targets(1).model_;
+            assert(all(strcmp(targetType, {targets.type_})), 'All target records should be of the same type.');
             
             % Find relationship object
             if isa(relationship, 'BFRelationship')
-                assert(relationship.from.id == obj.model.id, 'This relationship is not defined for records of this model.');
-                assert(relationship.to.id == targets(1).model.id, 'This relationship is not defined for records of this model.');
+                assert(relationship.from.id == obj.model_.id, 'This relationship is not defined for records of this model.');
+                assert(relationship.to.id == targets(1).model_.id, 'This relationship is not defined for records of this model.');
             else
-                relNames = {obj.model.relationships.name};
+                relNames = {obj.model_.relationships.name};
                 relIndeces = strcmp(relationship, relNames);
 
                 if ~any(relIndeces)
                     error('There is no relationship defined with that name. Use the BFMODEL.CREATERELATIONSHIP method to create the relationship');
                 else
                     % Check targetType
-                    allToModels =  [obj.model.relationships.to];
+                    allToModels =  [obj.model_.relationships.to];
                     
                     targetIndeces = strcmp(targetModel.id, {allToModels.id});
-                    relationship = obj.model.relationships(relIndeces & targetIndeces);
+                    relationship = obj.model_.relationships(relIndeces & targetIndeces);
                     assert(~isempty(relationship), 'Relationship does not exist.');                
                 end
             end
@@ -181,7 +178,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
             end
                         
             response = obj.session.conceptsAPI.getRelationCountsForRecord( ...
-                obj.dataset.id, obj.model.id, obj.id);
+                obj.dataset.id, obj.model_.id, obj.id);
             
             info = struct( ...
                 'name',{response.name}, ...
@@ -195,7 +192,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
                 idx = 1;
                 for i = 1: length(response)
                     recs = obj.session.conceptsAPI.getRelated(...
-                        obj.dataset.id, obj.model.id, obj.id, response(i).name);
+                        obj.dataset.id, obj.model_.id, obj.id, response(i).name);
 
                     % Set info
                     info(i).returnedCount = length(recs);
@@ -274,7 +271,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
         function s = getFooter(obj)                                     
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                url = sprintf('%s/%s/datasets/%s/explore/%s/%s',obj.session.web_host,obj.session.org,obj.dataset.id,obj.model.id,obj.id);
+                url = sprintf('%s/%s/datasets/%s/explore/%s/%s',obj.session.web_host,obj.session.org,obj.dataset.id,obj.model_.id,obj.id);
                 if obj.updated
                     s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id,url,class(obj));
                 else
@@ -294,7 +291,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
                 if obj.updated
                     updatedStr = '*local changes*';
                 end
-                s = sprintf(' %s(%s) with properties: %s\n',  classNameStr, obj.type, updatedStr);
+                s = sprintf(' %s(%s) with properties: %s\n',  classNameStr, obj.type_, updatedStr);
 
             end
             
@@ -308,7 +305,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
             %           description, locked, created_at, updated_at ]  
           
             out = BFRecord(session, resp.id, model, dataset);
-            out.type = resp.type;
+            out.type_ = resp.type;
             out.id = resp.id;
             out.createdAt = resp.createdAt;
             out.updatedAt = resp.updatedAt;

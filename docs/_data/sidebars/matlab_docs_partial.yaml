@@ -13,3 +13,6 @@ entries:
     - title: Tutorial 1 - The basics
       url: /tutorial1.html
       output: web
+    - title: Tutorial 2 - Metadata management
+      url: /tutorial2.html
+      output: web

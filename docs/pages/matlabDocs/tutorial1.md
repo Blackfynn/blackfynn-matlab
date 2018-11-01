@@ -31,7 +31,7 @@ This will store your API key and secret in a config.ini file inside your home fo
 To initialyze a session, create an object of type ```Blackfynn```:
 
 ```text
->> bf = Blackfynn();
+>> bf = Blackfynn()
 
 bf = 
 
