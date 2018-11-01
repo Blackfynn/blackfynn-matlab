@@ -81,7 +81,7 @@
     <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="${PROJECT_ROOT}" name="blackfynn.mltbx" optional="false">/${PROJECT_ROOT}/blackfynn.mltbx</file>
+      <file location="${PROJECT_ROOT}" name="blackfynn.mltbx" optional="false">${PROJECT_ROOT}/blackfynn.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
