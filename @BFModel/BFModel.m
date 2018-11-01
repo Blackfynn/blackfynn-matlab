@@ -115,7 +115,7 @@ classdef BFModel < BFBaseSchemaNode
             
             % validate property names
             providedProps = fieldnames(data(1));
-            if ~all(cellfun(@(x) any(strcmp(x,{obj.props.name})), providedProps))
+            if ~all(cellfun(@(x) any(strcmpi(x,{obj.props.name})), providedProps))
                 fprintf(2, 'incorrect property names for object of type: %s\n', upper(obj.name));
                 return
             end
@@ -349,6 +349,7 @@ classdef BFModel < BFBaseSchemaNode
                 obj.dataset.id, obj.id, targetModel.id, name, '');
             
             relationship = BFRelationship.createFromResponse(response, obj.session, obj.dataset);
+            obj.relationshipChecked = false;
                         
         end
     end

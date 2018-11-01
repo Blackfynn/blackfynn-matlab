@@ -118,7 +118,7 @@ classdef BFConceptsAPI
                 rec_array = struct('name',{},'value',{});
                 for j=1: length(fields)
                     item = struct();
-                    item.name = fields{j};
+                    item.name = lower(fields{j});
                     item.value = curItem.(fields{j});
                     rec_array(j) = item;
                 end

@@ -4,7 +4,7 @@ BUILD_DIR="build"
 MATLAB_LOC="matlab"
 
 # Uncomment and edit line below if building toolbox on local machine
-# MATLAB_LOC="/Applications/MATLAB_R2017b.app/bin/matlab"
+#MATLAB_LOC="/Applications/MATLAB_R2017b.app/bin/matlab"
 
 [ -d $BUILD_DIR ] || mkdir ${BUILD_DIR}
 
