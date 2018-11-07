@@ -41,7 +41,8 @@ classdef BFSession < handle
       
       hosts = struct('host',BFSession.serverUrl, ...
         'streamingHost',BFSession.streamingHost, ...
-        'webHost', BFSession.webHost);
+        'webHost', BFSession.webHost,...
+        'conceptsHost', BFSession.conceptsHost);
     end
     
     

@@ -35,13 +35,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             
             userProfile = '';
             if nargin == 1
-                if varargin{1} == 'empty'
-                    % allow for creation of empty object without making
-                    % web-requests.
-                    return
-                else
-                    userProfile = varargin{1};
-                end
+                userProfile = varargin{1};
             end
             
             obj.session = BFSession();
@@ -112,7 +106,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
                    obj.session.conceptsAPI = BFConceptsAPI(obj.session, keyValues{5});
                    obj.session.concepts_host = keyValues{5};
                 else
-                   obj.session.conceptsAPI = BFConceptsAPI(session);
+                   obj.session.conceptsAPI = BFConceptsAPI(obj.session);
                    obj.session.concepts_host = defaultHosts.conceptsHost; 
                 end
                 if isempty(keyValues{6}) == 0
