@@ -59,6 +59,22 @@ classdef BFDataset < BFBaseCollection
             obj.models_ = [obj.models_ model];                
             
         end
+        
+        function out = listModels(obj)
+            %LISTMOELS  Displays a list of models for the dataset
+            %   OUT = LISTMDOELS(OBJ) returns a table of the model names
+            %   other information in a Matlab table. This can be used to
+            %   quickly visualize the available models in the current
+            %   dataset.
+            
+            idx = 1:length(obj.models);
+            idx = idx';
+            name = {obj.models.name}';
+            nrRecords = [obj.models.nrRecords]';
+            
+            out = table(idx,name,nrRecords);
+            
+        end
     end
     
     methods (Sealed = true)

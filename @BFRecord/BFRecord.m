@@ -13,7 +13,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
     properties (Access = protected)
         type_               % Type of the record
         updated = false     % Flag to see if record changed
-        model_               % Associated model
+        model_              % Associated model
         dataset = ''        % The dataset that the record belongs to
         propNames = {}      % Cell array with dynamic property names
     end

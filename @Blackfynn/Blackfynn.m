@@ -352,6 +352,21 @@ classdef (Sealed) Blackfynn < BFBaseNode
             
             success = obj.session.agent.upload(dataset.id, path);
         end
+        
+        function out = listDatasets(obj)                        
+            %LISTDATASETS  Displays a list of datasets
+            %   OUT = LISTDATASETS(OBJ) returns a table of the dataset
+            %   names and Blackfynn IDs in a Matlab table. This can be used
+            %   to quickly visualize the available datasets in the
+            %   organization.
+            
+            idx = 1:length(obj.datasets);
+            idx = idx';
+            name = {obj.datasets.name}';
+            id = {obj.datasets.id}';
+            
+            out = table(idx,name,id);            
+        end
 
     end
     
