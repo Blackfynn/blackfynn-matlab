@@ -20,7 +20,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         function obj = BFTimeseries(varargin)
             % Args: Empty, or [session, id, name, type, channels] 
             
-            obj = obj@BFDataPackage(varargin{:});
+            obj = obj@BFDataPackage(varargin{1:4});
             if nargin
                 obj.channels_= varargin{5};
                 obj.package = varargin{2}; 
