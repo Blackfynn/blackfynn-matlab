@@ -29,10 +29,10 @@ classdef BFAgent
             %   https://developer.blackfynn.com/agent            
             
             % TODO: Make this work for windows/linus
-            obj.location = '~/.blackfynn-agent/build/blackfynn-agent';
+            obj.location = '/usr/local/opt/blackfynn/bin/blackfynn_agent';
         end
     
-        function status = login(obj, token, secret)
+        function status = login(obj, profileName)
             %LOGIN Open a session using the Blackfynn Agent.
             %   STATUS = LOGIN(OBJ, 'token', 'secret') passes the API token
             %   and secret to the Blackfynn agent to open a session in the
@@ -41,7 +41,7 @@ classdef BFAgent
             % Login with agent if agent is installed
             status = 1;
             if exist(obj.location,'file')
-                [status, ~] = system(sprintf('%s login --key %s --secret %s', obj.location, token, secret));
+                [status, ~] = system(sprintf('%s profile switch %s', obj.location,profileName));
                 if status
                     warning('Blackfynn Agent could not be initialized; some functionality might not work');
                 end
@@ -51,20 +51,62 @@ classdef BFAgent
             
         end
         
-        function status = upload(obj, datasetId, path)
+        function upload(obj, dataset, path, varargin)
             %UPLOAD Upload data from MATLAB using the Blackfynn Agent
-            %   STATUS = UPLOAD(OBJ, 'datasetId', 'path') uploads all data
-            %   in the folder specified in 'path'. 
-            %            %
-            %   This method is still very much in beta as visualization of
-            %   status does not work well from within MATLAB. You can also
-            %   use the agent directly from the command line for more
-            %   comprehensive feedback.
-                     
-            cmd = sprintf('%s upload %s --dataset %s',obj.location, ...
-                path, datasetId);
-            [status, info] = system(cmd);
+            %   UPLOAD(OBJ, DATASET, 'path') uploads all files from the
+            %   folder specified in the 'path' to the platform. 
+            %
+            %   UPLOAD(..., 'folder', TOFOLDER) uploads the files to the
+            %   folder TOFOLDER on the Blackfynn platform. TOFOLDER should
+            %   be an object of class BFCOLLECTION in the specified
+            %   DATASET.
+            %
+            %   UPLOAD(..., 'include', 'includeStr') will only upload the
+            %   files that match the 'includeStr' expression.
+            %
+            %   UPLOAD(..., 'exclude', 'excludeStr') will exclude files
+            %   that match the 'excludeStr' expression.
+ 
+            assert(isa(dataset,'BFDataset'), 'DATASET needs to be of type BFDataset');
+            assert(~mod(length(varargin),2),'Incorrect number of input arguments');
             
+            folder = '';
+            include = '';
+            exclude = '';
+            
+            for i=1: 2: length(varargin)
+                switch varargin{i}
+                    case 'folder'
+                        folder = varargin{i+1};
+                        assert(isa(folder,'BFCollection'), 'FOLDER needs to be of type BFCollection');
+                    case 'include'
+                        include = varargin{i+1};
+                        assert(isa(iclude,'char'), '''include'' needs to be of type ''char''');
+                    case 'exclude'
+                        exclude = varargin{i+1};
+                        assert(isa(exclude,'char'), '''exclude'' needs to be of type ''char''');
+                end
+            end
+            
+            datasetId = dataset.id;
+                   
+            cmd = sprintf('%s upload --dataset %s -f -O simple ',obj.location, ...
+                 datasetId);
+            
+            if ~isempty(folder)
+                cmd = [cmd sprintf('--folder=%s ',folder.id_)];
+            end
+            if ~isempty(include)
+                cmd = [cmd sprintf('--include=%s ',include)];
+            end
+            if ~isempty(exclude)
+                cmd = [cmd sprintf('--exclude=%s ',exclude)];
+            end
+            
+            cmd = [cmd sprintf('%s', path)];
+            % Run uploader
+            system(cmd);
+                       
         end
     end
 end

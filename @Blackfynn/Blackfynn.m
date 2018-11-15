@@ -124,7 +124,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             
             % Login agent
             obj.session_.agent = BFAgent();
-            obj.session_.agent.login(keyValues{1}, keyValues{2});
+            obj.session_.agent.login(userProfile);
 
             % Set API key
             obj.session_.api_key = resp.session_token;
