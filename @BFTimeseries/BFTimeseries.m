@@ -62,7 +62,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
                 resp = obj.get_channels();
                 for i = 1 : length(resp)
                     value(i) = BFTimeseriesChannel.createFromResponse(resp, ...
-                        obj.session);
+                        obj.session_);
                 end
                 obj.channels_ = value;
             end
@@ -76,12 +76,12 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             if (~isempty(obj.layers_))
                 value = obj.layers_;
             else
-                resp = obj.session.mainAPI.getAnnotationLayers(obj.id);           
+                resp = obj.session_.mainAPI.getAnnotationLayers(obj.id_);           
                 res = resp.results;
                 value = BFTimeseriesAnnotationLayer.empty(length(res),0);
                 for i = 1 : length(res)
                     value(i) = BFTimeseriesAnnotationLayer.createFromResponse(res(i), ...
-                        obj.session);
+                        obj.session_);
                 end
                 obj.layers_ = value;
             end    
@@ -114,20 +114,20 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         % Create channel array structure for request
         chan_array = struct();
         for i=1:length(channels)
-            chan_array(i).id =  channels(i).id;
+            chan_array(i).id_ =  channels(i).id_;
             chan_array(i).rate = channels(i).rate;
         end
-        ch_ids = {chan_array.id};
+        ch_ids = {chan_array.id_};
         max_rate = max([chan_array.rate]);
 
         % Set chunk size (10,000 values per chunk)
         chunk_size = 1e6* (10000/max_rate);
         
         % Create Websocket connection to Blackfynn Agent
-        ws_ = BFAgentIO(obj.session, obj.package);
+        ws_ = BFAgentIO(obj.session_, obj.package);
         cmd = struct( ...
             'command', "new", ...
-            'session', obj.session.api_key, ...
+            'session', obj.session_.api_key, ...
             'packageId', obj.package, ...
             'channels', chan_array, ...
             'startTime', uint64(start), ...
@@ -173,7 +173,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         len_chan = length(obj.channels);
         for i = 1 : len_chan
             fprintf('%d. ID: "%s", Name: "%s", Type: "%s"\n', ...
-                (i-1), obj.channels(i).id, obj.channels(i).name, ...
+                (i-1), obj.channels(i).id_, obj.channels(i).name, ...
                 obj.channels(i).channelType);
         end
         end
@@ -202,7 +202,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             %       to retrieve it through its ID.
             %
             fieldSpikes = 'spikeDuration';
-            resp = obj.session.mainAPI.getTimeseriesChannel(obj.id, chan_id);
+            resp = obj.session_.mainAPI.getTimeseriesChannel(obj.id_, chan_id);
             out = resp.content;
             if ~(isfield(out, fieldSpikes))
                 out.(fieldSpikes) = '(null)';
@@ -239,13 +239,13 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             layer = obj.create_layer(name, varargin{:});
 
             % Create annotation
-            resp = obj.session.mainAPI.createTimeseriesAnnotation(obj.id, layer.layerId);
+            resp = obj.session_.mainAPI.createTimeseriesAnnotation(obj.id_, layer.layerId);
 
-            uri = sprintf('%s%s%s%s%d%s', obj.session.host,'timeseries/', ...
-                obj.id,'/layers/', layer.layerId, '/annotations');
+            uri = sprintf('%s%s%s%s%d%s', obj.session_.host,'timeseries/', ...
+                obj.id_,'/layers/', layer.layerId, '/annotations');
             message = obj.load_annotation_params(name, label, layer.layerId, varargin{:});
-            out = obj.session.request.post(uri, message);
-            out = BFTimeseriesAnnotation.createFromResponse(out, obj.session);
+            out = obj.session_.request.post(uri, message);
+            out = BFTimeseriesAnnotation.createFromResponse(out, obj.session_);
         end
     
         function out = get_layers(obj)
@@ -269,10 +269,10 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         %                       layerId
         %                       description
         %
-        uri = sprintf('%s%s%s%s', obj.session.host,'timeseries/',...
-            obj.id,'/layers');
+        uri = sprintf('%s%s%s%s', obj.session_.host,'timeseries/',...
+            obj.id_,'/layers');
         params = {};
-        out = obj.session.request.get(uri, params);
+        out = obj.session_.request.get(uri, params);
         out = out.results;
         
         % handle response
@@ -280,10 +280,10 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         for i = 1 : length(out)
             if i == 1
                 layer = BFTimeseriesAnnotationLayer.createFromResponse(out(i),...
-                    obj.session);
+                    obj.session_);
             else
                layer = [BFTimeseriesAnnotationLayer.createFromResponse(out(i),...
-                   obj.session), layer];
+                   obj.session_), layer];
             end
         end
         out = layer;
@@ -337,10 +337,10 @@ classdef (Sealed) BFTimeseries < BFDataPackage
 
             % if layer does not exist, create
             if ~exist('layer', 'var')
-                resp = obj.session.mainAPI.createAnnotationLayer(obj.id, name, description);
-                out = BFTimeseriesAnnotationLayer.createFromResponse(resp, obj.session);
+                resp = obj.session_.mainAPI.createAnnotationLayer(obj.id_, name, description);
+                out = BFTimeseriesAnnotationLayer.createFromResponse(resp, obj.session_);
             else
-                out = BFTimeseriesAnnotationLayer.createFromResponse(layer, obj.session);
+                out = BFTimeseriesAnnotationLayer.createFromResponse(layer, obj.session_);
             end
         end
     
@@ -418,7 +418,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             %               >> ts.delete_layer(384)
             %
 
-            resp = obj.session.mainAPI.deleteAnnotationLayer(obj.id, id);
+            resp = obj.session_.mainAPI.deleteAnnotationLayer(obj.id_, id);
 
         end
     end
@@ -428,7 +428,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         function out = get_channels(obj)
             % GET_CHANNELS gets the channels for a ts package
             %
-            out = obj.session.mainAPI.getTimeseriesChannels(obj.id);
+            out = obj.session_.mainAPI.getTimeseriesChannels(obj.id_);
         end
     
         function out = load_annotation_params(obj, name, label, layer_id, ...
@@ -440,7 +440,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
        %
        channelList = strings(1, length(obj.channels));
        for i = 1 : length(obj.channels)
-           channelList(i) = obj.channels(i).id;
+           channelList(i) = obj.channels(i).id_;
        end
        
        defaultDescription = '';

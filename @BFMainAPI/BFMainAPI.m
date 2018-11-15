@@ -3,7 +3,7 @@ classdef BFMainAPI
     %   Detailed explanation goes here
     
     properties
-        session
+        session_
         host = 'https://api.blackfynn.io';
         name = 'api';
     end
@@ -14,7 +14,7 @@ classdef BFMainAPI
             %   Detailed explanation goes here
             
             narginchk(1,2);
-            obj.session = session;
+            obj.session_ = session;
             
             if nargin == 2
                 obj.host = varargin{1};
@@ -30,7 +30,7 @@ classdef BFMainAPI
         
         function session = getSessionToken(obj, token, secret)
 
-            request = obj.session.request;
+            request = obj.session_.request;
             endPoint = sprintf('%s/account/api/session',obj.host);
             params = struct(...
                 'tokenId',token, ...
@@ -46,7 +46,7 @@ classdef BFMainAPI
         function user = getUser(obj)
             
             endPoint = sprintf('%s/user/',obj.host);
-            user = obj.session.request.get(endPoint,{});
+            user = obj.session_.request.get(endPoint,{});
             
         end
         
@@ -57,8 +57,8 @@ classdef BFMainAPI
             % API does not provide info for items within a dataset.
             endPoint = sprintf('%s/datasets',obj.host);
             params = {};
-            response = obj.session.request.get(endPoint, params);
-            datasets = BFBaseDataNode.createFromResponse(response, obj.session);
+            response = obj.session_.request.get(endPoint, params);
+            datasets = BFBaseDataNode.createFromResponse(response, obj.session_);
         end
         
         function resp = getDataset(obj, datasetId)
@@ -66,7 +66,7 @@ classdef BFMainAPI
             % API provides full info about dataset including children.
             endPoint = sprintf('%s/datasets/%s',obj.host, datasetId);
             params = {} ;
-            resp = obj.session.request.get(endPoint, params);
+            resp = obj.session_.request.get(endPoint, params);
         end
         
         function resp = createDataset(obj, name, description)
@@ -77,23 +77,23 @@ classdef BFMainAPI
                 'description', description,...
                 'properties', []);
             
-            resp = obj.session.request.post(endPoint, params);
+            resp = obj.session_.request.post(endPoint, params);
                
         end
         
         function success = updateDataset(obj, datasetId, name, description)
-            endPoint = sprintf('%s/datasets/%s', obj.session.host, datasetId);
+            endPoint = sprintf('%s/datasets/%s', obj.session_.host, datasetId);
             params = struct(...
                 'name', name,...
                 'description', description);
-            success = obj.session.request.put(endPoint, params);
+            success = obj.session_.request.put(endPoint, params);
         end
         
         function success = deleteDataset(obj, datasetId)
             
             endPoint = sprintf('%s/datasets/%s', obj.host, datasetId);
             params = {} ;
-            success = obj.session.request.delete(endPoint, params);
+            success = obj.session_.request.delete(endPoint, params);
         end
 
         %% ORGANIZATIONS
@@ -102,7 +102,7 @@ classdef BFMainAPI
             params = {'includeAdmins' 'false'};
             endPoint = sprintf('%s/organizations',obj.host);
             
-            request = obj.session.request;
+            request = obj.session_.request;
             organizations = request.get(endPoint, params);
         end
         
@@ -113,7 +113,7 @@ classdef BFMainAPI
             boolStr = {'false' 'true'};
             endPoint = sprintf('%s/packages/%s',obj.host,id);
             params = {'includeAncestors' boolStr{includeAncestors +1} 'include' boolStr{includeSources +1}};
-            resp = obj.session.request.get(endPoint, params);
+            resp = obj.session_.request.get(endPoint, params);
         end
                
         function resp = createFolder(obj, datasetId, parentId, name)
@@ -127,7 +127,7 @@ classdef BFMainAPI
                 params.parent = parentId;
             end
 
-            resp = obj.session.request.post(endPoint, params);
+            resp = obj.session_.request.post(endPoint, params);
         end
                
         function success = updatePackage(obj, packageId, name, state, packageType)
@@ -136,7 +136,7 @@ classdef BFMainAPI
                   'name', name,...
                   'state', state,...
                   'packageType', packageType);
-            success = obj.session.request.put(endPoint, params);
+            success = obj.session_.request.put(endPoint, params);
         end
         
         %% DATA
@@ -148,7 +148,7 @@ classdef BFMainAPI
                 'things', []);
             
             message.things = ids;
-            resp = obj.session.request.post(endPoint, message);
+            resp = obj.session_.request.post(endPoint, message);
             
             success = true;
             if ~isempty(resp.success)
@@ -180,7 +180,7 @@ classdef BFMainAPI
             'destination', destinationId);
 
             message.things = thingIds;
-            resp = obj.session.request.post(endPoint, message);
+            resp = obj.session_.request.post(endPoint, message);
         
             success = true;
             if ~isempty(resp.success)
@@ -233,7 +233,7 @@ classdef BFMainAPI
             
             
             endPoint = sprintf('%s/tabular/%s', obj.host,packageId);
-            resp = obj.session.request.get(endPoint, params);
+            resp = obj.session_.request.get(endPoint, params);
         end
         
         %% TIMESERIES
@@ -241,32 +241,32 @@ classdef BFMainAPI
         function resp = getAnnotationLayers(obj,packageId)
             endPoint = sprintf('%s/timeseries/%s/layers',obj.host,packageId);
             params = {};
-            resp = obj.session.request.get(endPoint, params);
+            resp = obj.session_.request.get(endPoint, params);
         end
         
         function resp = createAnnotationLayer(obj, packageId, name, description)
             endPoint = sprintf('%s/timeseries/%s/layers', obj.host, packageId);
             message = struct('name', name, 'description', description);
-            resp = obj.session.request.post(endPoint, message);
+            resp = obj.session_.request.post(endPoint, message);
         end
         
         function resp = deleteAnnotationLayer(obj, packageId, layerId)
             endPoint = sprintf('%s/timeseries/%s/layers/%d', obj.host, 'timeseries/', ...
             packageId, layerId);
             message = '';
-            resp = obj.session.request.delete(endPoint, message);
+            resp = obj.session_.request.delete(endPoint, message);
         end
         
         function resp = getTimeseriesChannels(obj, packageId)
             endPoint = sprintf('%s/timeseries/%s/channels', obj.host, packageId);
             params = {};
-            resp = obj.session.request.get(endPoint, params);
+            resp = obj.session_.request.get(endPoint, params);
         end
         
         function resp = getTimeseriesChannel(obj, packageId, channelId)
             endPoint = sprintf('%s/timeseries/%s/channels/%s',obj.host, packageId, channelId);
             params = {};
-            resp = obj.session.request.get(endPoint, params);
+            resp = obj.session_.request.get(endPoint, params);
         end
         
         function resp = createTimeseriesAnnotation(obj, packageId, layerId, name, label, channelIds, startTime, endTime, description)
@@ -291,7 +291,7 @@ classdef BFMainAPI
             end
             
             % make request
-            resp = obj.session.request.post(endPoint, message);
+            resp = obj.session_.request.post(endPoint, message);
             
         end
         

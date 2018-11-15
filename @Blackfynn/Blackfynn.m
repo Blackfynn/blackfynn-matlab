@@ -38,8 +38,8 @@ classdef (Sealed) Blackfynn < BFBaseNode
                 userProfile = varargin{1};
             end
             
-            obj.session = BFSession();
-            obj.session.request = BFRequest();
+            obj.session_ = BFSession();
+            obj.session_.request = BFRequest();
             
             
             
@@ -91,28 +91,28 @@ classdef (Sealed) Blackfynn < BFBaseNode
                 % config file, use their values.
                 defaultHosts = BFSession.getDefaultHosts();
                 if isempty(keyValues{4}) == 0
-                   obj.session.streaming_host = keyValues{4}; 
+                   obj.session_.streaming_host = keyValues{4}; 
                 else
-                   obj.session.streaming_host = defaultHosts.streamingHost; 
+                   obj.session_.streaming_host = defaultHosts.streamingHost; 
                 end
                 if isempty(keyValues{3}) == 0
-                   obj.session.mainAPI = BFMainAPI(obj.session, keyValues{3}); 
-                   obj.session.host = keyValues{3};
+                   obj.session_.mainAPI = BFMainAPI(obj.session_, keyValues{3}); 
+                   obj.session_.host = keyValues{3};
                 else
-                   obj.session.mainAPI = BFMainAPI(obj.session);
-                   obj.session.host = defaultHosts.host; 
+                   obj.session_.mainAPI = BFMainAPI(obj.session_);
+                   obj.session_.host = defaultHosts.host; 
                 end
                 if isempty(keyValues{5}) == 0
-                   obj.session.conceptsAPI = BFConceptsAPI(obj.session, keyValues{5});
-                   obj.session.concepts_host = keyValues{5};
+                   obj.session_.conceptsAPI = BFConceptsAPI(obj.session_, keyValues{5});
+                   obj.session_.concepts_host = keyValues{5};
                 else
-                   obj.session.conceptsAPI = BFConceptsAPI(obj.session);
-                   obj.session.concepts_host = defaultHosts.conceptsHost; 
+                   obj.session_.conceptsAPI = BFConceptsAPI(obj.session_);
+                   obj.session_.concepts_host = defaultHosts.conceptsHost; 
                 end
                 if isempty(keyValues{6}) == 0
-                   obj.session.web_host = keyValues{6};
+                   obj.session_.web_host = keyValues{6};
                 else
-                   obj.session.web_host = defaultHosts.webHost; 
+                   obj.session_.web_host = defaultHosts.webHost; 
                 end
                 
                 
@@ -120,19 +120,19 @@ classdef (Sealed) Blackfynn < BFBaseNode
                 error('Username and password not found: Use setup method');
             end
    
-            resp = obj.session.mainAPI.getSessionToken(keyValues{1}, keyValues{2});
+            resp = obj.session_.mainAPI.getSessionToken(keyValues{1}, keyValues{2});
             
             % Login agent
-            obj.session.agent = BFAgent();
-            obj.session.agent.login(keyValues{1}, keyValues{2});
+            obj.session_.agent = BFAgent();
+            obj.session_.agent.login(keyValues{1}, keyValues{2});
 
             % Set API key
-            obj.session.api_key = resp.session_token;
-            obj.session.org = resp.organization;
-            obj.session.setAPIKey(resp.session_token);
+            obj.session_.api_key = resp.session_token;
+            obj.session_.org = resp.organization;
+            obj.session_.setAPIKey(resp.session_token);
             
             % Get User and organization info
-            user = obj.session.mainAPI.getUser();
+            user = obj.session_.mainAPI.getUser();
             
             % Get Organizations
             obj.profile = struct(...
@@ -144,7 +144,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
                 'credential',user.credential);
             
             % get datasets
-            obj.datasets = obj.session.mainAPI.getDatasets();
+            obj.datasets = obj.session_.mainAPI.getDatasets();
         end
         
         function dataset = createDataset(obj, name, varargin)   
@@ -169,8 +169,8 @@ classdef (Sealed) Blackfynn < BFBaseNode
                 description = varargin{1};
             end
 
-            resp = obj.session.mainAPI.createDataset( name, description);
-            dataset = BFBaseDataNode.createFromResponse(resp, obj.session);
+            resp = obj.session_.mainAPI.createDataset( name, description);
+            dataset = BFBaseDataNode.createFromResponse(resp, obj.session_);
             obj.datasets = [obj.datasets dataset];
 
         end
@@ -203,7 +203,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             
             % Ask user for confirmation by default
             if ~forceDelete
-                url = sprintf('%s/%s/datasets/%s',obj.session.web_host,obj.session.org,dataset.id);
+                url = sprintf('%s/%s/datasets/%s',obj.session_.web_host,obj.session_.org,dataset.id_);
                 fprintf(2,['\nYou are about to delete the dataset: <a href = "%s">%s</a>' ...
                     '\nThis will delete all data in this dataset from the Blackfynn platform.\n\n'...
                     'Please type the name of the dataset to continue:\n'],url, dataset.name);
@@ -216,7 +216,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             end
             
             
-            resp = obj.session.mainAPI.deleteDataset(dataset.id);
+            resp = obj.session_.mainAPI.deleteDataset(dataset.id_);
             sc = resp.StatusCode;
             if sc == matlab.net.http.StatusCode.OK
                 % remove from datasets in Blackfynn object.
@@ -251,7 +251,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             %       ___________    ______________________________________
             %       'Blackfynn'    'N:organization:c9055555-3333-4444-...
             
-            response = obj.session.mainAPI.getOrganizations();            
+            response = obj.session_.mainAPI.getOrganizations();            
             len_org=length(response.organizations);
             col_names = {'Name','Id'};
             organizations = cell2table(cell(len_org, length(col_names)));
@@ -295,7 +295,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             elseif isa(ts,'BFBaseDataNode')
                 things{length(delobjs)} = '';
                 for i = 1 : length(delobjs)
-                    things{i} = delobjs(i).id;
+                    things{i} = delobjs(i).id_;
                 end
             else
                 error('Incorrect input type');
@@ -350,7 +350,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
                 error('Provided PATH is not a folder');
             end
             
-            success = obj.session.agent.upload(dataset.id, path);
+            success = obj.session_.agent.upload(dataset.id_, path);
         end
         
         function out = listDatasets(obj)                        
@@ -363,7 +363,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             idx = 1:length(obj.datasets);
             idx = idx';
             name = {obj.datasets.name}';
-            id = {obj.datasets.id}';
+            id = {obj.datasets.id_}';
             
             out = table(idx,name,id);            
         end
@@ -374,7 +374,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
         function s = getFooter(obj)                             
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                url = sprintf('%s/%s/datasets',obj.session.web_host,obj.session.org);
+                url = sprintf('%s/%s/datasets',obj.session_.web_host,obj.session_.org);
                 s = sprintf('  <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',url,class(obj));
             else
                 s = '';
@@ -389,8 +389,8 @@ classdef (Sealed) Blackfynn < BFBaseNode
             % OUT = GETDATASET(OBJ, 'id') returns a single dataset based on the
             % provided 'id'
             
-            resp = obj.session.mainAPI.getDataset(id);
-            out = BFBaseDataNode.createFromResponse(resp, obj.session);
+            resp = obj.session_.mainAPI.getDataset(id);
+            out = BFBaseDataNode.createFromResponse(resp, obj.session_);
         end
         
         function out = getPackage(obj, id)                      
@@ -398,8 +398,8 @@ classdef (Sealed) Blackfynn < BFBaseNode
             % OUT = GET_PACKAGE(OBJ, 'id') returns a single package based on the
             % provided 'id'
             %
-            resp = obj.session.mainAPI.getPackage(id, false, false);
-            out = BFBaseDataNode.createFromResponse(resp, obj.session);
+            resp = obj.session_.mainAPI.getPackage(id, false, false);
+            out = BFBaseDataNode.createFromResponse(resp, obj.session_);
         end
         
         function out = getCollection(obj, id)                   
@@ -407,12 +407,12 @@ classdef (Sealed) Blackfynn < BFBaseNode
             % OUT = GET_PACKAGE(OBJ, 'id') returns a single package based on the
             % provided 'id'
             %
-            resp = obj.session.mainAPI.getPackage(id, true, false);
-            out = BFBaseDataNode.createFromResponse(resp, obj.session);
+            resp = obj.session_.mainAPI.getPackage(id, true, false);
+            out = BFBaseDataNode.createFromResponse(resp, obj.session_);
         end
         
         function success = delete_items(obj, thingIds)          
-            success = obj.session.mainAPI.delete_packages(thingIds);
+            success = obj.session_.mainAPI.delete_packages(thingIds);
         end
     end
     

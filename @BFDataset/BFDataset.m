@@ -54,8 +54,8 @@ classdef BFDataset < BFBaseCollection
                 obj.modelsChecked = true;
             end
             
-            response = obj.session.conceptsAPI.createModel(obj.id, name, description);
-            model = BFModel.createFromResponse(response, obj.session, obj);
+            response = obj.session_.conceptsAPI.createModel(obj.id_, name, description);
+            model = BFModel.createFromResponse(response, obj.session_, obj);
             obj.models_ = [obj.models_ model];                
             
         end
@@ -108,7 +108,7 @@ classdef BFDataset < BFBaseCollection
             %   See also:
             %       Blackfynn
 
-            obj.session.mainAPI.updateDataset(obj.id, obj.name, obj.description);
+            obj.session_.mainAPI.updateDataset(obj.id_, obj.name, obj.description);
              
         end
         
@@ -117,8 +117,8 @@ classdef BFDataset < BFBaseCollection
         function s = getFooter(obj)
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                url = sprintf('%s/%s/datasets/%s',obj.session.web_host,obj.session.org,obj.id);
-                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id,url,class(obj));
+                url = sprintf('%s/%s/datasets/%s',obj.session_.web_host,obj.session_.org,obj.id_);
+                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id_,url,class(obj));
             else
                 s = '';
             end
@@ -127,10 +127,10 @@ classdef BFDataset < BFBaseCollection
     end
     methods (Access = private)
         function m = getModels_(obj)
-            response = obj.session.conceptsAPI.getModels(obj.id);
+            response = obj.session_.conceptsAPI.getModels(obj.id_);
             m = BFModel.empty(length(response),0);
             for i=1: length(response)
-                m(i) = BFModel.createFromResponse(response(i), obj.session, obj);
+                m(i) = BFModel.createFromResponse(response(i), obj.session_, obj);
             end
         end
     end

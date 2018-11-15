@@ -71,10 +71,10 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
         %                       startTime
         %                       endTime
         %            
-        uri = sprintf('%s/timeseries/%s/layers/%d/annotations', obj.session.host,...
+        uri = sprintf('%s/timeseries/%s/layers/%d/annotations', obj.session_.host,...
             obj.timeSeriesId, obj.layerId);
         params = obj.load_annotation_params(varargin{:});
-        resp = obj.session.request.get(uri, params);
+        resp = obj.session_.request.get(uri, params);
         resp = resp.annotations.results;
         
         % handle response
@@ -82,10 +82,10 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
         for i = 1 : length(resp)
             if i == 1
                 annotation = BFTimeseriesAnnotation.createFromResponse(resp{i}, ...
-                    obj.session);
+                    obj.session_);
             else
                 annotation = [BFTimeseriesAnnotation.createFromResponse(resp{i},...
-                    obj.session), annotation];
+                    obj.session_), annotation];
             end
         end
         out = annotation;
@@ -98,10 +98,10 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
         %       ID (str): ID of the annotation to delete
         %
         %
-        uri = sprintf('%s%s%s%s%d%s%s', obj.session.host, 'timeseries/', ...
+        uri = sprintf('%s%s%s%s%d%s%s', obj.session_.host, 'timeseries/', ...
             obj.timeSeriesId, '/layers/', obj.layerId, '/annotations/', annotationId);
         message = '';
-        obj.session.request.delete(uri, message);
+        obj.session_.request.delete(uri, message);
     end
     
     function show_annotations(obj, endtime)
@@ -210,7 +210,7 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
         function s = getFooter(obj)
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                url = sprintf('%s/%s/datasets',obj.session.web_host,obj.session.org);
+                url = sprintf('%s/%s/datasets',obj.session_.web_host,obj.session_.org);
                 s = sprintf('  <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',url,class(obj));
             else
                 s = '';

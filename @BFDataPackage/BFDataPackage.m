@@ -49,13 +49,13 @@ classdef BFDataPackage < BFBaseDataNode
 
         thingIds{length(obj)} = '';
         for i = 1 : length(obj)
-            thingIds{i} = obj(i).id;
+            thingIds{i} = obj(i).id_;
         end
 
-        success = obj.session.mainAPI.move(thingIds, destid);
+        success = obj.session_.mainAPI.move(thingIds, destid);
         
         % Now move these objects in the MATLAB client
-        obj.session.updateCounter = obj.session.updateCounter + 1;
+        obj.session_.updateCounter = obj.session_.updateCounter + 1;
         
     end
 
@@ -65,8 +65,8 @@ classdef BFDataPackage < BFBaseDataNode
         function s = getFooter(obj)
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                url = sprintf('%s/%s/datasets/%s/viewer/%s',obj.session.web_host,obj.session.org,obj.datasetId,obj.id);
-                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id,url,class(obj));
+                url = sprintf('%s/%s/datasets/%s/viewer/%s',obj.session_.web_host,obj.session_.org,obj.datasetId,obj.id_);
+                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id_,url,class(obj));
             else
                 s = '';
             end

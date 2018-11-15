@@ -44,8 +44,8 @@ classdef BFModel < BFBaseSchemaNode
             if obj.relationshipChecked
                 value = obj.relationships_;
             else
-                response = obj.session.conceptsAPI.getRelationships(obj.dataset.id, obj.id);
-                value = BFRelationship.createFromResponse(response, obj.session, obj.dataset);
+                response = obj.session_.conceptsAPI.getRelationships(obj.dataset.id_, obj.id_);
+                value = BFRelationship.createFromResponse(response, obj.session_, obj.dataset);
                 obj.relationships_ = value;
                 obj.relationshipChecked = true;
             end
@@ -78,13 +78,13 @@ classdef BFModel < BFBaseSchemaNode
                 offset = varargin{2};
             end
             
-            response = obj.session.conceptsAPI.getRecords(obj.dataset.id, ...
-                obj.id, maxCount, offset);
+            response = obj.session_.conceptsAPI.getRecords(obj.dataset.id_, ...
+                obj.id_, maxCount, offset);
             
             records = BFRecord.empty(length(response),0);
             for i=1: length(response)
                 records(i) = BFRecord.createFromResponse(response(i), ...
-                    obj.session, obj, obj.dataset);
+                    obj.session_, obj, obj.dataset);
             end
 
         end
@@ -121,7 +121,7 @@ classdef BFModel < BFBaseSchemaNode
             end
                         
             % validate property types
-            records = obj.session.conceptsAPI.createRecords(obj.dataset, obj, data);
+            records = obj.session_.conceptsAPI.createRecords(obj.dataset, obj, data);
             
         end
         
@@ -141,12 +141,12 @@ classdef BFModel < BFBaseSchemaNode
                 error('Need to supply records of type @BFRecord');
             end
             
-            recordIds = {records.id};
-            success = obj.session.conceptsAPI.deleteRecords(obj.dataset.id, obj.id, recordIds);
+            recordIds = {records.id_};
+            success = obj.session_.conceptsAPI.deleteRecords(obj.dataset.id_, obj.id_, recordIds);
             
             % delete matlab objects if platform delete is successfull
             for i=1:length(records)
-                if any(strcmp(records(i).id, success))
+                if any(strcmp(records(i).id_, success))
                     delete(records(i));
                 end
             end
@@ -235,7 +235,7 @@ classdef BFModel < BFBaseSchemaNode
             assert(isempty(multInput) || isa(multInput, 'logical'), 'MULT input must be of type ''logical''');
             
             % Get existing properties from webservice
-            existingProps = obj.session.conceptsAPI.getProperties(obj.dataset.id, obj.id);
+            existingProps = obj.session_.conceptsAPI.getProperties(obj.dataset.id_, obj.id_);
             
             % Replace empty unit by empty string unit
             for i=1: length(existingProps)
@@ -300,14 +300,14 @@ classdef BFModel < BFBaseSchemaNode
             newProps.value = "";
             newProps.unit = "";
                         
-            resp = obj.session.conceptsAPI.updateModelProperties(...
-                obj.dataset.id, obj.id, existingProps, newProps);
+            resp = obj.session_.conceptsAPI.updateModelProperties(...
+                obj.dataset.id_, obj.id_, existingProps, newProps);
             
             if resp.StatusCode == matlab.net.http.StatusCode.BadRequest
                 error('There was an error creating the property, does another property with the same name already exist?');
             end
             
-            obj.props = BFModelProperty.createFromResponse(resp.Body.Data, obj.session);
+            obj.props = BFModelProperty.createFromResponse(resp.Body.Data, obj.session_);
             obj.nrProperties = length(obj.props);
             
             % find created property and return
@@ -317,7 +317,7 @@ classdef BFModel < BFBaseSchemaNode
         end
         
         function resp = getRelationships(obj)                           
-            resp = obj.session.conceptsAPI.getRelationships(obj.dataset.id, obj.id);
+            resp = obj.session_.conceptsAPI.getRelationships(obj.dataset.id_, obj.id_);
         end
         
         function relationship = createRelationship(obj, targetModel, name)
@@ -345,10 +345,10 @@ classdef BFModel < BFBaseSchemaNode
             %   See also:
             %       BFRECORD.LINK
             
-            response = obj.session.conceptsAPI.createRelationship(...
-                obj.dataset.id, obj.id, targetModel.id, name, '');
+            response = obj.session_.conceptsAPI.createRelationship(...
+                obj.dataset.id_, obj.id_, targetModel.id_, name, '');
             
-            relationship = BFRelationship.createFromResponse(response, obj.session, obj.dataset);
+            relationship = BFRelationship.createFromResponse(response, obj.session_, obj.dataset);
             obj.relationshipChecked = false;
                         
         end
@@ -358,7 +358,7 @@ classdef BFModel < BFBaseSchemaNode
         function s = getFooter(obj)
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id,class(obj));
+                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id_,class(obj));
             else
                 s = '';
             end
@@ -366,8 +366,8 @@ classdef BFModel < BFBaseSchemaNode
         
         function props = getProperties(obj)
             
-            resp = obj.session.conceptsAPI.getProperties(obj.dataset.id, obj.id);
-            props =  BFModelProperty.createFromResponse(resp, obj.session);
+            resp = obj.session_.conceptsAPI.getProperties(obj.dataset.id_, obj.id_);
+            props =  BFModelProperty.createFromResponse(resp, obj.session_);
             
         end
     end
