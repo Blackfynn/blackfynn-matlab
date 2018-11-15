@@ -12,9 +12,9 @@ classdef BFRecord < BFBaseNode & dynamicprops
     
     properties (Access = protected)
         type_               % Type of the record
-        updated = false     % Flag to see if record changed
+        updated_ = false     % Flag to see if record changed
         model_              % Associated model
-        dataset = ''        % The dataset that the record belongs to
+        dataset_ = ''        % The dataset that the record belongs to
         propNames_ = {}      % Cell array with dynamic property names
     end
     
@@ -28,7 +28,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
             
             if nargin
                 obj.model_ = model;
-                obj.dataset = dataset;
+                obj.dataset_ = dataset;
             end
         end
         
@@ -45,12 +45,12 @@ classdef BFRecord < BFBaseNode & dynamicprops
             end
             
             uri = sprintf('%s/datasets/%s/concepts/%s/instances/%s', ...
-                obj.session_.concepts_host, obj.dataset.id_,obj.modelId,obj.id_);
+                obj.session_.concepts_host, obj.dataset_.id_,obj.modelId,obj.id_);
             params = struct('values',[]);
             params.values = content;
             obj.session_.request.put(uri, params);
             
-            obj.updated = false;
+            obj.updated_ = false;
         end
         
         function obj = link(obj, targets, relationship)            
@@ -99,7 +99,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
                 end
             end
             
-            response = obj.session_.conceptsAPI.link(obj.dataset.id_, ...
+            response = obj.session_.conceptsAPI.link(obj.dataset_.id_, ...
                 relationship.id_, obj.id_, {targets.id_});
             
             assert(length(response) == length(targets), ...
@@ -115,7 +115,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
             %   of the models.
             
             uri = sprintf('%s/datasets/%s/concepts/%s/related', ...
-                obj.session_.concepts_host, obj.dataset.id_, obj.model_.id_);
+                obj.session_.concepts_host, obj.dataset_.id_, obj.model_.id_);
             params = {};
             out = obj.session_.request.get(uri, params);
         end
@@ -178,43 +178,43 @@ classdef BFRecord < BFBaseNode & dynamicprops
             end
                         
             response = obj.session_.conceptsAPI.getRelationCountsForRecord( ...
-                obj.dataset.id_, obj.model_.id_, obj.id_);
+                obj.dataset_.id_, obj.model_.id_, obj.id_);
             
             info = struct( ...
                 'name',{response.name}, ...
                 'totalCount',{response.count},...
                 'returnedCount', 0);
             
-            modelNames = {obj.dataset.models.name};
+            modelNames = {obj.dataset_.models.name};
             
             relatedRecords = BFRecord.empty();
             if allModels            
                 idx = 1;
                 for i = 1: length(response)
                     recs = obj.session_.conceptsAPI.getRelated(...
-                        obj.dataset.id_, obj.model_.id_, obj.id_, response(i).name);
+                        obj.dataset_.id_, obj.model_.id_, obj.id_, response(i).name);
 
                     % Set info
                     info(i).returnedCount = length(recs);
 
                     % Get ModelId
-                    targetModelId = obj.dataset.models(strcmpi(recs{1}{2}.type,...
+                    targetModelId = obj.dataset_.models(strcmpi(recs{1}{2}.type,...
                         modelNames)).id_;
 
                     % Parse response
                     for j = 1: length(recs)
                         relatedRecords(idx) = BFRecord.createFromResponse(...
-                            recs{j}{2}, obj.session_, targetModelId, obj.dataset);
+                            recs{j}{2}, obj.session_, targetModelId, obj.dataset_);
                         idx = idx + 1;
                     end
 
                 end
             else
                 recs = obj.session_.conceptsAPI.getRelated(...
-                        obj.dataset.id_, obj.modelId, obj.id_, modelName, limit_, offset_);
+                        obj.dataset_.id_, obj.modelId, obj.id_, modelName, limit_, offset_);
                     
                 % Get ModelId
-                targetModelId = obj.dataset.models(strcmp(recs{1}{2}.type,...
+                targetModelId = obj.dataset_.models(strcmp(recs{1}{2}.type,...
                     modelNames)).id_;
                 
                 % Set info
@@ -225,7 +225,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
                 idx = 1;
                 for j = 1: length(recs)
                     relatedRecords(idx) = BFRecord.createFromResponse(...
-                        recs{j}{2}, obj.session_, targetModelId, obj.dataset);
+                        recs{j}{2}, obj.session_, targetModelId, obj.dataset_);
                     idx = idx + 1;
                 end
 
@@ -241,14 +241,14 @@ classdef BFRecord < BFBaseNode & dynamicprops
             end
             
             % check all records in single dataset
-            if ~all(strcmp({obj.dataset.id_}, obj(1).dataset.id_))
+            if ~all(strcmp({obj.dataset_.id_}, obj(1).dataset_.id_))
                 sprintf(2, 'All records should belong to the same dataset.');
                 return
             end
             
             recordIds = {obj.id_};
             success = obj(1).session_.conceptsAPI.deleteRecords( ...
-                obj(1).dataset.id_, obj(1).modelId, recordIds);
+                obj(1).dataset_.id_, obj(1).modelId, recordIds);
             
             % delete matlab objects if platform delete is successfull
             for i=1:length(obj)
@@ -271,8 +271,8 @@ classdef BFRecord < BFBaseNode & dynamicprops
         function s = getFooter(obj)                                     
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                url = sprintf('%s/%s/datasets/%s/explore/%s/%s',obj.session_.web_host,obj.session_.org,obj.dataset.id_,obj.model_.id_,obj.id_);
-                if obj.updated
+                url = sprintf('%s/%s/datasets/%s/explore/%s/%s',obj.session_.web_host,obj.session_.org,obj.dataset_.id_,obj.model_.id_,obj.id_);
+                if obj.updated_
                     s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id_,url,class(obj));
                 else
                     s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>,<a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id_,url,class(obj));
@@ -288,7 +288,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
             else
                 classNameStr = matlab.mixin.CustomDisplay.getClassNameForHeader(obj);
                 updatedStr = '';
-                if obj.updated
+                if obj.updated_
                     updatedStr = '*local changes*';
                 end
                 s = sprintf(' %s(%s) with properties: %s\n',  classNameStr, obj.type_, updatedStr);
@@ -327,7 +327,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
 
         function handlePropEvents(src, evnt)                            
             % Set updated flag to True
-            evnt.AffectedObject.updated = true;
+            evnt.AffectedObject.updated_ = true;
             fprintf('upated');
         end
         
