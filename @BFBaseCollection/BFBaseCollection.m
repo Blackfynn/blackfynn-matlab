@@ -30,7 +30,7 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
             obj = obj@BFBaseDataNode(session, id, name, type);
         end
         
-        function out = listitems(obj)                   
+        function out = listItems(obj)                           
             % LISTITEMS Returns list of items in the dataset or collection. 
             %   LISTITEMS(OBJ) displays all of the items that reside within
             %   a dataset, package or collection in the console. 
@@ -61,31 +61,38 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
                 out = cell2table(cell(len_items, length(col_names)));
                 out.Properties.VariableNames = col_names;
                 for i=1:length(item)
-                    out(i,1) = {item(i).id};
+                    out(i,1) = {item(i).id_};
                     out(i,2) = {item(i).name};
                 end
             else
                 len_items=length(item);
                 for i=1:len_items
                     fprintf('ID: "%s", Name: "%s"\n',...
-                        item(i).id, item(i).name);
+                        item(i).id_, item(i).name);
                 end
             end
 
         end
                 
-        function obj = createfolder(obj, name)
+        function folder = createFolder(obj, name)                  
             % CREATEFOLDER creates a new folder within the object.
-            %   OUT = CREATEFOLDER(OBJ, 'Name') creates a folder with the
-            %   specified 'Name' and returns the newly created folder.
-            %   OUT = CREATEFOLDER(OBJ, 'Name', 'Description') creates a
+            %   FOLDER = CREATEFOLDER(OBJ, 'Name') creates a folder with the
+            %   specified 'Name' and returns the newly created folder. If
+            %   a foler with 'Name' already exists, no new folder is
+            %   created.
+            %   FOLDER = CREATEFOLDER(OBJ, 'Name', 'Description') creates a
             %   folder with the specified 'Name' and 'Description' and
             %   returns the newly created folder.
+            %
+            %   You can also provide a path for the 'Name'. This will
+            %   result in the creation of multiple nested folders.
             % 
             %   Example:
             %
-            %       F1 = DS.CREATEFOLDER('New_folder')
-            %       F2 = DS.CREATEFOLDER('New_folder_2,'description')
+            %       folder = ds.CREATEFOLDER('New_folder')
+            %       folder = ds.CREATEFOLDER('New_folder_2,'description')
+            %
+            %       folder = ds.CREATEFOLDERS('folder1/folder2/folder3')
             %
             %   See also:
             %       Blackfynn, BFDataset.listitems
@@ -93,29 +100,50 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
             switch class(obj)
                 case 'BFCollection'
                     datasetId = obj.datasetId;
-                    parentId = obj.id;
+                    parentId = obj.id_;
                 case 'BFDataset'
-                    datasetId = obj.id;
+                    datasetId = obj.id_;
                     parentId = '';
                 otherwise
                     error('Object must be a dataset or a collection');
             end
             
-            obj.session.mainAPI.createFolder(datasetId, parentId, name);
-            obj.session.updateCounter = obj.session.updateCounter +1;
+            splitPath = split(name, '/');
+            
+            % Check if folder exists, if not --> create
+            itemNames = {obj.items.name};
+            itemMatchIdx = strcmp(splitPath{1},itemNames);
+            if any(itemMatchIdx)
+                folder = obj.items(itemMatchIdx);
+            else
+                resp = obj.session_.mainAPI.createFolder(datasetId, parentId, splitPath{1});
+                obj.session_.updateCounter = obj.session_.updateCounter +1;
+                folder = BFCollection.createFromResponse(resp, obj.session_);
+            end
+
+            % If path provided, create nested folders.
+            if length(splitPath) > 1
+                newPath = sprintf('%s/',splitPath{2:end});
+                newPath = newPath(1:end-1);
+                folder = folder.createFolder(newPath);
+            else
+                % Get folder (and make sure this is same handle stored in obj)
+                itemNames = {obj.items.name};
+                folder = obj.items(strcmp(splitPath{1},itemNames));
+            end  
         end
-        
-        function value = get.items(obj)                 
+                
+        function value = get.items(obj)                         
             % Getter for items property 
             % Dynamically loads items during first access
 
-            if obj.checked_items && (obj.updateCounter == obj.session.updateCounter)
+            if obj.checked_items && (obj.updateCounter == obj.session_.updateCounter)
                 value = obj.items_;
             else
                 if isa(obj, 'BFDataset')
-                    response = obj.session.mainAPI.getDataset(obj.id);          
+                    response = obj.session_.mainAPI.getDataset(obj.id_);          
                 else
-                    response = obj.session.mainAPI.getPackage(obj.id, ...
+                    response = obj.session_.mainAPI.getPackage(obj.id_, ...
                         true, false);
                 end
                 
@@ -125,7 +153,7 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
                         BFCollection('','','','');
                     for i=1:length(response.children)
                         children(i) = BFBaseDataNode.createFromResponse(...
-                            response.children(i), obj.session);
+                            response.children(i), obj.session_);
                     end
                 else
                     children = BFBaseDataNode.empty();
@@ -134,7 +162,7 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
                 obj.checked_items = true;
                 value = children;
                 
-                obj.updateCounter = obj.session.updateCounter;
+                obj.updateCounter = obj.session_.updateCounter;
             end
         end
     end
@@ -143,8 +171,8 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
         function s = getFooter(obj)
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                url = sprintf('%s/%s/datasets/%s/viewer/%s',obj.session.web_host,obj.session.org,obj.datasetId,obj.id);
-                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id,url,class(obj));
+                url = sprintf('%s/%s/datasets/%s/viewer/%s',obj.session_.web_host,obj.session_.org,obj.datasetId,obj.id_);
+                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id_,url,class(obj));
             else
                 s = '';
             end

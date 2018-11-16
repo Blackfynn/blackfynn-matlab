@@ -1,7 +1,7 @@
 ---
 title: BFRecord
 keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
-last_updated: Oct 28, 2018
+last_updated: Nov 15, 2018
 sidebar: matlab_docs_sidebar
 permalink: bfrecord.html
 folder: mydoc
@@ -14,7 +14,18 @@ folder: mydoc
       
       <div class="helptext"><pre><!--helptext --> <span class="helptopic">BFRecord</span> A representation of a metadata record
     
-    Supports local changes.</pre></div><!--after help -->
+    Supports local changes.
+ 
+ 
+    NOTE: Because of the way that the MATLAB client is implemented,
+    there are a number of properties names that are restricted as they
+    are used for internal logic. If you create models on the Blackfynn
+    platform with property names that match the following list, this
+    might result in errors in the client.
+ 
+    Restricted property names: {'createdAt', 'updatedAt', 'createdBy',
+    'updatedBy', 'session_', 'id_', 'type_', 'updated_', 'model_',
+    'dataset_', 'propNames_'}</pre></div><!--after help -->
       <!--Class-->
       <div class="sectiontitle">Class Details</div>
       <table class="class-details">
@@ -45,27 +56,27 @@ folder: mydoc
       </div>
       <table class="summary-list">
          <tr class="summary-item">
-            <td class="name">dataset</td>
+            <td class="name">dataset_</td>
             <td class="m-help">The dataset that the record belongs to&nbsp;</td>
          </tr>
          <tr class="summary-item">
-            <td class="name">model</td>
+            <td class="name">model_</td>
             <td class="m-help">Associated model&nbsp;</td>
          </tr>
          <tr class="summary-item">
-            <td class="name">propNames</td>
+            <td class="name">propNames_</td>
             <td class="m-help">Cell array with dynamic property names&nbsp;</td>
          </tr>
          <tr class="summary-item">
-            <td class="name">session</td>
+            <td class="name">session_</td>
             <td class="m-help">Session ID&nbsp;</td>
          </tr>
          <tr class="summary-item">
-            <td class="name">type</td>
+            <td class="name">type_</td>
             <td class="m-help">Type of the record&nbsp;</td>
          </tr>
          <tr class="summary-item">
-            <td class="name">updated</td>
+            <td class="name">updated_</td>
             <td class="m-help">Flag to see if record changed&nbsp;</td>
          </tr>
       </table>

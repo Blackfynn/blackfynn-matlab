@@ -14,13 +14,24 @@ folder: mydoc
       
       
       <div class="helptext"><pre><!--helptext --> <span class="helptopic">upload</span> Upload data from MATLAB using the Blackfynn Agent
-    STATUS = <span class="helptopic">upload</span>(OBJ, 'datasetId', 'path') uploads all data
-    in the folder specified in 'path'. 
-             %
-    This method is still very much in beta as visualization of
-    status does not work well from within MATLAB. You can also
-    use the agent directly from the command line for more
-    comprehensive feedback.</pre></div><!--after help -->
+    <span class="helptopic">upload</span>(OBJ, DATASET, 'path') uploads all files from the
+    folder specified in the 'path' to the platform. 
+ 
+    <span class="helptopic">upload</span>(..., 'folder', TOFOLDER) uploads the files to the
+    folder TOFOLDER on the Blackfynn platform. TOFOLDER should
+    be an object of class BFCOLLECTION in the specified
+    DATASET.
+ 
+    <span class="helptopic">upload</span>(..., 'include', 'includeStr') will only upload the
+    files that match the 'includeStr' expression.
+ 
+    <span class="helptopic">upload</span>(..., 'exclude', 'excludeStr') will exclude files
+    that match the 'excludeStr' expression.
+ 
+    NOTE: When using MATLAB to upload files to the platform,
+    each time the <span class="helptopic">upload</span> command is used, the exisiting queue
+    is flushed. Therefore, you should never run multiple
+    concurent upload sessions using MATLAB.</pre></div><!--after help -->
       <!--Method-->
       <div class="sectiontitle">Method Details</div>
       <table class="class-details">

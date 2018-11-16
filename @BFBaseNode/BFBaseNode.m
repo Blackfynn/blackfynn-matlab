@@ -6,10 +6,10 @@ classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
     %
     
     properties (Hidden)
-        id          % ID on Blackfynn platform
+        id_          % ID on Blackfynn platform
     end
     properties(Access = protected)
-        session     % Session ID
+        session_     % Session ID
     end
     
     methods
@@ -21,8 +21,8 @@ classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
             
             narginchk(2,2)
             if nargin
-                obj.session = session;
-                obj.id = id;
+                obj.session_ = session;
+                obj.id_ = id;
             end
         end
     end

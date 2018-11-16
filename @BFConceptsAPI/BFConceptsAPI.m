@@ -4,7 +4,7 @@ classdef BFConceptsAPI
     %   in the concepts API. 
     
     properties
-        session
+        session_
         host = 'https://concepts.blackfynn.io';
         name = 'concepts';
     end
@@ -16,7 +16,7 @@ classdef BFConceptsAPI
             %   Detailed explanation goes here
             
             narginchk(1,2);
-            obj.session = session;
+            obj.session_ = session;
             
             if nargin == 2
                 obj.host = varargin{1};
@@ -42,7 +42,7 @@ classdef BFConceptsAPI
                 
             endPoint = sprintf('%s/datasets/%s/concepts',obj.host,datasetId);
             params = jsonencode(message);
-            request = obj.session.request;
+            request = obj.session_.request;
 
             try
                 response = request.post(endPoint, params);  
@@ -80,7 +80,7 @@ classdef BFConceptsAPI
             endPoint = sprintf('%s/datasets/%s/concepts/%s/properties',obj.host, datasetId, modelId);
             params = (jsonencode(message));
             params2 = uint8(params);
-            request = obj.session.request;
+            request = obj.session_.request;
             response = request.put(endPoint, params2); 
         end
             
@@ -89,7 +89,7 @@ classdef BFConceptsAPI
             params = {};
             endPoint = sprintf('%s/datasets/%s/concepts',obj.host, datasetId);
             
-            request = obj.session.request;
+            request = obj.session_.request;
             response = request.get(endPoint, params);            
         end
         
@@ -104,7 +104,7 @@ classdef BFConceptsAPI
             endPoint = sprintf('%s/datasets/%s/concepts/%s/instances', ...
                 obj.host, datasetId, modelId);
             
-            response = obj.session.request.get(endPoint, params);
+            response = obj.session_.request.get(endPoint, params);
             
         end
         
@@ -134,20 +134,20 @@ classdef BFConceptsAPI
             message = ['[' message(1:end-1) ']'];
 
             % Create object from response
-            endpoint = sprintf('%s/datasets/%s/concepts/%s/instances/batch', obj.host, dataset.id, model.id);
-            response = obj.session.request.post(endpoint, message);
+            endpoint = sprintf('%s/datasets/%s/concepts/%s/instances/batch', obj.host, dataset.id_, model.id_);
+            response = obj.session_.request.post(endpoint, message);
             
             records = BFRecord.empty(length(response),0);
             if (isa(response,'struct'))
                 % All records could be created
                 for i=1: length(response)
-                    records(i) = BFRecord.createFromResponse(response(i), obj.session, model, dataset);
+                    records(i) = BFRecord.createFromResponse(response(i), obj.session_, model, dataset);
                 end
             else
                 % Some records could not be created
                 for i=1: length(response)
                     if (isa(response{i},'struct'))
-                        records(i) = BFRecord.createFromResponse(response{i}, obj.session, model, dataset);
+                        records(i) = BFRecord.createFromResponse(response{i}, obj.session_, model, dataset);
                     else
                         fprintf(2, 'Unable to create record from index: %i\n', i);
                     end
@@ -161,7 +161,7 @@ classdef BFConceptsAPI
             endPoint = sprintf('%s/datasets/%s/concepts/%s/properties',...
                 obj.host, datasetId, modelId);
             
-            request = obj.session.request;
+            request = obj.session_.request;
             props = request.get(endPoint, params);
         end
         
@@ -170,7 +170,7 @@ classdef BFConceptsAPI
             endPoint = sprintf('%s/datasets/%s/concepts/%s/instances',...
                 obj.host, datasetId, modelId);
             
-            request = obj.session.request;
+            request = obj.session_.request;
             response = request.delete(endPoint, recordIds);
             
             if response.StatusCode == 'OK'
@@ -186,7 +186,7 @@ classdef BFConceptsAPI
             endPoint = sprintf('%s/datasets/%s/concepts/%s/instances/%s/relationCounts', ...
                 obj.host, datasetId, modelId, recordId);
             
-            response = obj.session.request.get(endPoint, params);
+            response = obj.session_.request.get(endPoint, params);
         end
         
         function response = getRelated(obj, datasetId, modelId, recordId, targetModelId, varargin)
@@ -199,7 +199,7 @@ classdef BFConceptsAPI
             endPoint = sprintf('%s/datasets/%s/concepts/%s/instances/%s/relations/%s', ...
                 obj.host, datasetId, modelId, recordId, targetModelId);
             
-            response = obj.session.request.get(endPoint, params);
+            response = obj.session_.request.get(endPoint, params);
             
         end
         
@@ -225,7 +225,7 @@ classdef BFConceptsAPI
                 'to', targetModelId); 
             
             params = jsonencode(message);
-            request = obj.session.request;
+            request = obj.session_.request;
             response = request.post(endPoint, params);  
         end
         
@@ -245,7 +245,7 @@ classdef BFConceptsAPI
             endPoint = sprintf('%s/datasets/%s/relationships', ...
                 obj.host, datasetId );
             
-            response = obj.session.request.get(endPoint, params);
+            response = obj.session_.request.get(endPoint, params);
             
         end
         
@@ -272,7 +272,7 @@ classdef BFConceptsAPI
            
             
             params = message;
-            request = obj.session.request;
+            request = obj.session_.request;
             response = request.post(endPoint, params);         
         end
         

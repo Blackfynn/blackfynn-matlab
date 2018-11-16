@@ -137,7 +137,7 @@ classdef testConcepts < matlab.unittest.TestCase
             
             related = records(1).getRelated();
             testCase.verifyEqual(length(related),1);
-            testCase.verifyEqual(related(1).id, records(2).id); 
+            testCase.verifyEqual(related(1).id_, records(2).id_); 
 
         end
         

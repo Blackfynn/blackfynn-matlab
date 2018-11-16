@@ -19,7 +19,7 @@ classdef (Sealed) BFAgentIO < WebSocketClient
                 BFAgentIO.uri, package, session.api_key);
 
             obj@WebSocketClient(URI);
-            obj.session = session;
+            obj.session_ = session;
             obj.package = package;
             obj.received_data = java.util.HashMap;
             obj.data = java.util.HashMap;

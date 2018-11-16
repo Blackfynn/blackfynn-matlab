@@ -1,5 +1,5 @@
 ---
-title: (BFBaseCollection) createfolder
+title: (BFBaseCollection) createFolder
 keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
 last_updated: July 3, 2016
 tags: [getting_started]
@@ -13,18 +13,25 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">createfolder</span> creates a new folder within the object.
-    OUT = <span class="helptopic">createfolder</span>(OBJ, 'Name') creates a folder with the
-    specified 'Name' and returns the newly created folder.
-    OUT = <span class="helptopic">createfolder</span>(OBJ, 'Name', 'Description') creates a
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">createFolder</span> creates a new folder within the object.
+    FOLDER = <span class="helptopic">createFolder</span>(OBJ, 'Name') creates a folder with the
+    specified 'Name' and returns the newly created folder. If
+    a foler with 'Name' already exists, no new folder is
+    created.
+    FOLDER = <span class="helptopic">createFolder</span>(OBJ, 'Name', 'Description') creates a
     folder with the specified 'Name' and 'Description' and
     returns the newly created folder.
+ 
+    You can also provide a path for the 'Name'. This will
+    result in the creation of multiple nested folders.
   
     Example:
  
-        F1 = DS.<span class="helptopic">createfolder</span>('New_folder')
-        F2 = DS.<span class="helptopic">createfolder</span>('New_folder_2,'description')</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink">
-        <a href="matlab:helpwin Blackfynn">Blackfynn</a>, <a href="matlab:helpwin BFDataset/listitems">BFDataset/listitems</a>
+        folder = ds.<span class="helptopic">createFolder</span>('New_folder')
+        folder = ds.<span class="helptopic">createFolder</span>('New_folder_2,'description')
+ 
+        folder = ds.CREATEFOLDERS('folder1/folder2/folder3')</pre></div><!--after help --><!--seeAlso--><div class="footerlinktitle">See also</div><div class="footerlink">
+        <a href="matlab:helpwin Blackfynn">Blackfynn</a>, <a href="matlab:helpwin BFDataset/listItems">BFDataset/listItems</a>
 </div>
       <!--Method-->
       <div class="sectiontitle">Method Details</div>

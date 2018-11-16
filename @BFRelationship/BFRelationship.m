@@ -21,12 +21,12 @@ classdef BFRelationship < BFBaseSchemaNode
         end
         
         function value = get.from(obj)
-            allModelIds = {obj.dataset.models.id};
+            allModelIds = {obj.dataset.models.id_};
             value = obj.dataset.models(strcmp(obj.fromId,allModelIds));
         end
         
         function value = get.to(obj)
-            allModelIds = {obj.dataset.models.id};
+            allModelIds = {obj.dataset.models.id_};
             value = obj.dataset.models(strcmp(obj.toId,allModelIds));
         end
         

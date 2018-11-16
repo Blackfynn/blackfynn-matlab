@@ -43,7 +43,7 @@ classdef (Abstract) BFBaseDataNode < BFBaseNode & matlab.mixin.Heterogeneous
         switch class(obj)
             case {'BFTimeseries','BFCollection','BFDataPackage', ...
                     'BFTabular'}
-                obj.session.mainAPI.updatePackage(obj.id, obj.name, obj.state, obj.type);
+                obj.session_.mainAPI.updatePackage(obj.id_, obj.name, obj.state, obj.type);
             otherwise
                 error('Cannot update object of class %s', class(obj));
         end

@@ -54,11 +54,67 @@ classdef BFDataset < BFBaseCollection
                 obj.modelsChecked = true;
             end
             
-            response = obj.session.conceptsAPI.createModel(obj.id, name, description);
-            model = BFModel.createFromResponse(response, obj.session, obj);
+            response = obj.session_.conceptsAPI.createModel(obj.id_, name, description);
+            model = BFModel.createFromResponse(response, obj.session_, obj);
             obj.models_ = [obj.models_ model];                
             
         end
+        
+        function out = listModels(obj)
+            %LISTMOELS  Displays a list of models for the dataset
+            %   OUT = LISTMDOELS(OBJ) returns a table of the model names
+            %   other information in a Matlab table. This can be used to
+            %   quickly visualize the available models in the current
+            %   dataset.
+            
+            idx = 1:length(obj.models);
+            idx = idx';
+            name = {obj.models.name}';
+            nrRecords = [obj.models.nrRecords]';
+            
+            out = table(idx,name,nrRecords);
+            
+        end
+        
+        function upload(obj, path, varargin)
+            %UPLOAD Upload data from MATLAB using the Blackfynn Agent
+            %   UPLOAD(OBJ, 'path') uploads all files from the
+            %   folder specified in the 'path' to the platform. 
+            %
+            %   UPLOAD(..., 'folder', 'toPath') uploads the files to a
+            %   specific path in the dataset. Folders will be created if
+            %   the path does not exist yet. Separate folders using '/',
+            %   for example: 'data/experiment1/trial1'.
+            %
+            %   UPLOAD(..., 'include', 'includeStr') will only upload the
+            %   files that match the 'includeStr' expression. The include
+            %   string should be formatted as a globbing pattern. For
+            %   examples, look here:
+            %   http://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm
+            %
+            %   UPLOAD(..., 'exclude', 'excludeStr') will exclude files
+            %   that match the 'excludeStr' expression. The exclusion
+            %   string should be formatted in the same way as the inclusion
+            %   string.
+            %
+            %   For example:
+            %
+            %       bf = Blackfynn();
+            %       ds = bf.datasets(1);
+            %       ds.upload('~/Desktop/myFolder');
+            %
+            %       ds.upload('~/Desktop/myFolder', 'folder', 'folder1/folder2');
+            %
+            %       ds.upload('~/Desktop/myFolder', 'inlcude', '*.dcm');
+            %       ds.upload('~/Desktop/myFolder', 'inlcude', '{*.dcm,*.csv}')
+            %       
+            %       ds.upload('~/Desktop/myFolder', 'exclude', '*.DS_Store');
+            %       
+
+            agent = obj.session_.agent;
+            agent.upload(obj, path, varargin{:});
+        end
+
     end
     
     methods (Sealed = true)
@@ -92,7 +148,7 @@ classdef BFDataset < BFBaseCollection
             %   See also:
             %       Blackfynn
 
-            obj.session.mainAPI.updateDataset(obj.id, obj.name, obj.description);
+            obj.session_.mainAPI.updateDataset(obj.id_, obj.name, obj.description);
              
         end
         
@@ -101,8 +157,8 @@ classdef BFDataset < BFBaseCollection
         function s = getFooter(obj)
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                url = sprintf('%s/%s/datasets/%s',obj.session.web_host,obj.session.org,obj.id);
-                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id,url,class(obj));
+                url = sprintf('%s/%s/datasets/%s',obj.session_.web_host,obj.session_.org,obj.id_);
+                s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id_,url,class(obj));
             else
                 s = '';
             end
@@ -111,10 +167,10 @@ classdef BFDataset < BFBaseCollection
     end
     methods (Access = private)
         function m = getModels_(obj)
-            response = obj.session.conceptsAPI.getModels(obj.id);
+            response = obj.session_.conceptsAPI.getModels(obj.id_);
             m = BFModel.empty(length(response),0);
             for i=1: length(response)
-                m(i) = BFModel.createFromResponse(response(i), obj.session, obj);
+                m(i) = BFModel.createFromResponse(response(i), obj.session_, obj);
             end
         end
     end

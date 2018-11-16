@@ -49,7 +49,7 @@ classdef (Sealed) BFTabular < BFDataPackage
             %               
             %
             
-            response = obj.session.mainAPI.getTabularData(obj.id, varargin{:});
+            response = obj.session_.mainAPI.getTabularData(obj.id_, varargin{:});
             data = struct2table(response.rows);
             
         end
