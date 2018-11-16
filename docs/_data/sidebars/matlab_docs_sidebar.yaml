@@ -115,10 +115,10 @@ entries:
     - title: (BFBaseCollection) BFBaseCollection
       url: /bfbasecollection_bfbasecollection.html
       output: web
-    - title: (BFBaseCollection) createfolder
+    - title: (BFBaseCollection) createFolder
       url: /bfbasecollection_createfolder.html
       output: web
-    - title: (BFBaseCollection) listitems
+    - title: (BFBaseCollection) listItems
       url: /bfbasecollection_listitems.html
       output: web
     - title: (BFBaseDataNode) BFBaseDataNode
@@ -199,8 +199,14 @@ entries:
     - title: (BFDataset) createModel
       url: /bfdataset_createmodel.html
       output: web
+    - title: (BFDataset) listModels
+      url: /bfdataset_listmodels.html
+      output: web
     - title: (BFDataset) update
       url: /bfdataset_update.html
+      output: web
+    - title: (BFDataset) upload
+      url: /bfdataset_upload.html
       output: web
     - title: (BFJavaRequest) BFJavaRequest
       url: /bfjavarequest_bfjavarequest.html
@@ -399,6 +405,9 @@ entries:
       output: web
     - title: (Blackfynn) gotoSite
       url: /blackfynn_gotosite.html
+      output: web
+    - title: (Blackfynn) listDatasets
+      url: /blackfynn_listdatasets.html
       output: web
     - title: (Blackfynn) organizations
       url: /blackfynn_organizations.html
