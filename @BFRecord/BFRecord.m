@@ -191,28 +191,58 @@ classdef BFRecord < BFBaseNode & dynamicprops
             response = obj.session_.conceptsAPI.getRelationCountsForRecord( ...
                 obj.dataset_.id_, obj.model_.id_, obj.id_);
             
-            info = struct( ...
-                'name',{response.name}, ...
-                'totalCount',{response.count},...
-                'returnedCount', 0);
-            
-            modelNames = {obj.dataset_.models.name};
-            
             relatedRecords = BFRecord.empty();
-            if allModels            
-                idx = 1;
-                for i = 1: length(response)
-                    recs = obj.session_.conceptsAPI.getRelated(...
-                        obj.dataset_.id_, obj.model_.id_, obj.id_, response(i).name);
+            info = struct();
+            if ~isempty(response)
+                info = struct( ...
+                    'name',{response.name}, ...
+                    'totalCount',{response.count},...
+                    'returnedCount', 0);
 
-                    % Set info
-                    info(i).returnedCount = length(recs);
+                modelNames = {obj.dataset_.models.name};
+
+                if allModels            
+                    idx = 1;
+                    for i = 1: length(response)
+
+                        % Skip files 
+                        if strcmp('package', response(i).name)
+                            continue
+                        end
+
+                        % Get related records
+                        recs = obj.session_.conceptsAPI.getRelated(...
+                            obj.dataset_.id_, obj.model_.id_, obj.id_, response(i).name);
+
+                        % Set info
+                        info(i).returnedCount = length(recs);
+
+                        % Get ModelId
+                        targetModelId = obj.dataset_.models(strcmpi(recs{1}{2}.type,...
+                            modelNames)).id_;
+
+                        % Parse response
+                        for j = 1: length(recs)
+                            relatedRecords(idx) = BFRecord.createFromResponse(...
+                                recs{j}{2}, obj.session_, targetModelId, obj.dataset_);
+                            idx = idx + 1;
+                        end
+
+                    end
+                else
+                    recs = obj.session_.conceptsAPI.getRelated(...
+                            obj.dataset_.id_, obj.modelId, obj.id_, modelName, limit_, offset_);
 
                     % Get ModelId
-                    targetModelId = obj.dataset_.models(strcmpi(recs{1}{2}.type,...
+                    targetModelId = obj.dataset_.models(strcmp(recs{1}{2}.type,...
                         modelNames)).id_;
 
+                    % Set info
+                    infoNames = {info.name};
+                    info(strcmp(modelName,infoNames)).returnedCount = length(recs);
+
                     % Parse response
+                    idx = 1;
                     for j = 1: length(recs)
                         relatedRecords(idx) = BFRecord.createFromResponse(...
                             recs{j}{2}, obj.session_, targetModelId, obj.dataset_);
@@ -220,28 +250,31 @@ classdef BFRecord < BFBaseNode & dynamicprops
                     end
 
                 end
-            else
-                recs = obj.session_.conceptsAPI.getRelated(...
-                        obj.dataset_.id_, obj.modelId, obj.id_, modelName, limit_, offset_);
-                    
-                % Get ModelId
-                targetModelId = obj.dataset_.models(strcmp(recs{1}{2}.type,...
-                    modelNames)).id_;
-                
-                % Set info
-                infoNames = {info.name};
-                info(strcmp(modelName,infoNames)).returnedCount = length(recs);
-                
-                % Parse response
-                idx = 1;
-                for j = 1: length(recs)
-                    relatedRecords(idx) = BFRecord.createFromResponse(...
-                        recs{j}{2}, obj.session_, targetModelId, obj.dataset_);
-                    idx = idx + 1;
-                end
-
             end
 
+        end
+        
+        function items = getFiles(obj)
+            %GETFILES Returns the files associated with the record
+            %   ITEMS = GETFILES(OBJ) returns an array of files that are
+            %   associated with the current record.
+            %
+            %   For example:
+            %       records = bf.datasets(1).models(1).getRecords()
+            %       files = records(1).getFiles()
+            
+            
+            response = obj.session_.conceptsAPI.getFiles( ...
+                obj.dataset_.id_, obj.model_.id_, obj.id_);
+            
+            items(length(response)) = ...
+                        BFCollection('','','','');
+            for i=1: length(response)
+                
+                items(i) = BFBaseDataNode.createFromResponse(...
+                            response{i}{2}, obj.session_);
+            end
+            
         end
         
         function obj = delete(obj)                                      

@@ -249,6 +249,21 @@ classdef BFConceptsAPI
             
         end
         
+        function response = getFiles(obj, datasetId, modelId, recordId, varargin)
+            
+            params = {};
+            if nargin > 4
+                assert(length(varargin) == 2, 'Incorrect number of input arguments');
+                params = {'limit',varargin{1}, 'offset',varargin{2}};
+            end
+            
+            endPoint = sprintf('%s/datasets/%s/concepts/%s/instances/%s/files', ...
+                obj.host, datasetId, modelId, recordId);
+            
+            response = obj.session_.request.get(endPoint, params);
+            
+        end
+        
         function response = link(obj, datasetId, relationshipId, fromId, toIds)
             % LINK Creates relationships between records
             
