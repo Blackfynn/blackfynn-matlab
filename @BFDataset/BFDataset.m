@@ -75,6 +75,46 @@ classdef BFDataset < BFBaseCollection
             out = table(idx,name,nrRecords);
             
         end
+        
+        function upload(obj, path, varargin)
+            %UPLOAD Upload data from MATLAB using the Blackfynn Agent
+            %   UPLOAD(OBJ, 'path') uploads all files from the
+            %   folder specified in the 'path' to the platform. 
+            %
+            %   UPLOAD(..., 'folder', 'toPath') uploads the files to a
+            %   specific path in the dataset. Folders will be created if
+            %   the path does not exist yet. Separate folders using '/',
+            %   for example: 'data/experiment1/trial1'.
+            %
+            %   UPLOAD(..., 'include', 'includeStr') will only upload the
+            %   files that match the 'includeStr' expression. The include
+            %   string should be formatted as a globbing pattern. For
+            %   examples, look here:
+            %   http://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm
+            %
+            %   UPLOAD(..., 'exclude', 'excludeStr') will exclude files
+            %   that match the 'excludeStr' expression. The exclusion
+            %   string should be formatted in the same way as the inclusion
+            %   string.
+            %
+            %   For example:
+            %
+            %       bf = Blackfynn();
+            %       ds = bf.datasets(1);
+            %       ds.upload('~/Desktop/myFolder');
+            %
+            %       ds.upload('~/Desktop/myFolder', 'folder', 'folder1/folder2');
+            %
+            %       ds.upload('~/Desktop/myFolder', 'inlcude', '*.dcm');
+            %       ds.upload('~/Desktop/myFolder', 'inlcude', '{*.dcm,*.csv}')
+            %       
+            %       ds.upload('~/Desktop/myFolder', 'exclude', '*.DS_Store');
+            %       
+
+            agent = obj.session_.agent;
+            agent.upload(obj, path, varargin{:});
+        end
+
     end
     
     methods (Sealed = true)

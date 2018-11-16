@@ -66,6 +66,11 @@ classdef BFAgent
             %
             %   UPLOAD(..., 'exclude', 'excludeStr') will exclude files
             %   that match the 'excludeStr' expression.
+            %
+            %   NOTE: When using MATLAB to upload files to the platform,
+            %   each time the UPLOAD command is used, the exisiting queue
+            %   is flushed. Therefore, you should never run multiple
+            %   concurent upload sessions using MATLAB.
  
             assert(isa(dataset,'BFDataset'), 'DATASET needs to be of type BFDataset');
             assert(~mod(length(varargin),2),'Incorrect number of input arguments');
@@ -77,8 +82,9 @@ classdef BFAgent
             for i=1: 2: length(varargin)
                 switch varargin{i}
                     case 'folder'
-                        folder = varargin{i+1};
-                        assert(isa(folder,'BFCollection'), 'FOLDER needs to be of type BFCollection');
+                        toPath = varargin{i+1};
+                        assert(isa(toPath,'char'), 'FOLDER needs to be of type ''char''');
+                        folder = dataset.createFolder(toPath);
                     case 'include'
                         include = varargin{i+1};
                         assert(isa(iclude,'char'), '''include'' needs to be of type ''char''');
@@ -88,13 +94,13 @@ classdef BFAgent
                 end
             end
             
-            datasetId = dataset.id;
                    
-            cmd = sprintf('%s upload --dataset %s -f -O simple ',obj.location, ...
-                 datasetId);
+            cmd = sprintf('%s upload -f -O simple ',obj.location);
             
             if ~isempty(folder)
                 cmd = [cmd sprintf('--folder=%s ',folder.id_)];
+            else
+                cmd = [cmd sprintf('--dataset=%s ',dataset.id_)];
             end
             if ~isempty(include)
                 cmd = [cmd sprintf('--include=%s ',include)];
@@ -104,6 +110,10 @@ classdef BFAgent
             end
             
             cmd = [cmd sprintf('%s', path)];
+            
+            % Cancel existing queue
+            system(sprintf('%s upload-status --cancel-all', obj.location));
+            
             % Run uploader
             system(cmd);
                        

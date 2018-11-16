@@ -16,6 +16,9 @@ entries:
     - title: Tutorial 2 - Metadata management
       url: /tutorial2.html
       output: web
+    - title: Tutorial 3 - Uploading files
+      url: /tutorial3.html
+      output: web
   - title: Classes
     output: web
     folderitems:

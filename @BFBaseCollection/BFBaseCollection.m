@@ -30,7 +30,7 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
             obj = obj@BFBaseDataNode(session, id, name, type);
         end
         
-        function out = listitems(obj)                   
+        function out = listItems(obj)                           
             % LISTITEMS Returns list of items in the dataset or collection. 
             %   LISTITEMS(OBJ) displays all of the items that reside within
             %   a dataset, package or collection in the console. 
@@ -74,18 +74,25 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
 
         end
                 
-        function obj = createfolder(obj, name)
+        function folder = createFolder(obj, name)                  
             % CREATEFOLDER creates a new folder within the object.
-            %   OUT = CREATEFOLDER(OBJ, 'Name') creates a folder with the
-            %   specified 'Name' and returns the newly created folder.
-            %   OUT = CREATEFOLDER(OBJ, 'Name', 'Description') creates a
+            %   FOLDER = CREATEFOLDER(OBJ, 'Name') creates a folder with the
+            %   specified 'Name' and returns the newly created folder. If
+            %   a foler with 'Name' already exists, no new folder is
+            %   created.
+            %   FOLDER = CREATEFOLDER(OBJ, 'Name', 'Description') creates a
             %   folder with the specified 'Name' and 'Description' and
             %   returns the newly created folder.
+            %
+            %   You can also provide a path for the 'Name'. This will
+            %   result in the creation of multiple nested folders.
             % 
             %   Example:
             %
-            %       F1 = DS.CREATEFOLDER('New_folder')
-            %       F2 = DS.CREATEFOLDER('New_folder_2,'description')
+            %       folder = ds.CREATEFOLDER('New_folder')
+            %       folder = ds.CREATEFOLDER('New_folder_2,'description')
+            %
+            %       folder = ds.CREATEFOLDERS('folder1/folder2/folder3')
             %
             %   See also:
             %       Blackfynn, BFDataset.listitems
@@ -101,11 +108,32 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
                     error('Object must be a dataset or a collection');
             end
             
-            obj.session_.mainAPI.createFolder(datasetId, parentId, name);
-            obj.session_.updateCounter = obj.session_.updateCounter +1;
+            splitPath = split(name, '/');
+            
+            % Check if folder exists, if not --> create
+            itemNames = {obj.items.name};
+            itemMatchIdx = strcmp(splitPath{1},itemNames);
+            if any(itemMatchIdx)
+                folder = obj.items(itemMatchIdx);
+            else
+                resp = obj.session_.mainAPI.createFolder(datasetId, parentId, splitPath{1});
+                obj.session_.updateCounter = obj.session_.updateCounter +1;
+                folder = BFCollection.createFromResponse(resp, obj.session_);
+            end
+
+            % If path provided, create nested folders.
+            if length(splitPath) > 1
+                newPath = sprintf('%s/',splitPath{2:end});
+                newPath = newPath(1:end-1);
+                folder = folder.createFolder(newPath);
+            else
+                % Get folder (and make sure this is same handle stored in obj)
+                itemNames = {obj.items.name};
+                folder = obj.items(strcmp(splitPath{1},itemNames));
+            end  
         end
-        
-        function value = get.items(obj)                 
+                
+        function value = get.items(obj)                         
             % Getter for items property 
             % Dynamically loads items during first access
 

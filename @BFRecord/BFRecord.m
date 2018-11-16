@@ -2,6 +2,17 @@ classdef BFRecord < BFBaseNode & dynamicprops
     %BFRECORD A representation of a metadata record
     %   
     %   Supports local changes.
+    %
+    %
+    %   NOTE: Because of the way that the MATLAB client is implemented,
+    %   there are a number of properties names that are restricted as they
+    %   are used for internal logic. If you create models on the Blackfynn
+    %   platform with property names that match the following list, this
+    %   might result in errors in the client.
+    %
+    %   Restricted property names: {'createdAt', 'updatedAt', 'createdBy',
+    %   'updatedBy', 'session_', 'id_', 'type_', 'updated_', 'model_',
+    %   'dataset_', 'propNames_'}
         
     properties (Hidden)
         createdAt   % Indicates when record was created
@@ -11,11 +22,11 @@ classdef BFRecord < BFBaseNode & dynamicprops
     end
     
     properties (Access = protected)
-        type_               % Type of the record
-        updated_ = false     % Flag to see if record changed
-        model_              % Associated model
-        dataset_ = ''        % The dataset that the record belongs to
-        propNames_ = {}      % Cell array with dynamic property names
+        type_                   % Type of the record
+        updated_ = false        % Flag to see if record changed
+        model_                  % Associated model
+        dataset_ = ''           % The dataset that the record belongs to
+        propNames_ = {}         % Cell array with dynamic property names
     end
     
     methods
@@ -53,7 +64,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
             obj.updated_ = false;
         end
         
-        function obj = link(obj, targets, relationship)            
+        function obj = link(obj, targets, relationship)                 
             % LINK create relationships between records
             %   OBJ = LINK(OBJ, TARGETS, 'relationship') creates a
             %   relationship between the current object and the TARGETS
@@ -312,6 +323,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
             out.createdBy = resp.createdBy;
             out.updatedBy = resp.updatedBy;
             out.propNames_ = cell(1,length(resp.values));
+            
             
             for i=1: length(resp.values)
                 curProp = resp.values(i);
