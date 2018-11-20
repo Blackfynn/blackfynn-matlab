@@ -291,6 +291,31 @@ classdef BFConceptsAPI
             response = request.post(endPoint, params);         
         end
         
+        function response = linkFile(obj, datasetId, recordIds, fileId)
+            %LINKFILE Links file to one or more records
+            
+            endPoint = sprintf('%s/datasets/%s/proxy/%s/instances', ...
+                obj.host, datasetId, 'package');
+            
+            targets = {};
+            for i = 1: length(recordIds)
+                targets{i} = struct(...
+                    'direction', 'FromTarget',...
+                    'linkTarget', struct(...
+                        'ConceptInstance',struct('id', recordIds(i))),...
+                    'relationshipType', 'belongs_to',...
+                    'relationshipData', []); %#ok<AGROW>
+            end            
+            params = struct(...
+                'externalId', fileId);
+            
+            params.targets = targets;
+            
+            request = obj.session_.request;
+            response = request.post(endPoint, params); 
+            
+        end
+        
     end
     
     methods(Static)

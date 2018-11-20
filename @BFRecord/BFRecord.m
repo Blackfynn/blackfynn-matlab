@@ -118,6 +118,21 @@ classdef BFRecord < BFBaseNode & dynamicprops
             
         end
         
+        function obj = linkFile(obj, target)
+            %LINKFILE Associates a file with the record.
+            %   LINKFILE(OBJ, PACKAGE) links a PACKAGE to the current
+            %   record. PACKAGE should be an object of type BFPackage. 
+            %
+            %   For example:
+            %
+            %       records = model.getRecords();
+            %       files  = dataset.getFiles();
+            %       records(1).linkFile(files(1));
+            
+            obj.session_.conceptsAPI.linkFile(obj.dataset_.id_, {obj.id_}, target.id_);
+  
+        end
+        
         function out = getRelatedCount(obj)                             
             % GETRELATEDCOUNT Returns relationship info for object
             %   INFO = GETRELATEDCOUNT(OBJ) returns an structure array with
@@ -267,12 +282,15 @@ classdef BFRecord < BFBaseNode & dynamicprops
             response = obj.session_.conceptsAPI.getFiles( ...
                 obj.dataset_.id_, obj.model_.id_, obj.id_);
             
-            items(length(response)) = ...
-                        BFCollection('','','','');
-            for i=1: length(response)
-                
-                items(i) = BFBaseDataNode.createFromResponse(...
-                            response{i}{2}, obj.session_);
+            items = BFBaseDataNode.empty;
+            if ~isempty(response)
+                items(length(response)) = ...
+                            BFCollection('','','','');
+                for i=1: length(response)
+
+                    items(i) = BFBaseDataNode.createFromResponse(...
+                                response{i}{2}, obj.session_);
+                end
             end
             
         end
