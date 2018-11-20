@@ -249,6 +249,21 @@ classdef BFConceptsAPI
             
         end
         
+        function response = getFiles(obj, datasetId, modelId, recordId, varargin)
+            
+            params = {};
+            if nargin > 4
+                assert(length(varargin) == 2, 'Incorrect number of input arguments');
+                params = {'limit',varargin{1}, 'offset',varargin{2}};
+            end
+            
+            endPoint = sprintf('%s/datasets/%s/concepts/%s/instances/%s/files', ...
+                obj.host, datasetId, modelId, recordId);
+            
+            response = obj.session_.request.get(endPoint, params);
+            
+        end
+        
         function response = link(obj, datasetId, relationshipId, fromId, toIds)
             % LINK Creates relationships between records
             
@@ -274,6 +289,31 @@ classdef BFConceptsAPI
             params = message;
             request = obj.session_.request;
             response = request.post(endPoint, params);         
+        end
+        
+        function response = linkFile(obj, datasetId, recordIds, fileId)
+            %LINKFILE Links file to one or more records
+            
+            endPoint = sprintf('%s/datasets/%s/proxy/%s/instances', ...
+                obj.host, datasetId, 'package');
+            
+            targets = {};
+            for i = 1: length(recordIds)
+                targets{i} = struct(...
+                    'direction', 'FromTarget',...
+                    'linkTarget', struct(...
+                        'ConceptInstance',struct('id', recordIds(i))),...
+                    'relationshipType', 'belongs_to',...
+                    'relationshipData', []); %#ok<AGROW>
+            end            
+            params = struct(...
+                'externalId', fileId);
+            
+            params.targets = targets;
+            
+            request = obj.session_.request;
+            response = request.post(endPoint, params); 
+            
         end
         
     end

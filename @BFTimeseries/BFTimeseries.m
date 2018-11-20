@@ -1,6 +1,7 @@
 classdef (Sealed) BFTimeseries < BFDataPackage
     % BFTIMESERIES  A Timeseries package on Blackfynn
     %
+    
     properties (Dependent)
         channels        % Struct of channel objects
         layers          % Array of annotation layers

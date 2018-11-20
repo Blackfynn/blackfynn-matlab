@@ -28,8 +28,16 @@ classdef BFAgent
             %   following the instructions from
             %   https://developer.blackfynn.com/agent            
             
-            % TODO: Make this work for windows/linus
-            obj.location = '/usr/local/opt/blackfynn/bin/blackfynn_agent';
+            if ismac
+                obj.location = '/usr/local/opt/blackfynn/bin/blackfynn_agent';
+            elseif isunix
+                obj.location = '/opt/blackfynn/bin/blackfynn_agent';
+            elseif ispc
+                obj.location = 'C:\Program Files\Blackfynn\BFAgent.exe';
+            else
+                disp('Platform not supported')
+            end
+            
         end
     
         function status = login(obj, profileName)

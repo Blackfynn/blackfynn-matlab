@@ -74,7 +74,7 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
 
         end
                 
-        function folder = createFolder(obj, name)                  
+        function folder = createFolder(obj, name)               
             % CREATEFOLDER creates a new folder within the object.
             %   FOLDER = CREATEFOLDER(OBJ, 'Name') creates a folder with the
             %   specified 'Name' and returns the newly created folder. If
@@ -179,6 +179,5 @@ classdef (Abstract) BFBaseCollection < BFBaseDataNode
         end
     end
 
-       
 end
 

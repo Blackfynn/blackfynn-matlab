@@ -118,6 +118,21 @@ classdef BFRecord < BFBaseNode & dynamicprops
             
         end
         
+        function obj = linkFile(obj, target)
+            %LINKFILE Associates a file with the record.
+            %   LINKFILE(OBJ, PACKAGE) links a PACKAGE to the current
+            %   record. PACKAGE should be an object of type BFPackage. 
+            %
+            %   For example:
+            %
+            %       records = model.getRecords();
+            %       files  = dataset.getFiles();
+            %       records(1).linkFile(files(1));
+            
+            obj.session_.conceptsAPI.linkFile(obj.dataset_.id_, {obj.id_}, target.id_);
+  
+        end
+        
         function out = getRelatedCount(obj)                             
             % GETRELATEDCOUNT Returns relationship info for object
             %   INFO = GETRELATEDCOUNT(OBJ) returns an structure array with
@@ -191,28 +206,58 @@ classdef BFRecord < BFBaseNode & dynamicprops
             response = obj.session_.conceptsAPI.getRelationCountsForRecord( ...
                 obj.dataset_.id_, obj.model_.id_, obj.id_);
             
-            info = struct( ...
-                'name',{response.name}, ...
-                'totalCount',{response.count},...
-                'returnedCount', 0);
-            
-            modelNames = {obj.dataset_.models.name};
-            
             relatedRecords = BFRecord.empty();
-            if allModels            
-                idx = 1;
-                for i = 1: length(response)
-                    recs = obj.session_.conceptsAPI.getRelated(...
-                        obj.dataset_.id_, obj.model_.id_, obj.id_, response(i).name);
+            info = struct();
+            if ~isempty(response)
+                info = struct( ...
+                    'name',{response.name}, ...
+                    'totalCount',{response.count},...
+                    'returnedCount', 0);
 
-                    % Set info
-                    info(i).returnedCount = length(recs);
+                modelNames = {obj.dataset_.models.name};
+
+                if allModels            
+                    idx = 1;
+                    for i = 1: length(response)
+
+                        % Skip files 
+                        if strcmp('package', response(i).name)
+                            continue
+                        end
+
+                        % Get related records
+                        recs = obj.session_.conceptsAPI.getRelated(...
+                            obj.dataset_.id_, obj.model_.id_, obj.id_, response(i).name);
+
+                        % Set info
+                        info(i).returnedCount = length(recs);
+
+                        % Get ModelId
+                        targetModelId = obj.dataset_.models(strcmpi(recs{1}{2}.type,...
+                            modelNames)).id_;
+
+                        % Parse response
+                        for j = 1: length(recs)
+                            relatedRecords(idx) = BFRecord.createFromResponse(...
+                                recs{j}{2}, obj.session_, targetModelId, obj.dataset_);
+                            idx = idx + 1;
+                        end
+
+                    end
+                else
+                    recs = obj.session_.conceptsAPI.getRelated(...
+                            obj.dataset_.id_, obj.modelId, obj.id_, modelName, limit_, offset_);
 
                     % Get ModelId
-                    targetModelId = obj.dataset_.models(strcmpi(recs{1}{2}.type,...
+                    targetModelId = obj.dataset_.models(strcmp(recs{1}{2}.type,...
                         modelNames)).id_;
 
+                    % Set info
+                    infoNames = {info.name};
+                    info(strcmp(modelName,infoNames)).returnedCount = length(recs);
+
                     % Parse response
+                    idx = 1;
                     for j = 1: length(recs)
                         relatedRecords(idx) = BFRecord.createFromResponse(...
                             recs{j}{2}, obj.session_, targetModelId, obj.dataset_);
@@ -220,28 +265,34 @@ classdef BFRecord < BFBaseNode & dynamicprops
                     end
 
                 end
-            else
-                recs = obj.session_.conceptsAPI.getRelated(...
-                        obj.dataset_.id_, obj.modelId, obj.id_, modelName, limit_, offset_);
-                    
-                % Get ModelId
-                targetModelId = obj.dataset_.models(strcmp(recs{1}{2}.type,...
-                    modelNames)).id_;
-                
-                % Set info
-                infoNames = {info.name};
-                info(strcmp(modelName,infoNames)).returnedCount = length(recs);
-                
-                % Parse response
-                idx = 1;
-                for j = 1: length(recs)
-                    relatedRecords(idx) = BFRecord.createFromResponse(...
-                        recs{j}{2}, obj.session_, targetModelId, obj.dataset_);
-                    idx = idx + 1;
-                end
-
             end
 
+        end
+        
+        function items = getFiles(obj)
+            %GETFILES Returns the files associated with the record
+            %   ITEMS = GETFILES(OBJ) returns an array of files that are
+            %   associated with the current record.
+            %
+            %   For example:
+            %       records = bf.datasets(1).models(1).getRecords()
+            %       files = records(1).getFiles()
+            
+            
+            response = obj.session_.conceptsAPI.getFiles( ...
+                obj.dataset_.id_, obj.model_.id_, obj.id_);
+            
+            items = BFBaseDataNode.empty;
+            if ~isempty(response)
+                items(length(response)) = ...
+                            BFCollection('','','','');
+                for i=1: length(response)
+
+                    items(i) = BFBaseDataNode.createFromResponse(...
+                                response{i}{2}, obj.session_);
+                end
+            end
+            
         end
         
         function obj = delete(obj)                                      
@@ -284,9 +335,9 @@ classdef BFRecord < BFBaseNode & dynamicprops
             if isscalar(obj)
                 url = sprintf('%s/%s/datasets/%s/explore/%s/%s',obj.session_.web_host,obj.session_.org,obj.dataset_.id_,obj.model_.id_,obj.id_);
                 if obj.updated_
-                    s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id_,url,class(obj));
+                    s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id_,url,class(obj));
                 else
-                    s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>,<a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s)">Methods</a>',obj.id_,url,class(obj));
+                    s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>,<a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id_,url,class(obj));
                 end
             else
                 s = '';
