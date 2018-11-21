@@ -95,7 +95,7 @@ classdef BFAgent
                         folder = dataset.createFolder(toPath);
                     case 'include'
                         include = varargin{i+1};
-                        assert(isa(iclude,'char'), '''include'' needs to be of type ''char''');
+                        assert(isa(include,'char'), '''include'' needs to be of type ''char''');
                     case 'exclude'
                         exclude = varargin{i+1};
                         assert(isa(exclude,'char'), '''exclude'' needs to be of type ''char''');

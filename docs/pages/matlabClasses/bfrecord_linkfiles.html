@@ -1,10 +1,10 @@
 ---
-title: (BFRecord) linkFile
+title: (BFRecord) linkFiles
 keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
 last_updated: July 3, 2016
 tags: [getting_started]
 sidebar: matlab_docs_sidebar
-permalink: bfrecord_linkfile.html
+permalink: bfrecord_linkfiles.html
 folder: mydoc
 ---
 <html>
@@ -13,8 +13,8 @@ folder: mydoc
       <!--Single-page help-->
       
       
-      <div class="helptext"><pre><!--helptext --> <span class="helptopic">linkFile</span> Associates a file with the record.
-    <span class="helptopic">linkFile</span>(OBJ, PACKAGES) links one or more packages to the
+      <div class="helptext"><pre><!--helptext --> LINKFILE Associates a file with the record.
+    LINKFILE(OBJ, PACKAGES) links one or more packages to the
     current record. PACKAGE should be an array of objects of
     type BFPackage.
  
@@ -22,7 +22,7 @@ folder: mydoc
  
         records = model.getRecords();
         files  = dataset.getFiles();
-        records(1).<span class="helptopic">linkFile</span>(files(1));</pre></div><!--after help -->
+        records(1).linkFile(files(1));</pre></div><!--after help -->
       <!--Method-->
       <div class="sectiontitle">Method Details</div>
       <table class="class-details">

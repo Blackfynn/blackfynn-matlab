@@ -118,7 +118,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
             
         end
         
-        function obj = linkFile(obj, targets)
+        function obj = linkFiles(obj, targets)
             %LINKFILE Associates a file with the record.
             %   LINKFILE(OBJ, PACKAGES) links one or more packages to the
             %   current record. PACKAGE should be an array of objects of

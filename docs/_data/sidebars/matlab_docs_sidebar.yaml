@@ -325,8 +325,8 @@ entries:
     - title: (BFRecord) link
       url: /bfrecord_link.html
       output: web
-    - title: (BFRecord) linkFile
-      url: /bfrecord_linkfile.html
+    - title: (BFRecord) linkFiles
+      url: /bfrecord_linkfiles.html
       output: web
     - title: (BFRecord) update
       url: /bfrecord_update.html

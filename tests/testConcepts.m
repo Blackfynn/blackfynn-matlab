@@ -16,6 +16,7 @@ classdef testConcepts < matlab.unittest.TestCase
             testCase.bf = Blackfynn();
             testCase.ds = testCase.getOrCreateTestDataset(testCase.testDatasetName);
         end
+       
     end
     
     methods (TestClassTeardown)
@@ -111,6 +112,8 @@ classdef testConcepts < matlab.unittest.TestCase
             testCase.verifyEqual(result.prop_5, 1 );
             testCase.verifyEqual(result.prop_7, 'This is a required string');
             
+            testCase.records = result;
+            
             % Create multiple records with multiple properties
             record(2) = record;
             record(2).prop_1 = 'This is the second object';
@@ -140,6 +143,8 @@ classdef testConcepts < matlab.unittest.TestCase
             testCase.verifyEqual(related(1).id_, records(2).id_); 
 
         end
+        
+        
         
     end
     
