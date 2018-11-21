@@ -103,7 +103,7 @@ We now have created the models and relationships that define how metadat for thi
 Metadata records contain the actual information that you want to capture. In this example, we will create 1 subject, 1 experiment and 2 trials. Typical datasets obviously contain many more records. Records are created from the model objects. Let's start by creating a subject for our experiment.
 
 ```text
->> subj = m3.createRecords(struct('name', 'Subject 1', 'species', 'human', 'age', 24))
+>> subj = m1.createRecords(struct('name', 'Subject 1', 'species', 'human', 'age', 24))
 
 ans = 
 
@@ -132,8 +132,8 @@ ans =
 and finally, 2 trials:
 
 ```text
->> records(1) = struct('name', 'Trial 1', 'stimulation_period', 300);
->> records(2) = struct('name', 'Trial 2', 'Stimulation_period', 600);
+>> records(1) = struct('name', 'Trial 1', 'stimulationperiod', 300);
+>> records(2) = struct('name', 'Trial 2', 'stimulationperiod', 600);
 >> trials = m3.createRecords(records);
 ```
 

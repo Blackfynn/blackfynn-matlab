@@ -118,10 +118,11 @@ classdef BFRecord < BFBaseNode & dynamicprops
             
         end
         
-        function obj = linkFile(obj, target)
+        function obj = linkFiles(obj, targets)
             %LINKFILE Associates a file with the record.
-            %   LINKFILE(OBJ, PACKAGE) links a PACKAGE to the current
-            %   record. PACKAGE should be an object of type BFPackage. 
+            %   LINKFILE(OBJ, PACKAGES) links one or more packages to the
+            %   current record. PACKAGE should be an array of objects of
+            %   type BFPackage.
             %
             %   For example:
             %
@@ -129,7 +130,9 @@ classdef BFRecord < BFBaseNode & dynamicprops
             %       files  = dataset.getFiles();
             %       records(1).linkFile(files(1));
             
-            obj.session_.conceptsAPI.linkFile(obj.dataset_.id_, {obj.id_}, target.id_);
+            for i=1: length(targets)
+                obj.session_.conceptsAPI.linkFile(obj.dataset_.id_, {obj.id_}, targets(i).id_);
+            end
   
         end
         

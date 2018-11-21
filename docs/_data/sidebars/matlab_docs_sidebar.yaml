@@ -160,6 +160,9 @@ entries:
     - title: (BFConceptsAPI) deleteRecords
       url: /bfconceptsapi_deleterecords.html
       output: web
+    - title: (BFConceptsAPI) getFiles
+      url: /bfconceptsapi_getfiles.html
+      output: web
     - title: (BFConceptsAPI) getModels
       url: /bfconceptsapi_getmodels.html
       output: web
@@ -180,6 +183,9 @@ entries:
       output: web
     - title: (BFConceptsAPI) link
       url: /bfconceptsapi_link.html
+      output: web
+    - title: (BFConceptsAPI) linkFile
+      url: /bfconceptsapi_linkfile.html
       output: web
     - title: (BFConceptsAPI) slugFromString
       url: /bfconceptsapi_slugfromstring.html
@@ -307,6 +313,9 @@ entries:
     - title: (BFRecord) BFRecord
       url: /bfrecord_bfrecord.html
       output: web
+    - title: (BFRecord) getFiles
+      url: /bfrecord_getfiles.html
+      output: web
     - title: (BFRecord) getRelated
       url: /bfrecord_getrelated.html
       output: web
@@ -315,6 +324,9 @@ entries:
       output: web
     - title: (BFRecord) link
       url: /bfrecord_link.html
+      output: web
+    - title: (BFRecord) linkFiles
+      url: /bfrecord_linkfiles.html
       output: web
     - title: (BFRecord) update
       url: /bfrecord_update.html

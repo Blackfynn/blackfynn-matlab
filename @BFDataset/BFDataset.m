@@ -76,24 +76,24 @@ classdef BFDataset < BFBaseCollection
             
         end
         
-        function upload(obj, path, varargin)
+        function obj = upload(obj, path, varargin)
             %UPLOAD Upload data from MATLAB using the Blackfynn Agent
-            %   UPLOAD(OBJ, 'path') uploads all files from the
-            %   folder specified in the 'path' to the platform. 
+            %   OBJ = UPLOAD(OBJ, 'path') uploads all files from the folder
+            %   specified in the 'path' to the platform.
             %
-            %   UPLOAD(..., 'folder', 'toPath') uploads the files to a
-            %   specific path in the dataset. Folders will be created if
+            %   OBJ = UPLOAD(..., 'folder', 'toPath') uploads the files to
+            %   a specific path in the dataset. Folders will be created if
             %   the path does not exist yet. Separate folders using '/',
             %   for example: 'data/experiment1/trial1'.
             %
-            %   UPLOAD(..., 'include', 'includeStr') will only upload the
-            %   files that match the 'includeStr' expression. The include
-            %   string should be formatted as a globbing pattern. For
-            %   examples, look here:
+            %   OBJ = UPLOAD(..., 'include', 'includeStr') will only upload
+            %   the files that match the 'includeStr' expression. The
+            %   include string should be formatted as a globbing pattern.
+            %   For examples, look here:
             %   http://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm
             %
-            %   UPLOAD(..., 'exclude', 'excludeStr') will exclude files
-            %   that match the 'excludeStr' expression. The exclusion
+            %   OBJ = UPLOAD(..., 'exclude', 'excludeStr') will exclude
+            %   files that match the 'excludeStr' expression. The exclusion
             %   string should be formatted in the same way as the inclusion
             %   string.
             %
@@ -111,8 +111,15 @@ classdef BFDataset < BFBaseCollection
             %       ds.upload('~/Desktop/myFolder', 'exclude', '*.DS_Store');
             %       
 
+            if nargin > 2
+                assert(mod(length(varargin),2) == 0,'Incorrect number of input arguments');
+            end
+            
             agent = obj.session_.agent;
             agent.upload(obj, path, varargin{:});
+            
+            % Invalidate items in memory for dataset object
+            obj.checked_items = false;
         end
 
     end
