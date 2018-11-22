@@ -56,14 +56,12 @@ classdef testFiles < matlab.unittest.TestCase
             file = folder.items.items;
             testCase.verifyEqual(length(file), 1);
             testCase.verifyEqual(file.name,'test_data');
+                        
+            testCase.record.linkFiles(file);
+            associatedFiles = testCase.record.getFiles();
             
-            % TODO: Not sure why this currently fails.
-%             pause(5)
+            testCase.verifyEqual(length(associatedFiles), 1)
             
-%             testCase.record.linkFiles(file);
-%             associatedFiles = testCase.record.getFiles();
-            
-%             testCase.verifyEqual(length(associatedFiles),1)
         end
             
     end
