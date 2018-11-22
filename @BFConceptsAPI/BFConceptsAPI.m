@@ -294,6 +294,29 @@ classdef BFConceptsAPI
         function response = linkFile(obj, datasetId, recordIds, fileId)
             %LINKFILE Links file to one or more records
             
+            
+            % Check if BelongsTo Relationship already exists
+            endPoint = sprintf('%s/datasets/%s/relationships', ...
+                obj.host, datasetId);
+            
+            request = obj.session_.request;
+            response = request.get(endPoint, {}); 
+            
+            % If BelongsTo does not exist, create relationship
+            if isempty(response) || ~any(strcmp({response.name}, 'belongs_to')) 
+                endPoint = sprintf('%s/datasets/%s/relationships', ...
+                    obj.host, datasetId);
+
+                params = struct(...
+                    'name', 'belongs_to',...
+                    'displayName', 'Belongs To', ...
+                    'description', '', ...
+                    'schema', []);
+
+                request.post(endPoint, params); 
+            end
+            
+            % Add File
             endPoint = sprintf('%s/datasets/%s/proxy/%s/instances', ...
                 obj.host, datasetId, 'package');
             
@@ -311,7 +334,6 @@ classdef BFConceptsAPI
             
             params.targets = targets;
             
-            request = obj.session_.request;
             response = request.post(endPoint, params); 
             
         end
