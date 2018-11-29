@@ -1,6 +1,5 @@
 classdef (Sealed) BFTimeseries < BFDataPackage
     % BFTIMESERIES  A Timeseries package on Blackfynn
-    %
     
     properties (Dependent)
         channels        % Struct of channel objects
@@ -14,23 +13,16 @@ classdef (Sealed) BFTimeseries < BFDataPackage
         channels_
         startTime_
         endTime_
-        package
     end
     
     methods
-        function obj = BFTimeseries(varargin)
-            % Args: Empty, or [session, id, name, type, channels] 
+        function obj = BFTimeseries(session, id, name, type)
+            % BFTIMESERIES Constructor of the timeseries class.
             
-            obj = obj@BFDataPackage(varargin{1:4});
-            if nargin
-                obj.channels_= varargin{5};
-                obj.package = varargin{2}; 
-            end
-                     
-            
+            obj = obj@BFDataPackage(session, id, name, type);
         end
         
-        function value = get.startTime(obj)
+        function value = get.startTime(obj)                 
             % GET_STARTTIME gets the start time of the signal.
             %
             if ~isempty(obj.startTime_)
@@ -42,7 +34,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             end
         end
         
-        function value = get.endTime(obj)
+        function value = get.endTime(obj)                   
             % GET_ENDTIME gets the endtime of the signal.
             %
             if ~isempty(obj.endTime_)
@@ -54,26 +46,26 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             end
         end
         
-        function value = get.channels(obj)
+        function value = get.channels(obj)                  
             % GET_CHANNELS gets the timeseries channels
             %
             if ~(isempty(obj.channels_))
                 value = obj.channels_;
             else
                 resp = obj.get_channels();
+                value = BFTimeseriesChannel.empty(length(resp),0);
                 for i = 1 : length(resp)
                     value(i) = BFTimeseriesChannel.createFromResponse(resp, ...
                         obj.session_);
                 end
                 obj.channels_ = value;
             end
-            value=obj.channels_;
         end
         
-        function value = get.layers(obj)
+        function value = get.layers(obj)                    
             % GET_LAYERS gets all the annotation layers for the timeseries
             % package.
-            %
+            
             if (~isempty(obj.layers_))
                 value = obj.layers_;
             else
@@ -88,128 +80,97 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             end    
         end
         
-        function out = getSpan(obj,channels, start, stop)
-        % GETSPAN Returns data for a given span of time and channels.
-        %    RESULT = GETSPAN(OBJ, CHANNELS, START, STOP) returns a 2D
-        %    array for each channel with the time-stamps and the values of
-        %    the timeseries within the given range. CHANNELS is an array of
-        %    BFTIMESERIESCHANNEL objects, START is the start of the range
-        %    relative to the start-time of the timeseries object in
-        %    microseconds. STOP is the end of the range relative to the
-        %    start-time of the package in microseconds.
-        %
-        %
-        %    Examples:
-        %       % Return first 10 seconds of data on all channels
-        %       TS = BFTimeseries(...)
-        %       DATA = TS.GETSPAN(TS.channels, 0, 10e6)
-        %
-        %       % Return minute 5 through 10 on first two channels
-        %       START = 5*60*1e6
-        %       STOP = 10*60*1e6
-        %       DATA = TS.GETSPAN(TS.channels(1:2), START, STOP) 
-        %
-        %    see also:
-        %       BFTimeSeries, BFTimeSeriesChannel
+        function out = getSpan(obj,channels, start, stop)   
+            % GETSPAN Returns data for a given span of time and channels.
+            %    RESULT = GETSPAN(OBJ, CHANNELS, START, STOP) returns a 2D
+            %    array for each channel with the time-stamps and the values of
+            %    the timeseries within the given range. CHANNELS is an array of
+            %    BFTIMESERIESCHANNEL objects, START is the start of the range
+            %    relative to the start-time of the timeseries object in
+            %    microseconds. STOP is the end of the range relative to the
+            %    start-time of the package in microseconds.
+            %
+            %
+            %    Examples:
+            %       % Return first 10 seconds of data on all channels
+            %       TS = BFTimeseries(...)
+            %       DATA = TS.GETSPAN(TS.channels, 0, 10e6)
+            %
+            %       % Return minute 5 through 10 on first two channels
+            %       START = 5*60*1e6
+            %       STOP = 10*60*1e6
+            %       DATA = TS.GETSPAN(TS.channels(1:2), START, STOP) 
+            %
+            %    see also:
+            %       BFTimeSeries, BFTimeSeriesChannel
 
-        % Create channel array structure for request
-        chan_array = struct();
-        for i=1:length(channels)
-            chan_array(i).id_ =  channels(i).id_;
-            chan_array(i).rate = channels(i).rate;
-        end
-        ch_ids = {chan_array.id_};
-        max_rate = max([chan_array.rate]);
+            % Create channel array structure for request
+            chan_array = struct();
+            for i=1:length(channels)
+                chan_array(i).id_ =  channels(i).id_;
+                chan_array(i).rate = channels(i).rate;
+            end
+            ch_ids = {chan_array.id_};
+            max_rate = max([chan_array.rate]);
 
-        % Set chunk size (10,000 values per chunk)
-        chunk_size = 1e6* (10000/max_rate);
-        
-        % Create Websocket connection to Blackfynn Agent
-        ws_ = BFAgentIO(obj.session_, obj.package);
-        cmd = struct( ...
-            'command', "new", ...
-            'session', obj.session_.api_key, ...
-            'packageId', obj.package, ...
-            'channels', chan_array, ...
-            'startTime', uint64(start), ...
-            'endTime', uint64(stop), ...
-            'chunkSize', uint64(chunk_size), ...
-            'useCache', true);
-        cmd_encode = jsonencode(cmd);
-        ws_.send(cmd_encode);
+            % Set chunk size (10,000 values per chunk)
+            chunk_size = 1e6* (10000/max_rate);
 
-        % Wait for async callback to return with data
-        waitfor(ws_.received_data.handle, 'Empty', false);
-        data = ws_.received_data.get('data');
+            % Create Websocket connection to Blackfynn Agent
+            ws_ = BFAgentIO(obj.session_, obj.id_);
+            cmd = struct( ...
+                'command', "new", ...
+                'session', obj.session_.api_key, ...
+                'packageId', obj.id_, ...
+                'channels', chan_array, ...
+                'startTime', uint64(start), ...
+                'endTime', uint64(stop), ...
+                'chunkSize', uint64(chunk_size), ...
+                'useCache', true);
+            cmd_encode = jsonencode(cmd);
+            ws_.send(cmd_encode);
 
-        % Convert data to Blackfynn Cell-Array
-        ks = data.keySet;
-        ks_it = ks.iterator;
-        out = cell(ks.length,1);
-        br = blackfynn.Request('');
-        while ks_it.hasNext
-            curChId = ks_it.next;
-            loc = find(strcmp(ch_ids,curChId),1);
-            out{loc} = double(br.parseTimeSeriesList(data.get(curChId)));
-        end
-        end
-    
-        function show_channels(obj)
-        % SHOW_CHANNELS Pretty display of all channel objects.
-        %    SHOW_CHANNELS(OBJ) prints a list of all channel objects in the
-        %    Timeseries package.
-        % 
-        %    Examples:
-        %       TS = BFTimeseries(...);
-        %       TS.SHOW_CHANNELS()
-        %
-        %           0. ID: "N:channel:43dd423a-6f8f-4fe9-b8c3-9d4444...
-        %           1. ID: "N:channel:ef222470-e947-472a-b975-4dad95...
-        %           2. ID: "N:channel:e663cdc1-68a4-4a9f-3333-55681b...
-        %           3. ID: "N:channel:31419dfc-1dc0-4eac-b9d9-6trtf4...
-        %
-        %    see also:
-        %       BFTimeSeries, BFTimeSeriesChannel
-        
-        len_chan = length(obj.channels);
-        for i = 1 : len_chan
-            fprintf('%d. ID: "%s", Name: "%s", Type: "%s"\n', ...
-                (i-1), obj.channels(i).id_, obj.channels(i).name, ...
-                obj.channels(i).channelType);
-        end
-        end
-    
-        function out = get_channel(obj, chan_id)
-            % GET_CHANNELS gets the channels for a ts package.
-            %
-            % Args:
-            %       ID (str): ID for the channel that is being retrieved
-            %
-            % Returns:
-            %           struct: Channel object
-            %
-            % Examples:
-            %
-            %           Get a channel that belongs to ``ts``, a timeseries
-            %           package::
-            %
-            %               >> chan = ts.get_channel("N:channel:43dd423a-6f8f-4fe9-b8c3-9d4444449f7b");
-            %
-            % Note:
-            %
-            %       This is equivalent to doing ``ts.channels(i)``, where ``i``
-            %       is the number of the channels in the channel list. However,
-            %       if the user needs to obtain a specific channel, it is best
-            %       to retrieve it through its ID.
-            %
-            fieldSpikes = 'spikeDuration';
-            resp = obj.session_.mainAPI.getTimeseriesChannel(obj.id_, chan_id);
-            out = resp.content;
-            if ~(isfield(out, fieldSpikes))
-                out.(fieldSpikes) = '(null)';
+            % Wait for async callback to return with data
+            waitfor(ws_.received_data.handle, 'Empty', false);
+            data = ws_.received_data.get('data');
+
+            % Convert data to Blackfynn Cell-Array
+            ks = data.keySet;
+            ks_it = ks.iterator;
+            out = cell(ks.length,1);
+            br = blackfynn.Request('');
+            while ks_it.hasNext
+                curChId = ks_it.next;
+                loc = find(strcmp(ch_ids,curChId),1);
+                out{loc} = double(br.parseTimeSeriesList(data.get(curChId)));
             end
         end
     
+        function show_channels(obj)                         
+            % SHOW_CHANNELS Pretty display of all channel objects.
+            %    SHOW_CHANNELS(OBJ) prints a list of all channel objects in the
+            %    Timeseries package.
+            % 
+            %    Examples:
+            %       ts = BFTimeseries(...);
+            %       ts.SHOW_CHANNELS()
+            %
+            %           0. ID: "N:channel:43dd423a-6f8f-4fe9-b8c3-9d4444...
+            %           1. ID: "N:channel:ef222470-e947-472a-b975-4dad95...
+            %           2. ID: "N:channel:e663cdc1-68a4-4a9f-3333-55681b...
+            %           3. ID: "N:channel:31419dfc-1dc0-4eac-b9d9-6trtf4...
+            %
+            %    see also:
+            %       BFTimeSeries, BFTimeSeriesChannel
+
+            len_chan = length(obj.channels);
+            for i = 1 : len_chan
+                fprintf('%d. ID: "%s", Name: "%s", Type: "%s"\n', ...
+                    (i-1), obj.channels(i).id_, obj.channels(i).name, ...
+                    obj.channels(i).channelType);
+            end
+        end
+        
         function out = insert_annotation(obj, name, label, varargin)
             % INSERT_ANNOTATION Adds an annotation in the layer specified by
             % the user.
@@ -249,87 +210,28 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             out = BFTimeseriesAnnotation.createFromResponse(out, obj.session_);
         end
     
-        function out = get_layers(obj)
-        % GET_LAYERS gets the annotation layers for a timeseries package
-        %
-        % Returns:
-        %           ``BFTimeseriesAnnotationLayer``:  Annotation layer object
-        %
-        % Examples:
-        %
-        %           get all the layers for ``ts``, a timeseries object::
-        %
-        %               >> ts.get_layers
-        %
-        %               ans = 
-        %
-        %                   1×7 BFTimeseriesAnnotationLayer array with properties:
-        %
-        %                       name
-        %                       timeSeriesId
-        %                       layerId
-        %                       description
-        %
-        uri = sprintf('%s%s%s%s', obj.session_.host,'timeseries/',...
-            obj.id_,'/layers');
-        params = {};
-        out = obj.session_.request.get(uri, params);
-        out = out.results;
-        
-        % handle response
-        layer = struct();
-        for i = 1 : length(out)
-            if i == 1
-                layer = BFTimeseriesAnnotationLayer.createFromResponse(out(i),...
-                    obj.session_);
-            else
-               layer = [BFTimeseriesAnnotationLayer.createFromResponse(out(i),...
-                   obj.session_), layer];
-            end
-        end
-        out = layer;
-        end
-    
-        function out = create_layer(obj, name, varargin)
-            % CREATE_LAYER Creates an annotation layer for the given timeseries
-            % object.
+        function out = createLayer(obj, name, varargin)
+            % CREATE_LAYER Creates an annotation layer
+            %   LAYER = CREATELAYER(OBJ, 'name') creates a new annotation
+            %   layer for the current timeseries object. 
             %
-            % Args:
-            %       name (str): name of the layer to be created
-            %       description (str, optional): description of the layer to be created
+            %   LAYER = CREATELAYER(OBJ, 'name', 'description') creates a
+            %   layer with a name and a description.
             %
-            % Returns:
-            %          ``BFTimeseriesAnnotationLayer``: object for the created
-            %          layer
+            %   For example:
             %
-            % Examples:
-            %       
-            %           Create a new layer called "Eye Movements" for ``ts``, a timeseries object::
-            %
-            %               >> ts.create_layer('Eye Movements', 'description', 'Layer for eye movement annotations')
-            %         
-            %                   ans =
-            %
-            %                       BFTimeseriesAnnotationLayer with properties:
-            %
-            %                           name: 'Eye Movements'
-            %                           timeSeriesId: 'N:package:54d39b0a-8bd9-4993-3333-3c4e8etdre05'
-            %                           layerId: 394
-            %                           description: 'Layer for eye movement annotations'
-            %
-            %
-            %
-            description = '';
+            %       ts.createLayer('Eye Movements', 'Description of layer')
+
+            narginchk(2,3);
 
             % add description is specified as input
-            for i = 1 : length(varargin)
-                if strcmp(varargin(i), 'description')
-                    description = varargin(i+1);
-                end
+            description = '';
+            if nargin > 2
+                description = varargin{1};
             end
 
             % check if layer already exists
-            cur_layers = obj.get_layers;
+            cur_layers = obj.layers;
             for i = 1 : length(cur_layers)
                 if strcmp(name,cur_layers(i).name)
                     layer = cur_layers(i);
@@ -343,6 +245,8 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             else
                 out = BFTimeseriesAnnotationLayer.createFromResponse(layer, obj.session_);
             end
+            
+            obj.layers_ = [];
         end
     
         function show_layers(obj)
@@ -405,26 +309,25 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             out = out_table;
         end
     
-        function resp = delete_layer(obj, id)
-            % DELETE_LAYER Removes layer associated with timeseries object
-            %
-            % Args:
-            %       id (int): ID of the layer to be deleted
-            %
-            % Examples:
-            %
-            %           delete layer with ID 384 and associated to ``ts``,
-            %           a timeseries object::
-            %
-            %               >> ts.delete_layer(384)
+        function obj = deleteLayer(obj, layer)
+            % DELETELAYER Removes layer associated with timeseries object
+            %   OBJ = DELETELAYER(OBJ, LAYER) removes an annotationlayer
+            %   from the timeseries object. LAYER is an object of class
+            %   BFTIMESERIESANNOTATIONLAYER.
             %
 
-            resp = obj.session_.mainAPI.deleteAnnotationLayer(obj.id_, id);
+            assert(isa(layer,'BFTimeseriesAnnotationLayer'),...
+                'Incorrect input argument');
+            
+            resp = obj.session_.mainAPI.deleteAnnotationLayer(obj.id_, ...
+                layer.id_);
+            
+            obj.layers_ = [];
 
         end
     end
     
-    methods (Access = private)
+    methods
       
         function out = get_channels(obj)
             % GET_CHANNELS gets the channels for a ts package
@@ -543,11 +446,8 @@ classdef (Sealed) BFTimeseries < BFDataPackage
           %
           content = resp.content;
           chans = struct();
-          if (isfield(resp, 'channels'))
-              chans = BFTimeseries.get_chan_struct(resp.channels);
-          end
           out = BFTimeseries(session, content.id, content.name, ...
-              content.packageType, chans);
+              content.packageType);
           out.datasetId =  content.datasetId;
           out.state = content.state;
       end

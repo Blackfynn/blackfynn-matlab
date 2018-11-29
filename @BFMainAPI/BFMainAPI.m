@@ -251,7 +251,7 @@ classdef BFMainAPI
         end
         
         function resp = deleteAnnotationLayer(obj, packageId, layerId)
-            endPoint = sprintf('%s/timeseries/%s/layers/%d', obj.host, 'timeseries/', ...
+            endPoint = sprintf('%s/timeseries/%s/layers/%d', obj.host, ...
             packageId, layerId);
             message = '';
             resp = obj.session_.request.delete(endPoint, message);

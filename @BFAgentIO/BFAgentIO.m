@@ -2,7 +2,7 @@ classdef (Sealed) BFAgentIO < WebSocketClient
     % BFAGENTIO Class handling communication with the Blackfynn Agent
     
     properties
-        session
+        session_
         package
         received_data
         data
@@ -10,11 +10,13 @@ classdef (Sealed) BFAgentIO < WebSocketClient
     end
     
     properties(Constant)
-        uri = 'localhost:9500'
+        uri = 'localhost:9090'
     end
     
     methods
         function obj = BFAgentIO(session, package)
+            % BFAGENTIO Constructor for objects of the BFAGENTIO class
+            
             URI = sprintf('ws://%s/ts/query?package=%s&session=%s', ...
                 BFAgentIO.uri, package, session.api_key);
 

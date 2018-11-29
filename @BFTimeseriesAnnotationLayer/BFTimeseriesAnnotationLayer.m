@@ -16,7 +16,7 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
   end
   
   methods
-    function obj = BFTimeseriesAnnotationLayer(varargin)
+    function obj = BFTimeseriesAnnotationLayer(session, id, name, tsId, description)
         % BFTIMESERIESANNOTATIONLAYER Constructor of
         % BFTIMESERIESANNOTATIONLAYER class.
         %   OBJ = BFTIMESERIESANNOTATIONLAYER(SESSION, 'id', 'name',
@@ -27,13 +27,11 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
         %   channel belongs to and 'description' is a description of the
         %   annotation layer.
         
-         obj = obj@BFBaseNode(varargin{:});
-         if nargin
-             obj.name = varargin{3};
-             obj.layerId = varargin{2};
-             obj.timeSeriesId = varargin{4};
-             obj.description = varargin{5};
-         end
+         obj = obj@BFBaseNode(session, id);
+         obj.name = name;
+         obj.layerId = id;
+         obj.timeSeriesId = tsId;
+         obj.description = description;
     end
     
     function out = annotations(obj, varargin)
@@ -45,32 +43,8 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
         % Args:
         %       end (int, optional): end time (in usecs) for the interval in which to search for annotations (default 1000000)
         %       start (int, optional): start time (in usecs) for the interval in which to search for annotations (default start time of timeseries data)
-        %       
-        % Returns: 
-        %           ``BFTimeseriesAnnotationLayer``: Annotation object
-        %
-        % Examples:
-        %
-        %            get all the annotations for ``ly``, a
-        %            ``BFTimeseriesAnnotationLayer`` object that describes a layer for ``ts``, a timeseries object::
-        %
-        %               >> ly.annotations('end', ts.endTime)
-        %
-        %               ans =
-        %
-        %                   1×4 BFTimeseriesAnnotation array with properties:
-        %
-        %                       annotationId
-        %                       timeSeriesId
-        %                       channelIds
-        %                       layerId
-        %                       name
-        %                       label
-        %                       description
-        %                       userId
-        %                       startTime
-        %                       endTime
-        %            
+     
+        
         uri = sprintf('%s/timeseries/%s/layers/%d/annotations', obj.session_.host,...
             obj.timeSeriesId, obj.layerId);
         params = obj.load_annotation_params(varargin{:});
@@ -85,7 +59,7 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
                     obj.session_);
             else
                 annotation = [BFTimeseriesAnnotation.createFromResponse(resp{i},...
-                    obj.session_), annotation];
+                    obj.session_), annotation]; %#ok<AGROW>
             end
         end
         out = annotation;

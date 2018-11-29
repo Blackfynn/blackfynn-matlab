@@ -8,14 +8,14 @@ classdef BFDataPackage < BFBaseDataNode
   end
   
   methods
-    function obj = BFDataPackage(varargin)
+    function obj = BFDataPackage(session, id, name, type)
         %BFDATAPACKAGE Constructor for BFDATAPACKAGE
         %   OBJ = BFDATAPACKAGE(SESSION, 'id', 'name', 'type') creates a
         %   BFDATAPACKAGE instance where SESSION is an instance of
         %   BFSESSION, 'id' is the id of the package, 'name' is the name of
         %   the package and 'type' is the type of the package.
       
-      obj = obj@BFBaseDataNode(varargin{:});
+      obj = obj@BFBaseDataNode(session, id, name, type);
     end
     
     function success = move(obj, dest)          

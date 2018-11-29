@@ -55,9 +55,11 @@ classdef BFRequest < handle
             header(1) = matlab.net.http.field.GenericField('X-SESSION-ID',obj.options.HeaderFields{1,2});
             header(2) = matlab.net.http.field.GenericField('AUTHORIZATION',obj.options.HeaderFields{2,2});
             header(3) = matlab.net.http.field.ContentTypeField('application/json');
-            message = matlab.net.http.MessageBody(message);
-            request = matlab.net.http.RequestMessage('delete',header,message);
-            response = request.send( uri );
+            body = matlab.net.http.MessageBody(message); 
+            
+            request = matlab.net.http.RequestMessage('delete', header, body);
+            requestOptions = matlab.net.http.HTTPOptions('ConvertResponse',false);
+            response = request.send( uri, requestOptions );
         catch ME
             obj.handleError(ME);
         end
@@ -91,6 +93,11 @@ classdef BFRequest < handle
             'the request.'];
         causeException = MException('MATLAB:Blackfynn:NotFound',msg);
         ME = addCause(ME, causeException);
+      elseif (strcmp(ME.identifier, 'MATLAB:webservices:HTTP401StatusCodeError'))
+        msg = [' The platform responded with a authorization error. '...
+            'It is possible that you have been logged out'];
+        causeException = MException('MATLAB:Blackfynn:BadRequest',msg);
+        ME = addCause(ME, causeException);  
       end
 
       rethrow(ME);
