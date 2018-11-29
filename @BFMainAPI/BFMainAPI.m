@@ -295,6 +295,22 @@ classdef BFMainAPI
             
         end
         
+        function resp = getAnnotations(obj, packageId, layerId, start, stop, offset, limit)
+            
+            uri = sprintf('%s/timeseries/%s/layers/%d/annotations', obj.session_.host,...
+            packageId, layerId);
+        
+            params = {
+                'start'; start;  ...
+                'end'; stop;  ...
+                'includeLinks'; 'false';  ...
+                'limit'; limit;  ...
+                'offset'; offset};
+            resp = obj.session_.request.get(uri, params);
+            resp = resp.annotations;
+            
+        end
+        
     end
 end
 

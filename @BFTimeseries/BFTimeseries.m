@@ -74,7 +74,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
                 value = BFTimeseriesAnnotationLayer.empty(length(res),0);
                 for i = 1 : length(res)
                     value(i) = BFTimeseriesAnnotationLayer.createFromResponse(res(i), ...
-                        obj.session_);
+                        obj.session_, obj);
                 end
                 obj.layers_ = value;
             end    
@@ -145,70 +145,45 @@ classdef (Sealed) BFTimeseries < BFDataPackage
                 out{loc} = double(br.parseTimeSeriesList(data.get(curChId)));
             end
         end
-    
-        function show_channels(obj)                         
-            % SHOW_CHANNELS Pretty display of all channel objects.
-            %    SHOW_CHANNELS(OBJ) prints a list of all channel objects in the
-            %    Timeseries package.
-            % 
-            %    Examples:
-            %       ts = BFTimeseries(...);
-            %       ts.SHOW_CHANNELS()
-            %
-            %           0. ID: "N:channel:43dd423a-6f8f-4fe9-b8c3-9d4444...
-            %           1. ID: "N:channel:ef222470-e947-472a-b975-4dad95...
-            %           2. ID: "N:channel:e663cdc1-68a4-4a9f-3333-55681b...
-            %           3. ID: "N:channel:31419dfc-1dc0-4eac-b9d9-6trtf4...
-            %
-            %    see also:
-            %       BFTimeSeries, BFTimeSeriesChannel
-
-            len_chan = length(obj.channels);
-            for i = 1 : len_chan
-                fprintf('%d. ID: "%s", Name: "%s", Type: "%s"\n', ...
-                    (i-1), obj.channels(i).id_, obj.channels(i).name, ...
-                    obj.channels(i).channelType);
-            end
-        end
-        
-        function out = insert_annotation(obj, name, label, varargin)
-            % INSERT_ANNOTATION Adds an annotation in the layer specified by
-            % the user.
-            %
-            % Args:
-            %       name (str): Layer in which to create the annotation
-            %       label (str): Label for the annotation
-            %       start (int, optional): start time (in usecs) for the annotation (default start time of signal)
-            %       end (int, optional): end time (in usecs) for the annotation (default end time of signal)
-            %       channelIds (str, optional): channel IDs for the channels that are annotated (all channels default)
-            %       description (str, optional): description for the generated annotation
-            %
-            % Example:
-            %
-            %           Add a new annotation with label "Atonic Seizure" in a layer called "Seizures" for
-            %           ``ts``, a timeseries object::
-            %
-            %               >> event = ts.insert_annotation('Seizures', 'Atonic Seizure', 'start', ts.startTime+10000000, 'end', ts.startTime+18000000);
-            %
-            % Note:
-            %       If specific channels are selected for the annotations, they
-            %       must be defined as string arrays::
-            %
-            %           >> channels = ["N:channel:????????-????-????-????-????????????", "N:channel:????????-????-????-????-????????????"]
-            %
-
-            % Get or create layer
-            layer = obj.create_layer(name, varargin{:});
-
-            % Create annotation
-            resp = obj.session_.mainAPI.createTimeseriesAnnotation(obj.id_, layer.layerId);
-
-            uri = sprintf('%s%s%s%s%d%s', obj.session_.host,'timeseries/', ...
-                obj.id_,'/layers/', layer.layerId, '/annotations');
-            message = obj.load_annotation_params(name, label, layer.layerId, varargin{:});
-            out = obj.session_.request.post(uri, message);
-            out = BFTimeseriesAnnotation.createFromResponse(out, obj.session_);
-        end
+            
+%         function out = insert_annotation(obj, name, label, varargin)
+%             % INSERT_ANNOTATION Adds an annotation in the layer specified by
+%             % the user.
+%             %
+%             % Args:
+%             %       name (str): Layer in which to create the annotation
+%             %       label (str): Label for the annotation
+%             %       start (int, optional): start time (in usecs) for the annotation (default start time of signal)
+%             %       end (int, optional): end time (in usecs) for the annotation (default end time of signal)
+%             %       channelIds (str, optional): channel IDs for the channels that are annotated (all channels default)
+%             %       description (str, optional): description for the generated annotation
+%             %
+%             % Example:
+%             %
+%             %           Add a new annotation with label "Atonic Seizure" in a layer called "Seizures" for
+%             %           ``ts``, a timeseries object::
+%             %
+%             %               >> event = ts.insert_annotation('Seizures', 'Atonic Seizure', 'start', ts.startTime+10000000, 'end', ts.startTime+18000000);
+%             %
+%             % Note:
+%             %       If specific channels are selected for the annotations, they
+%             %       must be defined as string arrays::
+%             %
+%             %           >> channels = ["N:channel:????????-????-????-????-????????????", "N:channel:????????-????-????-????-????????????"]
+%             %
+% 
+%             % Get or create layer
+%             layer = obj.create_layer(name, varargin{:});
+% 
+%             % Create annotation
+%             resp = obj.session_.mainAPI.createTimeseriesAnnotation(obj.id_, layer.layerId);
+% 
+%             uri = sprintf('%s%s%s%s%d%s', obj.session_.host,'timeseries/', ...
+%                 obj.id_,'/layers/', layer.layerId, '/annotations');
+%             message = obj.load_annotation_params(name, label, layer.layerId, varargin{:});
+%             out = obj.session_.request.post(uri, message);
+%             out = BFTimeseriesAnnotation.createFromResponse(out, obj.session_);
+%         end
     
         function out = createLayer(obj, name, varargin)
             % CREATE_LAYER Creates an annotation layer
@@ -249,29 +224,14 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             obj.layers_ = [];
         end
     
-        function show_layers(obj)
-            % SHOW_LAYERS displays all the annotation layers for the given
-            % timeseries object in the console.
+        function layers = listLayers(obj)
+            % LISTLAYERS returns a MATLAB Table with annotation layer info
+            %   LAYERS = LISTLAYERS(OBJ) returns a MATLAB table
+            %   representing the annotation layers that exist for the
+            %   timeseries object.
             %
-            % Example:
-            %           Show all the layers for ``ts``, a timeseries object::
-            %
-            %               >> ts.show_layers
-            %               ID: "387", Name: "Artifacts", Description: "Layer for artifact annotations"
-            %               ID: "367", Name: "Default", Description: "Default Annotation Layer"
-            %               ID: "390", Name: "Seizures", Description: "Layer for seizure annotations"
-            %
-            l = obj.get_layers;
-            for i  = 1 : length(l)
-                fprintf('ID: "%d", Name: %s, Description: "%s"\n', ...
-                    l(1,i).layerId, l(1,i).name, l(1,i).description)
-            end
-        end
-    
-        function out = layers2table(obj)
-            % LAYERS2TABLE stores all of the layers associated with a
-            % timeseries object in a MATLAB table. The output is a table that
-            % looks as follows:
+            %   For example:
+            %       ts.LISTLAYERS()
             %
             %         +----------+------------+-------------------+
             %         | ID       | Name       | Description       |
@@ -279,25 +239,8 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             %         | layer_id | layer_name | layer_description |
             %         +----------+------------+-------------------+
             %
-            % Examples:
-            %
-            %           Store all the layers associated with ``ts``, a
-            %           timeseries object in a MATLAB table::
-            %
-            %               >> out_table = ts.layers2table;
-            %               >> out_table
-            %
-            %                   3×3 table
-            %
-            %                       ID                 Name                       Description
-            %                     _____    ___________________________    __________________________
-            %
-            %                     '387'    'Artifacts'                    'Layer for artifact annotations'
-            %                     '367'    'Default'                      'Default Annotation Layer'
-            %                     '390'    'Seizures'                     'Layer for seizure annotations'
-            %
-            %
-            l = obj.get_layers;
+            
+            l = obj.layers;
             col_names = {'ID', 'Name', 'Description'};
             out_table = cell2table(cell(length(l), length(col_names)));
             out_table.Properties.VariableNames = col_names;
@@ -306,7 +249,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
                 out_table(i,2) = {l(i).name};
                 out_table(i,3) = {l(i).description};
             end
-            out = out_table;
+            layers = out_table;
         end
     
         function obj = deleteLayer(obj, layer)
