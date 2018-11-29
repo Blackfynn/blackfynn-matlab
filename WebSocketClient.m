@@ -16,10 +16,10 @@ classdef WebSocketClient < handle
     %   callback methods.
     
     properties (SetAccess = private)
-        URI % The URI of the server
-        Secure = false % True if the connection is using WebSocketSecure
-        Status = false % Status of the connection, true if the connection is open
-        ClientObj % Java-WebSocket client object
+        URI             % The URI of the server
+        Secure = false  % True if the connection is using WebSocketSecure
+        Status = false  % Status of the connection, true if the connection is open
+        ClientObj       % Java-WebSocket client object
     end
     
     properties (Access = private)

@@ -11,84 +11,86 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
   end
   
   properties (Hidden)
-    timeSeriesId    % ID of the timeseries package
-    layerId         % Layer's ID
+    tsObj           % Timeseries package for layer
   end
   
   methods
-    function obj = BFTimeseriesAnnotationLayer(varargin)
+    function obj = BFTimeseriesAnnotationLayer(session, id, name, tsObj, description)
         % BFTIMESERIESANNOTATIONLAYER Constructor of
         % BFTIMESERIESANNOTATIONLAYER class.
-        %   OBJ = BFTIMESERIESANNOTATIONLAYER(SESSION, 'id', 'name',
-        %   'ts_id', 'description') creates a timeseries annotationlayer
-        %   where SESSION is an instance of the BFSESSION class, 'id' is
-        %   the Blackfynn id of the layer, 'name' is the name of the
-        %   layer,'ts_id' is the Blackfynn id of the timeseries package the
-        %   channel belongs to and 'description' is a description of the
-        %   annotation layer.
         
-         obj = obj@BFBaseNode(varargin{:});
-         if nargin
-             obj.name = varargin{3};
-             obj.layerId = varargin{2};
-             obj.timeSeriesId = varargin{4};
-             obj.description = varargin{5};
-         end
+         obj = obj@BFBaseNode(session, id);
+         obj.name = name;
+         obj.tsObj = tsObj;
+         obj.description = description;
     end
     
-    function out = annotations(obj, varargin)
-        % ANNOTATIONS Gets all the annotations for a given layer.
-        %   [ANNS, ISALL] = ANNOTATIONS(OBJ)
-        %   [ANNS, ISALL] = ANNOTATIONS(..., START, END)
-        %   [ANNS, ISALL] = ANNOTATIONS(..., START, END, OFFSET, LIMIT)
-        % 
-        % Args:
-        %       end (int, optional): end time (in usecs) for the interval in which to search for annotations (default 1000000)
-        %       start (int, optional): start time (in usecs) for the interval in which to search for annotations (default start time of timeseries data)
-        %       
-        % Returns: 
-        %           ``BFTimeseriesAnnotationLayer``: Annotation object
+    function annotations = getAnnotations(obj, varargin)
+        % GETANNOTATIONS Retrieves annotations for layer
+        %   ANNS = GETANNOTATIONS(OBJ) returns the first 100 annotations
+        %   in the current annotation layer.
         %
-        % Examples:
+        %   ANNS = GETANNOTATIONS(..., 'start', STARTTIME) specifies the
+        %   start of the range of the annotations that should be returned
+        %   as an offset from the start of the timeseries package in
+        %   microseconds.
         %
-        %            get all the annotations for ``ly``, a
-        %            ``BFTimeseriesAnnotationLayer`` object that describes a layer for ``ts``, a timeseries object::
+        %   ANNS = GETANNOTATIONS(..., 'stop', STOPTIME) specifies the end
+        %   of the range of the annotations that should be returned
+        %   as an offset from the start of the timeseries package in
+        %   microseconds.
         %
-        %               >> ly.annotations('end', ts.endTime)
+        %   ANNS = GETANNOTATIONS(..., 'offset', OFFSET) specifies an
+        %   integer number of annotations that should be skipped before
+        %   returning the first annotation.
         %
-        %               ans =
+        %   ANNS = GETANNOTATIONS(..., 'limit', LIMIT) sets a limit to the
+        %   number of annotations that will be returned in a single call
+        %   (default=100).
         %
-        %                   1×4 BFTimeseriesAnnotation array with properties:
+        %   For example:
         %
-        %                       annotationId
-        %                       timeSeriesId
-        %                       channelIds
-        %                       layerId
-        %                       name
-        %                       label
-        %                       description
-        %                       userId
-        %                       startTime
-        %                       endTime
-        %            
-        uri = sprintf('%s/timeseries/%s/layers/%d/annotations', obj.session_.host,...
-            obj.timeSeriesId, obj.layerId);
-        params = obj.load_annotation_params(varargin{:});
-        resp = obj.session_.request.get(uri, params);
-        resp = resp.annotations.results;
+        %       anns = layer.GETANNOTATIONS('offset',0, 'limit', 50) 
+        %       -- returns first 50 annotations in layer --
+        %
+        %       anns = layer.GETANNOTATIONS('offset',100, 'limit', 100)
+        %       -- returns annotations 101-200 in layer
+        %
+
+        assert(mod(length(varargin),2)==0,'Incorrect number of input arguments');
         
-        % handle response
-        annotation = struct();
-        for i = 1 : length(resp)
-            if i == 1
-                annotation = BFTimeseriesAnnotation.createFromResponse(resp{i}, ...
-                    obj.session_);
-            else
-                annotation = [BFTimeseriesAnnotation.createFromResponse(resp{i},...
-                    obj.session_), annotation];
+        rangeStart = obj.tsObj.startTime;
+        rangeEnd = obj.tsObj.endTime;
+        rangeOffset = 0;
+        rangeLimit = 100;
+        
+        if nargin > 1
+            for i=1:2:length(varargin)
+                switch varargin{i}
+                    case 'start'
+                        rangeStart = varargin{i+1};
+                    case 'end'
+                        rangeEnd = varargin{i+1};
+                    case 'limit'
+                        rangeLimit = varargin{i+1};
+                    case 'offset'
+                        rangeOffset = varargin{i+1};
+                    otherwise
+                        error('Incorrect input argument');
+                end
             end
         end
-        out = annotation;
+            
+        resp = obj.session_.mainAPI.getAnnotations(obj.tsObj.id_, ...
+            obj.id_, rangeStart, rangeEnd, rangeOffset, rangeLimit );
+        anns = resp.results;
+
+        % handle response
+        annotations = BFTimeseriesAnnotation.empty(length(anns),0);
+        for i = 1 : length(anns)
+            annotations(i) = BFTimeseriesAnnotation.createFromResponse(...
+                anns(i), obj.session_);
+        end
     end
     
     function delete_annotation(obj, annotationId)
@@ -129,7 +131,7 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
         end
     end
     
-    function out = annotations2table(obj, endtime)
+    function out = listAnnotations(obj, endtime)
         % ANNOTATIONS2TABLE stores all of the annotations associated with a
         % layer object in a MATLAB table. The output is a table that
         % looks as follows:
@@ -190,7 +192,7 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
           addParameter(p, 'end', defaultEnd);
           addParameter(p, 'layerName', obj.name);
           
-          parse(p,varargin{:})
+          parse(p, varargin{:})
           
           % format parsed parameters
           j=1;
@@ -220,13 +222,14 @@ classdef BFTimeseriesAnnotationLayer < BFBaseNode
   
    methods(Static, Hidden)
        
-       function out = createFromResponse(resp, session)
+       function out = createFromResponse(resp, session, tsObj)
            % CREATEFROMRESPONSE creates the timeseries annotation layer
            % object form a response
            %
            content = resp;
            out = BFTimeseriesAnnotationLayer(session, content.id, ...
-               content.name, content.timeSeriesId, content.description);
+               content.name, tsObj, content.description);
+           
        end
    end
   
