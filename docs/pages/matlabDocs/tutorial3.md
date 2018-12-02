@@ -9,9 +9,9 @@ folder: matlabDocs
 ---
 
 ## Introduction
-This tutorial describes how you can use the MATLAB client to upload files to the Blackfynn platform. The MATLAB client leverages the (Blackfynn Agent)[https://developer.blackfynn.io/agent/index.html] to upload the files and provides intuitive helper functions to directly upload files from a MATLAB script or the console. 
+This tutorial describes how you can use the MATLAB client to upload files to the Blackfynn platform. The MATLAB client leverages the [Blackfynn Agent](https://developer.blackfynn.io/agent/index.html) to upload the files and provides intuitive helper functions to directly upload files from a MATLAB script or the console. 
 
-This tutorial assumes that the user has installed the Blackfynn MATLAB toolbox, the Blackfynn agent and has completed [tutorial 2](/tutorial2.html).
+This tutorial assumes that the user has installed the Blackfynn MATLAB toolbox, the Blackfynn agent and has completed [tutorial 2](tutorial2.html).
 
 ## Uploading files
 {% include tip.html content="Download a small set of files that you can use for this tutorial [here](http://data.blackfynn.io/tutorials/example_data.zip)" %}

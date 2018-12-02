@@ -250,6 +250,9 @@ entries:
     - title: (BFMainAPI) getAnnotationLayers
       url: /bfmainapi_getannotationlayers.html
       output: web
+    - title: (BFMainAPI) getAnnotations
+      url: /bfmainapi_getannotations.html
+      output: web
     - title: (BFMainAPI) getDataset
       url: /bfmainapi_getdataset.html
       output: web
@@ -355,32 +358,23 @@ entries:
     - title: (BFTimeseries) BFTimeseries
       url: /bftimeseries_bftimeseries.html
       output: web
-    - title: (BFTimeseries) create_layer
-      url: /bftimeseries_create_layer.html
+    - title: (BFTimeseries) createLayer
+      url: /bftimeseries_createlayer.html
       output: web
-    - title: (BFTimeseries) delete_layer
-      url: /bftimeseries_delete_layer.html
+    - title: (BFTimeseries) deleteLayer
+      url: /bftimeseries_deletelayer.html
       output: web
     - title: (BFTimeseries) getSpan
       url: /bftimeseries_getspan.html
       output: web
-    - title: (BFTimeseries) get_channel
-      url: /bftimeseries_get_channel.html
+    - title: (BFTimeseries) get_channels
+      url: /bftimeseries_get_channels.html
       output: web
-    - title: (BFTimeseries) get_layers
-      url: /bftimeseries_get_layers.html
+    - title: (BFTimeseries) listLayers
+      url: /bftimeseries_listlayers.html
       output: web
-    - title: (BFTimeseries) insert_annotation
-      url: /bftimeseries_insert_annotation.html
-      output: web
-    - title: (BFTimeseries) layers2table
-      url: /bftimeseries_layers2table.html
-      output: web
-    - title: (BFTimeseries) show_channels
-      url: /bftimeseries_show_channels.html
-      output: web
-    - title: (BFTimeseries) show_layers
-      url: /bftimeseries_show_layers.html
+    - title: (BFTimeseries) load_annotation_params
+      url: /bftimeseries_load_annotation_params.html
       output: web
     - title: (BFTimeseriesAnnotation) BFTimeseriesAnnotation
       url: /bftimeseriesannotation_bftimeseriesannotation.html
@@ -388,14 +382,14 @@ entries:
     - title: (BFTimeseriesAnnotationLayer) BFTimeseriesAnnotationLayer
       url: /bftimeseriesannotationlayer_bftimeseriesannotationlayer.html
       output: web
-    - title: (BFTimeseriesAnnotationLayer) annotations
-      url: /bftimeseriesannotationlayer_annotations.html
-      output: web
-    - title: (BFTimeseriesAnnotationLayer) annotations2table
-      url: /bftimeseriesannotationlayer_annotations2table.html
-      output: web
     - title: (BFTimeseriesAnnotationLayer) delete_annotation
       url: /bftimeseriesannotationlayer_delete_annotation.html
+      output: web
+    - title: (BFTimeseriesAnnotationLayer) getAnnotations
+      url: /bftimeseriesannotationlayer_getannotations.html
+      output: web
+    - title: (BFTimeseriesAnnotationLayer) listAnnotations
+      url: /bftimeseriesannotationlayer_listannotations.html
       output: web
     - title: (BFTimeseriesAnnotationLayer) show_annotations
       url: /bftimeseriesannotationlayer_show_annotations.html

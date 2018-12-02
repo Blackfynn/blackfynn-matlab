@@ -1,0 +1,62 @@
+---
+title: (BFTimeseriesAnnotationLayer) getAnnotations
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: bftimeseriesannotationlayer_getannotations.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext -->  <span class="helptopic">getAnnotations</span> Retrieves annotations for layer
+    ANNS = <span class="helptopic">getAnnotations</span>(OBJ) returns the first 100 annotations
+    in the current annotation layer.
+ 
+    ANNS = <span class="helptopic">getAnnotations</span>(..., 'start', STARTTIME) specifies the
+    start of the range of the annotations that should be returned
+    as an offset from the start of the timeseries package in
+    microseconds.
+ 
+    ANNS = <span class="helptopic">getAnnotations</span>(..., 'stop', STOPTIME) specifies the end
+    of the range of the annotations that should be returned
+    as an offset from the start of the timeseries package in
+    microseconds.
+ 
+    ANNS = <span class="helptopic">getAnnotations</span>(..., 'offset', OFFSET) specifies an
+    integer number of annotations that should be skipped before
+    returning the first annotation.
+ 
+    ANNS = <span class="helptopic">getAnnotations</span>(..., 'limit', LIMIT) sets a limit to the
+    number of annotations that will be returned in a single call
+    (default=100).
+ 
+    For example:
+ 
+        anns = layer.<span class="helptopic">getAnnotations</span>('offset',0, 'limit', 50) 
+        -- returns first 50 annotations in layer --
+ 
+        anns = layer.<span class="helptopic">getAnnotations</span>('offset',100, 'limit', 100)
+        -- returns annotations 101-200 in layer</pre></div><!--after help -->
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>

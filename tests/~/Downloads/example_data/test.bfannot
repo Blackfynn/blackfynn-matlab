@@ -1,0 +1,11 @@
+version,package_type,layer_name,layer_description,annotation_label,start_uutc,end_uutc,channel_names,annotation_description
+1.0,TimeSeries,layer1,,'event1',0,2000000,chan002,
+1.0,TimeSeries,layer1,,'event2',0,4000000,chan004,
+1.0,TimeSeries,layer1,,'event3',5000000,10000000,chan006,
+1.0,TimeSeries,layer1,,'event4',1000000,15000000,chan008,
+1.0,TimeSeries,layer1,,'event5',0,2000000,chan010,
+1.0,TimeSeries,layer2,,'Newevent1',0,4000000,chan009,
+1.0,TimeSeries,layer1,,'event6',0,6000000,chan012,
+1.0,TimeSeries,layer1,,'event7',0,7000000,chan014,
+1.0,TimeSeries,layer1,,'event8',0,8000000,chan016,
+1.0,TimeSeries,layer2,,'Newevent2',3000000,6000000,chan011,

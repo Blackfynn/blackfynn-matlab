@@ -1,0 +1,62 @@
+---
+title: (BFTimeseriesAnnotationLayer) listAnnotations
+keywords: documentation theme, jekyll, technical writers, help authoring tools, hat replacements
+last_updated: July 3, 2016
+tags: [getting_started]
+sidebar: matlab_docs_sidebar
+permalink: bftimeseriesannotationlayer_listannotations.html
+folder: mydoc
+---
+<html>
+   
+   <body>
+      <!--Single-page help-->
+      
+      
+      <div class="helptext"><pre><!--helptext -->  ANNOTATIONS2TABLE stores all of the annotations associated with a
+  layer object in a MATLAB table. The output is a table that
+  looks as follows:
+ 
+          +---------------+-----------------+------------------------+------------+----------+
+          | ID            | Name            | Description            | Start_Time | End_Time |
+          +---------------+-----------------+------------------------+------------+----------+
+          | annotation_id | annotation_name | annotation_description | start_time | end_time |
+          +---------------+-----------------+------------------------+------------+----------+
+ 
+  Args:
+        end (int): end time for which to include annotations
+ 
+  Examples:
+ 
+             Store all the annotations in the "Seizures" layer
+             (``sz`` object) for ``ts``, a timeseries object::
+ 
+                  &gt;&gt; sz.annotations2table(ts.endTime)
+ 
+                  ans =
+ 
+                    2&#xD7;5 table
+ 
+                        ID              Name                    Description                Start_Time             End_Time
+                      ______    _____________________    __________________________    __________________    __________________
+ 
+                      '4853'    'Generalized Seizure'    'secondary generalization'    '1301921827000000'    '1301921832000000'
+                      '4850'    'Focal Seizure'          ''                            '1301921822000000'    '1301921822500000'</pre></div><!--after help -->
+      <!--Method-->
+      <div class="sectiontitle">Method Details</div>
+      <table class="class-details">
+         <tr>
+            <td class="class-detail-label">Access</td>
+            <td>public</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Sealed</td>
+            <td>false</td>
+         </tr>
+         <tr>
+            <td class="class-detail-label">Static</td>
+            <td>false</td>
+         </tr>
+      </table>
+   </body>
+</html>
