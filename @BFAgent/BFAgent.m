@@ -49,7 +49,7 @@ classdef BFAgent
             % Login with agent if agent is installed
             status = 1;
             if exist(obj.location,'file')
-                [status, ~] = system(sprintf('%s profile switch %s', obj.location,profileName));
+                [status, ~] = system(sprintf('"%s" profile switch %s', obj.location,profileName));
                 if status
                     warning('Blackfynn Agent could not be initialized; some functionality might not work');
                 end
@@ -103,7 +103,7 @@ classdef BFAgent
             end
             
                    
-            cmd = sprintf('%s upload -f -O simple ',obj.location);
+            cmd = sprintf('"%s" upload -f -O simple ',obj.location);
             
             if ~isempty(folder)
                 cmd = [cmd sprintf('--folder=%s ',folder.id_)];
@@ -120,12 +120,13 @@ classdef BFAgent
             cmd = [cmd sprintf('%s', path)];
             
             % Cancel existing queue
-            system(sprintf('%s upload-status --cancel-all', obj.location));
+            system(sprintf('"%s" upload-status --cancel-all', obj.location));
             
             % Run uploader
             system(cmd);
                        
         end
     end
+    
 end
 

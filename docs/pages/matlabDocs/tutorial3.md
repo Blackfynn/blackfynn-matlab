@@ -14,7 +14,7 @@ This tutorial describes how you can use the MATLAB client to upload files to the
 This tutorial assumes that the user has installed the Blackfynn MATLAB toolbox, the Blackfynn agent and has completed [tutorial 2](tutorial2.html).
 
 ## Uploading files
-{% include tip.html content="Download a small set of files that you can use for this tutorial [here](http://data.blackfynn.io/tutorials/example_data.zip)" %}
+{% include tip.html content="Download a small set of files that you can use for this tutorial [here](http://data.blackfynn.io/tutorials/example_data_simple.zip)" %}
 
 In order to upload files to the Blackfynn platform, users have to specify the dataset that the files should be uploaded to. We will be uploading the sample files to the dataset that was created in tutorial 2. Let's connect to the platform and get the dataset that we previously created.
 
