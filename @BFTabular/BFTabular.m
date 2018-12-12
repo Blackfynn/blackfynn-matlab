@@ -56,7 +56,6 @@ classdef (Sealed) BFTabular < BFDataPackage
         
     end
    
-    
     methods (Static)
         function out = createFromResponse(resp, session)
             % CREATEFROMRESPONSE creates a tabular object form an API response.

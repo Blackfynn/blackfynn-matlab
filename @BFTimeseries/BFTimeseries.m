@@ -52,7 +52,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             if ~(isempty(obj.channels_))
                 value = obj.channels_;
             else
-                resp = obj.get_channels();
+                resp = obj.session_.mainAPI.getTimeseriesChannels(obj.id_);
                 value = BFTimeseriesChannel.empty(length(resp),0);
                 for i = 1 : length(resp)
                     value(i) = BFTimeseriesChannel.createFromResponse(resp, ...
@@ -107,10 +107,10 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             % Create channel array structure for request
             chan_array = struct();
             for i=1:length(channels)
-                chan_array(i).id_ =  channels(i).id_;
+                chan_array(i).id =  channels(i).id_;
                 chan_array(i).rate = channels(i).rate;
             end
-            ch_ids = {chan_array.id_};
+            ch_ids = {chan_array.id};
             max_rate = max([chan_array.rate]);
 
             % Set chunk size (10,000 values per chunk)
@@ -145,47 +145,8 @@ classdef (Sealed) BFTimeseries < BFDataPackage
                 out{loc} = double(br.parseTimeSeriesList(data.get(curChId)));
             end
         end
-            
-%         function out = insert_annotation(obj, name, label, varargin)
-%             % INSERT_ANNOTATION Adds an annotation in the layer specified by
-%             % the user.
-%             %
-%             % Args:
-%             %       name (str): Layer in which to create the annotation
-%             %       label (str): Label for the annotation
-%             %       start (int, optional): start time (in usecs) for the annotation (default start time of signal)
-%             %       end (int, optional): end time (in usecs) for the annotation (default end time of signal)
-%             %       channelIds (str, optional): channel IDs for the channels that are annotated (all channels default)
-%             %       description (str, optional): description for the generated annotation
-%             %
-%             % Example:
-%             %
-%             %           Add a new annotation with label "Atonic Seizure" in a layer called "Seizures" for
-%             %           ``ts``, a timeseries object::
-%             %
-%             %               >> event = ts.insert_annotation('Seizures', 'Atonic Seizure', 'start', ts.startTime+10000000, 'end', ts.startTime+18000000);
-%             %
-%             % Note:
-%             %       If specific channels are selected for the annotations, they
-%             %       must be defined as string arrays::
-%             %
-%             %           >> channels = ["N:channel:????????-????-????-????-????????????", "N:channel:????????-????-????-????-????????????"]
-%             %
-% 
-%             % Get or create layer
-%             layer = obj.create_layer(name, varargin{:});
-% 
-%             % Create annotation
-%             resp = obj.session_.mainAPI.createTimeseriesAnnotation(obj.id_, layer.layerId);
-% 
-%             uri = sprintf('%s%s%s%s%d%s', obj.session_.host,'timeseries/', ...
-%                 obj.id_,'/layers/', layer.layerId, '/annotations');
-%             message = obj.load_annotation_params(name, label, layer.layerId, varargin{:});
-%             out = obj.session_.request.post(uri, message);
-%             out = BFTimeseriesAnnotation.createFromResponse(out, obj.session_);
-%         end
     
-        function out = createLayer(obj, name, varargin)
+        function out = createLayer(obj, name, varargin)     
             % CREATE_LAYER Creates an annotation layer
             %   LAYER = CREATELAYER(OBJ, 'name') creates a new annotation
             %   layer for the current timeseries object. 
@@ -224,7 +185,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             obj.layers_ = [];
         end
     
-        function layers = listLayers(obj)
+        function layers = listLayers(obj)                   
             % LISTLAYERS returns a MATLAB Table with annotation layer info
             %   LAYERS = LISTLAYERS(OBJ) returns a MATLAB table
             %   representing the annotation layers that exist for the
@@ -252,7 +213,7 @@ classdef (Sealed) BFTimeseries < BFDataPackage
             layers = out_table;
         end
     
-        function obj = deleteLayer(obj, layer)
+        function obj = deleteLayer(obj, layer)              
             % DELETELAYER Removes layer associated with timeseries object
             %   OBJ = DELETELAYER(OBJ, LAYER) removes an annotationlayer
             %   from the timeseries object. LAYER is an object of class
@@ -269,56 +230,8 @@ classdef (Sealed) BFTimeseries < BFDataPackage
 
         end
     end
-    
-    methods
-      
-        function out = get_channels(obj)
-            % GET_CHANNELS gets the channels for a ts package
-            %
-            out = obj.session_.mainAPI.getTimeseriesChannels(obj.id_);
-        end
-    
-        function out = load_annotation_params(obj, name, label, layer_id, ...
-                varargin)
-       % LOAD_ANNOTATION_PARAMS Parameter parser
-       %
-    
-       % create default channel list
-       %
-       channelList = strings(1, length(obj.channels));
-       for i = 1 : length(obj.channels)
-           channelList(i) = obj.channels(i).id_;
-       end
-       
-       defaultDescription = '';
-       defaultStart = obj.startTime;
-       defaultEnd = obj.endTime;
-       defaultChannels = obj.channels;
-       
-       p = inputParser;
-       addParameter(p, 'name', name);
-       addParameter(p, 'label', label);
-       addParameter(p, 'start', defaultStart);
-       addParameter(p, 'end', defaultEnd);
-       addParameter(p, 'layer_id', layer_id);
-       addParameter(p, 'channelIds', channelList);
-       addParameter(p, 'description', defaultDescription);
-       
-       parse(p,varargin{:})
-       
-       % format parsed parameters
-       results_cell = struct2cell(p.Results);    
-       params=struct();
-       for i = 1:length(p.Parameters)
-           params.(p.Parameters{i})=results_cell{i};
-       end
-       
-       out = params;
-    end
-    end
-    
   
-  methods (Static, Hidden)
+    methods (Static, Hidden)
       
       function out = merge_struct(old,new, ind)
           % MERGE_STRUCT handles the channel responses for a ts package

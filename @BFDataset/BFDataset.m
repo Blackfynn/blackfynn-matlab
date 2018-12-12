@@ -86,6 +86,9 @@ classdef BFDataset < BFBaseCollection
             %   the path does not exist yet. Separate folders using '/',
             %   for example: 'data/experiment1/trial1'.
             %
+            %   OBJ = UPLOAD(..., 'recursive', 'true') recreates the folder
+            %   structure relative to the specified folder on the platform
+            %
             %   OBJ = UPLOAD(..., 'include', 'includeStr') will only upload
             %   the files that match the 'includeStr' expression. The
             %   include string should be formatted as a globbing pattern.
