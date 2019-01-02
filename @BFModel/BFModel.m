@@ -366,8 +366,14 @@ classdef BFModel < BFBaseSchemaNode
         
         function props = getProperties(obj)
             
+            % Get standard properties
             resp = obj.session_.conceptsAPI.getProperties(obj.dataset.id_, obj.id_);
             props =  BFModelProperty.createFromResponse(resp, obj.session_);
+            
+            % Get linked properties
+            resp = obj.session_.conceptsAPI.getLinkedProperties(obj.dataset.id_, obj.id_);
+            linkedProps = BFLinkedModelProperty.createFromResponse(resp, obj.session_);
+            props = [props linkedProps];
             
         end
     end
@@ -384,6 +390,7 @@ classdef BFModel < BFBaseSchemaNode
           out.setDates(resp.createdAt, resp.createdBy, resp.updatedAt, resp.updatedBy); 
           
           out.props = out.getProperties();
+          
           
           
           

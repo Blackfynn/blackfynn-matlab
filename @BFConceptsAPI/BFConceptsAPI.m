@@ -83,7 +83,19 @@ classdef BFConceptsAPI
             request = obj.session_.request;
             response = request.put(endPoint, params2); 
         end
+        
+        function response = getLinkedProperties(obj, datasetId, modelId)
             
+            params = {};
+            endPoint = sprintf('%s/datasets/%s/concepts/%s/linked', obj.host, datasetId, modelId);
+            
+            request = obj.session_.request;
+            response = request.get(endPoint, params);      
+        end
+        
+        function response = addLinkedProperty
+        end
+        
         function response = getModels(obj, datasetId)
             
             params = {};
@@ -180,7 +192,7 @@ classdef BFConceptsAPI
             end
             
         end
-        
+                
         function response = getRelationCountsForRecord(obj, datasetId, modelId, recordId)
             params = {};
             endPoint = sprintf('%s/datasets/%s/concepts/%s/instances/%s/relationCounts', ...

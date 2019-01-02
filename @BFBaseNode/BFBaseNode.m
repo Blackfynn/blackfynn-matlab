@@ -6,7 +6,9 @@ classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
     %
     
     properties (Hidden)
-        id_          % ID on Blackfynn platform
+        id_           % ID on Blackfynn platform
+        createdAt_    % Timestamp when object was created
+        updatedAt_    % Timestamp when object was updated
     end
     properties(Access = protected)
         session_     % Session ID
@@ -24,6 +26,21 @@ classdef (Abstract) BFBaseNode < handle & matlab.mixin.CustomDisplay
                 obj.session_ = session;
                 obj.id_ = id;
             end
+        end
+        
+
+    end
+    
+    methods(Access = protected)
+        function obj = setDates(obj, createdAt, updatedAt)
+            % SETDATES Updates the create and update values of object
+            %   OBJ = SETDATES('createDate', 'updateDate') sets the
+            %   createdAt and updatedAt properties of the object. The input
+            %   strings should follow the following expression:
+            %   'yyyy-mm-ddTHH:MM:SS.FFF'. 
+            
+            obj.createdAt_ = datenum(createdAt, 'yyyy-mm-ddTHH:MM:SS');
+            obj.updatedAt_ = datenum(updatedAt, 'yyyy-mm-ddTHH:MM:SS');
         end
     end
     

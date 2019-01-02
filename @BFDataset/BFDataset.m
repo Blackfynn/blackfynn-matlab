@@ -191,6 +191,7 @@ classdef BFDataset < BFBaseCollection
             %
             content = resp.content;
             out = BFDataset(session, content.id, content.name);
+            out.setDates(content.createdAt, content.updatedAt);
             
             if isfield(content, 'description')
                 out.description = content.description;
