@@ -10,15 +10,13 @@ classdef BFRecord < BFBaseNode & dynamicprops
     %   platform with property names that match the following list, this
     %   might result in errors in the client.
     %
-    %   Restricted property names: {'createdAt', 'updatedAt', 'createdBy',
-    %   'updatedBy', 'session_', 'id_', 'type_', 'updated_', 'model_',
+    %   Restricted property names: {'createdAt_', 'updatedAt_', 'createdBy_',
+    %   'updatedBy_', 'session_', 'id_', 'type_', 'updated_', 'model_',
     %   'dataset_', 'propNames_'}
         
     properties (Hidden)
-        createdAt   % Indicates when record was created
-        updatedAt   % Indicates when record was updated
-        createdBy   % Indicates who created the record 
-        updatedBy   % Indicates who updated the record 
+        createdBy_   % Indicates who created the record 
+        updatedBy_   % Indicates who updated the record 
     end
     
     properties (Access = protected)
@@ -42,6 +40,8 @@ classdef BFRecord < BFBaseNode & dynamicprops
                 obj.dataset_ = dataset;
             end
         end
+        
+
         
         function obj = update(obj)                                      
             %UPDATE  Update object on the platform
@@ -332,11 +332,37 @@ classdef BFRecord < BFBaseNode & dynamicprops
         end
     end
     
-    methods (Access = protected)                            
+    methods (Access = protected)     
+        function out = getLinkedProp(obj, name)
+            % GETLINKEDPROP  Returns linked Record 
+            %   This method fetches a linked record using the API if the
+            %   record has not previously been fetched. It does this only
+            %   when the property is accessed. This prevents recursively
+            %   linked properties between multiple records to behave
+            %   incorrectly.
+            
+            info = obj.([name '_']);
+            if ~isa(info, 'BFRecord')
+                % Get object
+                info = obj.([name '_']);
+                response = obj.session_.conceptsAPI.getRecordInstance(...
+                    obj.dataset_.id_, info{1}, info{2});
+                
+                % Find model
+                allModelNames = {obj.dataset_.models.name};
+                model = obj.dataset_.models(strcmp(response.type, allModelNames));   
+                out = BFRecord.createFromResponse(response, ...
+                    obj.session_, model, obj.dataset_);
+                obj.([name '_']) = out;
+            else
+                out = obj.([name '_']);
+            end
+        end
+        
         function s = getFooter(obj)                                     
             %GETFOOTER Returns footer for object display.
             if isscalar(obj)
-                url = sprintf('%s/%s/datasets/%s/explore/%s/%s',obj.session_.web_host,obj.session_.org,obj.dataset_.id_,obj.model_.id_,obj.id_);
+                url = sprintf('%s/%s/datasets/%s/records/%s/%s',obj.session_.web_host,obj.session_.org,obj.dataset_.id_,obj.model_.id_,obj.id_);
                 if obj.updated_
                     s = sprintf(' <a href="matlab: Blackfynn.displayID(''%s'')">ID</a>, <a href="matlab: Blackfynn.gotoSite(''%s'')">View on Platform</a>, <a href="matlab: methods(%s.empty)">Methods</a>',obj.id_,url,class(obj));
                 else
@@ -366,28 +392,42 @@ classdef BFRecord < BFBaseNode & dynamicprops
     methods (Static, Hidden)
         function out = createFromResponse(resp, session, model, dataset)
             %CREATEFROMRESPONSE  Create object from server response
-            % args = [session, id, name, display_name,
-            %           description, locked, created_at, updated_at ]  
           
             out = BFRecord(session, resp.id, model, dataset);
             out.type_ = resp.type;
             out.id_ = resp.id;
-            out.createdAt = resp.createdAt;
-            out.updatedAt = resp.updatedAt;
-            out.createdBy = resp.createdBy;
-            out.updatedBy = resp.updatedBy;
+            out.setDates(resp.createdAt, resp.updatedAt);
+            out.createdBy_ = resp.createdBy;
+            out.updatedBy_ = resp.updatedBy;
             out.propNames_ = cell(1,length(resp.values));
             
+            for i=1: length(model.props)
+                out.propNames_{i} = model.props(i).name;
+                p = out.addprop(model.props(i).name);
+                p.SetObservable = true;
+                
+                if isa(model.props(i),'BFLinkedModelProperty')
+                    % Set Get Method
+                    p.GetMethod = @(obj) getLinkedProp(obj, model.props(i).name);
+                    p2 = out.addprop([model.props(i).name '_']);
+                    p2.Hidden = true;
+                end
+            end
             
             for i=1: length(resp.values)
                 curProp = resp.values(i);
-                out.propNames_{i} = curProp.name;
-                p = out.addprop(curProp.name);
                 out.(curProp.name) = curProp.value;
-                p.SetObservable = true;
                 addlistener(out,curProp.name,'PostSet', ...
                     @BFRecord.handlePropEvents);
+            end
 
+            % Get Linked Properties
+            resp = session.conceptsAPI.getLinkedPropertiesForInstance(dataset.id_, model.id_, resp.id);
+            allPropIds = {model.props.id_};
+            allPropNames = {model.props.name};
+            for i=1: length(resp)
+                idx = strcmp(resp.schemaLinkedPropertyId, allPropIds);
+                out.([allPropNames{idx} '_']) = {model.props(idx).toModel resp.to};
             end
         end
 

@@ -9,8 +9,6 @@ classdef BFModelProperty < BFBaseModelProperty
     %       BFModel, BFBaseModelProperty
     
     properties
-        name            % String with name of property
-        displayName     % String with pretty name of property
         dataType        % Data type of property
         description     % Description of property
         defaultValue    % Default value of property

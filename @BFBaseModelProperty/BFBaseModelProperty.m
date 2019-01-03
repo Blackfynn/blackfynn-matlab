@@ -3,7 +3,9 @@ classdef BFBaseModelProperty < BFBaseNode & matlab.mixin.Heterogeneous
     %   This class captures attributes for properties of models in the
     %   Blackfynn platform. It is extended by the BFMODELPROPERTY class.
 
-    properties        
+    properties    
+        name            % String with name of property
+        displayName     % String with pretty name of property
         index           % Index of the property in the class
         locked          % Boolean indicating property is locked
         default         % Boolean indicating property is default

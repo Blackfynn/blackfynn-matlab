@@ -105,6 +105,15 @@ classdef BFConceptsAPI
             response = request.get(endPoint, params);            
         end
         
+        function response = getRecordInstance(obj, datasetId, modelId, recordId)
+            
+            params = {};
+            endPoint = sprintf('%s/datasets/%s/concepts/%s/instances/%s', ...
+                obj.host, datasetId, modelId, recordId);
+            
+            response = obj.session_.request.get(endPoint, params);
+        end
+        
         function response = getRecords(obj, datasetId, modelId, varargin)
 
             params = {};
@@ -117,6 +126,17 @@ classdef BFConceptsAPI
                 obj.host, datasetId, modelId);
             
             response = obj.session_.request.get(endPoint, params);
+            
+        end
+        
+        function response = getLinkedPropertiesForInstance(obj, datasetId, modelId, recordId)
+            
+            params = {};
+            endPoint = sprintf('%s/datasets/%s/concepts/%s/instances/%s/linked', ...
+                obj.host, datasetId, modelId, recordId);
+            
+            request = obj.session_.request;
+            response = request.get(endPoint, params);   
             
         end
         
