@@ -93,7 +93,30 @@ classdef BFConceptsAPI
             response = request.get(endPoint, params);      
         end
         
-        function response = addLinkedProperty
+        function response = createLinkedProperty(obj, datasetId, modelId, propName, toModelId)
+            
+            name2 = strip(propName);
+            slug = BFConceptsAPI.slugFromString(name2);
+            
+            message = struct( ...
+            'name', slug, ... 
+            'displayName', name2, ...
+            'to', toModelId, ...
+            'position', 0);
+                
+            endPoint = sprintf('%s/datasets/%s/concepts/%s/linked',obj.host,datasetId, modelId);
+            params = jsonencode(message);
+            request = obj.session_.request;
+
+            try
+                response = request.post(endPoint, params);  
+            catch ME
+                if (strcmp(ME.identifier,'MATLAB:webservices:HTTP409StatusCodeError'))
+                    fprintf(2, 'Unable to create linked property.\n');
+                end
+                throwAsCaller(ME);
+            end   
+            
         end
         
         function response = getModels(obj, datasetId)
