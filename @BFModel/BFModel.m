@@ -26,8 +26,8 @@ classdef BFModel < BFBaseSchemaNode
     
     methods
         function obj = BFModel(session, dataset, id, name, displayName, ...
-                description, locked)               
-            %BFMODEL Construct an instance of this class
+                description, locked)
+              %BFMODEL Construct an instance of this class
             %   OBJ = BFMODEL(SESSION, DATASET, 'id', 'name', 'displayName',
             %   'description', LOCKED) creates an object of class BFMODEL.
             
@@ -179,8 +179,14 @@ classdef BFModel < BFBaseSchemaNode
             %   property a required property. Users cannot create records
             %   without specifying a value for this property.
             %
+            %   PROP = ADDPROPERTY(..., 'type','modelName') specifies the
+            %   type of model that is added as a linked property. This
+            %   argument is required when the 'Datatype' argument is set to
+            %   "model". A model with the provided name should exist in the
+            %   dataset.
+            %
             %   The 'Datatype' for each property has to be one of:
-            %   ["String", "Boolean", "Date", "Double", or "Long"].
+            %   ["Model", "String", "Boolean", "Date", "Double", or "Long"].
             %
             %   This function automatically sets the first property of a
             %   model to be the 'Concept Title'. This can be modified in
@@ -198,12 +204,16 @@ classdef BFModel < BFBaseSchemaNode
             %
             %       M.ADDPROPERTY('newProp', 'Decimal', 'Description',
             %       'enum', int64([ 1 2 3 4 5 ]), 'required', true)
+            %
+            %       M.ADDPROPERTY('newProp', 'model', 'Description',
+            %       'type', 'Patient')
             
             
             % Check inputs
             multInput = false;
             enumInput = [];
             requiredInput = false;
+            modelType = '';
             if nargin < 4
                 error('Incorrect number of input arguments.')
             elseif ~isempty(varargin) 
@@ -216,6 +226,8 @@ classdef BFModel < BFBaseSchemaNode
                             enumInput = varargin{i+1};
                         case 'required'
                             requiredInput = varargin{i+1};
+                        case 'type'
+                            modelType = varargin{i+1};
                         otherwise
                             error('Incorrect input arguments.')
                     end
@@ -223,7 +235,7 @@ classdef BFModel < BFBaseSchemaNode
             end
             
             assert(isa(description,'char') && isa(dataType,'char'), ...
-                'When adding single property, input variables for name, datatype,and description need to be of type ''char''');
+                'When adding single property, input variables for name, datatype, and description need to be of type ''char''');
 
             % Check length enum/mult inputs
             assert(isempty(multInput) || length(multInput) == 1, ...
@@ -231,89 +243,109 @@ classdef BFModel < BFBaseSchemaNode
             assert(isempty(enumInput) || any(size(enumInput)== 1), ...
                 'Enum input has to be a vector');
 
-            % Check type of enum/mult
-            assert(isempty(multInput) || isa(multInput, 'logical'), 'MULT input must be of type ''logical''');
-            
-            % Get existing properties from webservice
-            existingProps = obj.session_.conceptsAPI.getProperties(obj.dataset.id_, obj.id_);
-            
-            % Replace empty unit by empty string unit
-            for i=1: length(existingProps)
-                try
-                    ff = fieldnames(existingProps(i).dataType.items);
-                    if any(strcmp('unit',ff))
-                        existingProps(i).dataType.items.unit = "";
+            switch dataType
+                case 'model'
+                    allModelNames = {obj.dataset.models.name};
+                    modelIdx = strcmp(modelType, allModelNames);
+                    if ~any(modelIdx)
+                        error('modelType is not a valid model name for this dataset');
+                    end 
+                    
+                    modelId = obj.dataset.models(modelIdx).id_;
+                    response = obj.session_.conceptsAPI.createLinkedProperty(...
+                        obj.dataset.id_, obj.id_, name, modelId);
+                    
+                    
+                    obj.props = getProperties(obj);
+                    
+                    % find created property and return
+                    propNames = {obj.props.displayName};
+                    prop = obj.props(strcmp(name, propNames));
+                    
+                otherwise
+                    % Check type of enum/mult
+                    assert(isempty(multInput) || isa(multInput, 'logical'), 'MULT input must be of type ''logical''');
+
+                    % Get existing properties from webservice
+                    existingProps = obj.session_.conceptsAPI.getProperties(obj.dataset.id_, obj.id_);
+
+                    % Replace empty unit by empty string unit
+                    for i=1: length(existingProps)
+                        try
+                            ff = fieldnames(existingProps(i).dataType.items);
+                            if any(strcmp('unit',ff))
+                                existingProps(i).dataType.items.unit = "";
+                            end
+                        catch
+                        end
                     end
-                catch
-                end
+
+                    % Set concept title if no other properties yet.
+                    setConceptTitle = true;
+                    if ~isempty(existingProps)
+                        setConceptTitle = false;
+                    end
+
+                    assert(any(strcmp(dataType,{'String' 'Boolean', 'Date', 'Double', 'Long'})), ...
+                        'Datatype needs to be one of: [''Text'' ''Boolean'', ''Date'', ''Double'', ''Long''. ');
+
+                    % Set complex datatype for multivalue and enum.
+                    dataTypeObj = dataType;
+                    if multInput || ~isempty(enumInput)
+                        type = 'enum';
+                        if multInput
+                            type = 'array';
+                        end
+
+                        dataTypeObj = struct('type', type,'items', struct('type', dataType));
+
+                        if ~isempty(enumInput)
+                           dataTypeObj.items.enum = enumInput;
+
+                           % Check if enum type matches dataType
+                           assert(~any(strcmp(dataType, {'Date','Boolean'})), ...
+                               "Enum parameter is not allowed for dataTypes ''Date'' or ''Boolean''.");
+
+                           switch dataType
+                               case 'String'
+                                    assert(isa(enumInput, 'cell'), 'Enum must be cell array of Strings for datatype: String');
+                                    assert(all(cellfun(@(x) ischar(x),enumInput)), ...
+                                        'Enum must be cell array of Strings for datatype: String');
+                               case 'Double'
+                                    assert(isa(enumInput, 'double'), 'Enum must be 1xN numeric array of doubles for datatype: Double');
+                               case 'Long'
+                                    assert(isa(enumInput, 'int64'), 'Enum must be 1xN numeric array of int64 for datatype: Long');
+                               otherwise
+                                   error('Incorrect datatype.');
+                           end
+                        end
+                    end
+
+                    newProps = struct();
+                    newProps.conceptTitle = setConceptTitle;
+                    newProps.dataType = dataTypeObj;
+                    newProps.default = requiredInput;
+                    newProps.description = "";
+                    newProps.displayName = name;
+                    newProps.locked = false;
+                    newProps.name = BFConceptsAPI.slugFromString(name);
+                    newProps.value = "";
+                    newProps.unit = "";
+
+                    resp = obj.session_.conceptsAPI.updateModelProperties(...
+                        obj.dataset.id_, obj.id_, existingProps, newProps);
+
+                    if resp.StatusCode == matlab.net.http.StatusCode.BadRequest
+                        error('There was an error creating the property, does another property with the same name already exist?');
+                    end
+
+                    obj.props = BFModelProperty.createFromResponse(resp.Body.Data, obj.session_);
+                    obj.nrProperties = length(obj.props);
+
+                    % find created property and return
+                    propNames = {obj.props.name};
+                    prop = obj.props(strcmp(newProps.name, propNames));
             end
-            
-            % Set concept title if no other properties yet.
-            setConceptTitle = true;
-            if ~isempty(existingProps)
-                setConceptTitle = false;
-            end
-            
-            assert(any(strcmp(dataType,{'String' 'Boolean', 'Date', 'Double', 'Long'})), ...
-                'Datatype needs to be one of: [''Text'' ''Boolean'', ''Date'', ''Double'', ''Long''. ');
-            
-            % Set complex datatype for multivalue and enum.
-            dataTypeObj = dataType;
-            if multInput || ~isempty(enumInput)
-                type = 'enum';
-                if multInput
-                    type = 'array';
-                end
-                
-                dataTypeObj = struct('type', type,'items', struct('type', dataType));
-                
-                if ~isempty(enumInput)
-                   dataTypeObj.items.enum = enumInput;
-                   
-                   % Check if enum type matches dataType
-                   assert(~any(strcmp(dataType, {'Date','Boolean'})), ...
-                       "Enum parameter is not allowed for dataTypes ''Date'' or ''Boolean''.");
-                   
-                   switch dataType
-                       case 'String'
-                            assert(isa(enumInput, 'cell'), 'Enum must be cell array of Strings for datatype: String');
-                            assert(all(cellfun(@(x) ischar(x),enumInput)), ...
-                                'Enum must be cell array of Strings for datatype: String');
-                       case 'Double'
-                            assert(isa(enumInput, 'double'), 'Enum must be 1xN numeric array of doubles for datatype: Double');
-                       case 'Long'
-                            assert(isa(enumInput, 'int64'), 'Enum must be 1xN numeric array of int64 for datatype: Long');
-                       otherwise
-                           error('Incorrect datatype.');
-                   end
-                end
-            end
-            
-            newProps = struct();
-            newProps.conceptTitle = setConceptTitle;
-            newProps.dataType = dataTypeObj;
-            newProps.default = requiredInput;
-            newProps.description = "";
-            newProps.displayName = name;
-            newProps.locked = false;
-            newProps.name = BFConceptsAPI.slugFromString(name);
-            newProps.value = "";
-            newProps.unit = "";
-                        
-            resp = obj.session_.conceptsAPI.updateModelProperties(...
-                obj.dataset.id_, obj.id_, existingProps, newProps);
-            
-            if resp.StatusCode == matlab.net.http.StatusCode.BadRequest
-                error('There was an error creating the property, does another property with the same name already exist?');
-            end
-            
-            obj.props = BFModelProperty.createFromResponse(resp.Body.Data, obj.session_);
-            obj.nrProperties = length(obj.props);
-            
-            % find created property and return
-            propNames = {obj.props.name};
-            prop = obj.props(strcmp(newProps.name, propNames));
-            
         end
         
         function resp = getRelationships(obj)                           
@@ -366,8 +398,14 @@ classdef BFModel < BFBaseSchemaNode
         
         function props = getProperties(obj)
             
+            % Get standard properties
             resp = obj.session_.conceptsAPI.getProperties(obj.dataset.id_, obj.id_);
             props =  BFModelProperty.createFromResponse(resp, obj.session_);
+            
+            % Get linked properties
+            resp = obj.session_.conceptsAPI.getLinkedProperties(obj.dataset.id_, obj.id_);
+            linkedProps = BFLinkedModelProperty.createFromResponse(resp, obj.session_);
+            props = [props linkedProps];
             
         end
     end
@@ -384,9 +422,7 @@ classdef BFModel < BFBaseSchemaNode
           out.setDates(resp.createdAt, resp.createdBy, resp.updatedAt, resp.updatedBy); 
           
           out.props = out.getProperties();
-          
-          
-          
+
         end
     end
 end

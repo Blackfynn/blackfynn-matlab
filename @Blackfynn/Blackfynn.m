@@ -186,9 +186,7 @@ classdef (Sealed) Blackfynn < BFBaseNode
             %
             %   NOTE: This action is permanent and the data cannot be
             %   recovered after deleting a dataset!
-            
-            
-            
+    
             forceDelete = false;
             
             % Check for force
@@ -366,6 +364,17 @@ classdef (Sealed) Blackfynn < BFBaseNode
             id = {obj.datasets.id_}';
             
             out = table(idx,name,id);            
+        end
+        
+        function dataset = getDatasetByName(obj, name)
+            % GETDATASETBYNAME returns dataset for given name
+            %   DATASET = GETDATASETBYNAME(OBJ, 'name') returns the dataset
+            %   with the specified 'name'. If no dataset exists with the
+            %   provided name, an empty BFDATASET object is returned.
+            
+            dsNames = {obj.datasets.name};
+            dataset = obj.datasets(strcmp(name, dsNames));
+            
         end
 
     end

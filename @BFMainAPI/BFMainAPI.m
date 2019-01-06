@@ -1,6 +1,4 @@
 classdef BFMainAPI
-    %BFMAINAPI Summary of this class goes here
-    %   Detailed explanation goes here
     
     properties
         session_
@@ -59,6 +57,11 @@ classdef BFMainAPI
             params = {};
             response = obj.session_.request.get(endPoint, params);
             datasets = BFBaseDataNode.createFromResponse(response, obj.session_);
+            
+            % Sort datasets by creation date
+            cdates = [datasets.createdAt_];
+            [~,i] = sort(cdates);
+            datasets = datasets(i);
         end
         
         function resp = getDataset(obj, datasetId)
