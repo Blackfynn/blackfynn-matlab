@@ -341,8 +341,16 @@ classdef BFRecord < BFBaseNode & dynamicprops
             %   linked properties between multiple records to behave
             %   incorrectly.
             
+
             info = obj.([name '_']);
             if ~isa(info, 'BFRecord')
+                
+                % Return empty object if object is not set.
+                if isempty(info)
+                    out = BFRecord.empty();
+                    return;
+                end
+                
                 % Get object
                 info = obj.([name '_']);
                 response = obj.session_.conceptsAPI.getRecordInstance(...
@@ -357,6 +365,9 @@ classdef BFRecord < BFBaseNode & dynamicprops
             else
                 out = obj.([name '_']);
             end
+        end
+        function out = setLinkedProp(obj, name, value)
+            keyboard;
         end
         
         function s = getFooter(obj)                                     
@@ -402,15 +413,20 @@ classdef BFRecord < BFBaseNode & dynamicprops
             out.propNames_ = cell(1,length(resp.values));
             
             for i=1: length(model.props)
-                out.propNames_{i} = model.props(i).name;
-                p = out.addprop(model.props(i).name);
-                p.SetObservable = true;
-                
-                if isa(model.props(i),'BFLinkedModelProperty')
-                    % Set Get Method
-                    p.GetMethod = @(obj) getLinkedProp(obj, model.props(i).name);
-                    p2 = out.addprop([model.props(i).name '_']);
-                    p2.Hidden = true;
+                try
+                    out.propNames_{i} = model.props(i).name;
+                    p = out.addprop(model.props(i).name);
+                    p.SetObservable = true;
+
+                    if isa(model.props(i),'BFLinkedModelProperty')
+                        % Set Get Method
+                        p.GetMethod = @(obj) getLinkedProp(obj, model.props(i).name);
+                        p.SetMethod = @(obj) setLinkedProp(obj, model.props(i).name);
+                        p2 = out.addprop([model.props(i).name '_']);
+                        p2.Hidden = true;
+                    end
+                catch ME
+                    continue
                 end
             end
             
