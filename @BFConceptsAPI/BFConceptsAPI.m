@@ -163,6 +163,34 @@ classdef BFConceptsAPI
             
         end
         
+        function response = setLinkedPropertyForRecord(obj, datasetId, modelId, recordId, propertyName, propertyId, toRecordId)
+            
+            endPoint = sprintf('%s/datasets/%s/concepts/%s/instances/%s/linked', ...
+                    obj.host, datasetId, modelId, recordId);
+
+            params = struct(...
+                'name', propertyName,...
+                'displayName', propertyName, ...
+                'schemaLinkedPropertyId', propertyId, ...
+                'to', toRecordId);
+
+            request = obj.session_.request;
+            response = request.post(endPoint, params); 
+        end
+        
+        function response = removeLinkedPropertyForRecord(obj, datasetId, modelId, recordId, linkId)
+            
+            endPoint = sprintf('%s/datasets/%s/concepts/%s/instances/%s/linked/%s',...
+                obj.host, datasetId, modelId, recordId, linkId);
+            
+            request = obj.session_.request;
+            response = request.delete(endPoint,{});
+            
+            if response.StatusCode ~= 'OK'
+                error('Unable to perform request.')
+            end
+        end
+        
         function records = createRecords(obj, dataset, model, data)
             
             batch_array = {};
@@ -209,6 +237,60 @@ classdef BFConceptsAPI
                 end
             end
             
+        end
+        
+        function response = updateRecord(obj, record)
+            
+            % Update standard properties
+            allProps = record.model_.props;            
+            content = {};
+            for i=1:length(allProps)
+                if isa(allProps(i), 'BFModelProperty')
+                    updatedValue = record.(allProps(i).name);
+                    
+                    % Parse empty-cases
+                    switch allProps(i).dataType
+                        case 'String'
+                            if isempty(updatedValue)
+                                updatedValue = '';
+                            end
+                    end
+                    
+                    content{i} = struct('name', allProps(i).name, 'value',...
+                        updatedValue); %#ok<AGROW>
+                end
+            end
+            params = struct('values',[]);
+            params.values = content;
+
+            endPoint = sprintf('%s/datasets/%s/concepts/%s/instances/%s', ...
+                obj.host, record.dataset_.id_, record.model_.id_, record.id_);
+            
+            request = obj.session_.request;
+            response = request.put(endPoint, params);          
+            
+            % Update linked properties
+            for i=1: length(record.updatedLinkedProps_)
+                prop = allProps(strcmp(record.updatedLinkedProps_{i}, {allProps.name}));
+                propRec = record.(sprintf('%s_', prop.name));
+                
+                % Delete existing link if exist
+                if ~isempty(propRec{4})
+                    obj.removeLinkedPropertyForRecord(record.dataset_.id_, ...
+                        record.model_.id_, record.id_, propRec{4});
+                end
+                
+                % Add new link
+                response = obj.setLinkedPropertyForRecord(record.dataset_.id_, ...
+                    record.model_.id_, record.id_, prop.name, prop.id_, propRec{1}.id_);
+                
+                record.(sprintf('%s_', prop.name)){4} = response.id;
+            end
+
+            % Set updated to false
+            record.updatedLinkedProps_ = {};
+            record.updated_ = false;
+
         end
         
         function props = getProperties(obj, datasetId, modelId)

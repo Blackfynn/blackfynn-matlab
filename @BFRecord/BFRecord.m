@@ -12,19 +12,19 @@ classdef BFRecord < BFBaseNode & dynamicprops
     %
     %   Restricted property names: {'createdAt_', 'updatedAt_', 'createdBy_',
     %   'updatedBy_', 'session_', 'id_', 'type_', 'updated_', 'model_',
-    %   'dataset_', 'propNames_'}
+    %   'dataset_'}
         
     properties (Hidden)
         createdBy_   % Indicates who created the record 
         updatedBy_   % Indicates who updated the record 
     end
     
-    properties (Access = protected)
+    properties (Access = {?BFConceptsAPI})
         type_                   % Type of the record
         updated_ = false        % Flag to see if record changed
         model_                  % Associated model
         dataset_ = ''           % The dataset that the record belongs to
-        propNames_ = {}         % Cell array with dynamic property names
+        updatedLinkedProps_ = {} % Cell array with names of linked Properties that should be updated
     end
     
     methods
@@ -40,28 +40,14 @@ classdef BFRecord < BFBaseNode & dynamicprops
                 obj.dataset_ = dataset;
             end
         end
-        
 
-        
         function obj = update(obj)                                      
             %UPDATE  Update object on the platform
             %   OBJ = UPDATE(OBJ) synchronizes local changes with the
             %   platform. 
             
-            content = cell(1, length(obj.propNames_));
+            obj.session_.conceptsAPI.updateRecord(obj);
             
-            for i=1:length(obj.propNames_)
-                content{i} = struct('name',obj.propNames_{i}, 'value',...
-                    obj.(obj.propNames_{i}));
-            end
-            
-            uri = sprintf('%s/datasets/%s/concepts/%s/instances/%s', ...
-                obj.session_.concepts_host, obj.dataset_.id_,obj.modelId,obj.id_);
-            params = struct('values',[]);
-            params.values = content;
-            obj.session_.request.put(uri, params);
-            
-            obj.updated_ = false;
         end
         
         function obj = link(obj, targets, relationship)                 
@@ -118,7 +104,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
             
         end
         
-        function obj = linkFiles(obj, targets)
+        function obj = linkFiles(obj, targets)                          
             %LINKFILE Associates a file with the record.
             %   LINKFILE(OBJ, PACKAGES) links one or more packages to the
             %   current record. PACKAGE should be an array of objects of
@@ -272,7 +258,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
 
         end
         
-        function items = getFiles(obj)
+        function items = getFiles(obj)                                  
             %GETFILES Returns the files associated with the record
             %   ITEMS = GETFILES(OBJ) returns an array of files that are
             %   associated with the current record.
@@ -333,7 +319,7 @@ classdef BFRecord < BFBaseNode & dynamicprops
     end
     
     methods (Access = protected)     
-        function out = getLinkedProp(obj, name)
+        function out = getLinkedProp(obj, name)                         
             % GETLINKEDPROP  Returns linked Record 
             %   This method fetches a linked record using the API if the
             %   record has not previously been fetched. It does this only
@@ -341,33 +327,65 @@ classdef BFRecord < BFBaseNode & dynamicprops
             %   linked properties between multiple records to behave
             %   incorrectly.
             
-
+            % Get private info about property
             info = obj.([name '_']);
-            if ~isa(info, 'BFRecord')
+            
+            % Return empty object if object is not set.
+            if isempty(info)
+                out = BFRecord.empty();
+                return;
+            end
                 
-                % Return empty object if object is not set.
-                if isempty(info)
-                    out = BFRecord.empty();
-                    return;
-                end
-                
+            if isempty(info{1})
                 % Get object
                 info = obj.([name '_']);
                 response = obj.session_.conceptsAPI.getRecordInstance(...
-                    obj.dataset_.id_, info{1}, info{2});
+                    obj.dataset_.id_, info{2}, info{3});
                 
                 % Find model
                 allModelNames = {obj.dataset_.models.name};
-                model = obj.dataset_.models(strcmp(response.type, allModelNames));   
+                model = obj.dataset_.models(strcmpi(response.type, allModelNames));   
                 out = BFRecord.createFromResponse(response, ...
                     obj.session_, model, obj.dataset_);
-                obj.([name '_']) = out;
+                obj.([name '_']){1} = out;
             else
-                out = obj.([name '_']);
+                out = obj.([name '_']){1};
             end
         end
-        function out = setLinkedProp(obj, name, value)
-            keyboard;
+        
+        function obj = setLinkedProp(obj, value, prop)                  
+            %SETLINKEDPROP  Sets linked property values
+            %   OBJ = SETLINKEDPROP(OBJ, VALUE, 'prop') sets the value of
+            %   the linked property 'prop' to VALUE. The method checks
+            %   whether the model of VALUE is correct and marks the record
+            %   as ready to be updated on the platform.
+            
+            % Find model for current property
+            propNames = {obj.model_.props.name};
+            toProp = obj.model_.props(strcmp(prop, propNames));
+            
+            toModel = obj.dataset_.models(...
+                strcmp(toProp.toModel,{obj.dataset_.models.id_}));
+            
+            % Validate provided record
+            assert(strcmp(value.model_.id_,toProp.toModel),...
+                sprintf('Incorrect model for property.\nExpect model of type: %s', toModel.name));
+            
+            assert(strcmp(value.dataset_.id_, obj.dataset_.id_),...
+                'Incorrect dataset.\nRecords should belong to the same dataset.');
+
+            % Add record and mark for update
+            if isempty(obj.(sprintf('%s_', prop)))
+                obj.(sprintf('%s_', prop)) = {value toModel.id_ toProp.id_ '' };
+            else
+                obj.(sprintf('%s_', prop)){1} = value;
+            end
+            
+            obj.updated_ = true;
+            alreadyMarked = any(strcmp(prop, obj.updatedLinkedProps_));
+            if ~alreadyMarked
+                obj.updatedLinkedProps_{length(obj.updatedLinkedProps_)+1} = prop;
+            end
         end
         
         function s = getFooter(obj)                                     
@@ -410,18 +428,16 @@ classdef BFRecord < BFBaseNode & dynamicprops
             out.setDates(resp.createdAt, resp.updatedAt);
             out.createdBy_ = resp.createdBy;
             out.updatedBy_ = resp.updatedBy;
-            out.propNames_ = cell(1,length(resp.values));
             
             for i=1: length(model.props)
                 try
-                    out.propNames_{i} = model.props(i).name;
                     p = out.addprop(model.props(i).name);
                     p.SetObservable = true;
 
                     if isa(model.props(i),'BFLinkedModelProperty')
                         % Set Get Method
                         p.GetMethod = @(obj) getLinkedProp(obj, model.props(i).name);
-                        p.SetMethod = @(obj) setLinkedProp(obj, model.props(i).name);
+                        p.SetMethod = @(obj,value, name) setLinkedProp(obj, value, model.props(i).name);
                         p2 = out.addprop([model.props(i).name '_']);
                         p2.Hidden = true;
                     end
@@ -442,8 +458,8 @@ classdef BFRecord < BFBaseNode & dynamicprops
             allPropIds = {model.props.id_};
             allPropNames = {model.props.name};
             for i=1: length(resp)
-                idx = strcmp(resp.schemaLinkedPropertyId, allPropIds);
-                out.([allPropNames{idx} '_']) = {model.props(idx).toModel resp.to};
+                idx = strcmp(resp(i).schemaLinkedPropertyId, allPropIds);
+                out.([allPropNames{idx} '_']) = {BFRecord.empty(1,0) model.props(idx).toModel resp(i).to resp(i).id};
             end
         end
 
