@@ -252,14 +252,14 @@ classdef BFModel < BFBaseSchemaNode
                     end 
                     
                     modelId = obj.dataset.models(modelIdx).id_;
-                    response = obj.session_.conceptsAPI.createLinkedProperty(...
+                    obj.session_.conceptsAPI.createLinkedProperty(...
                         obj.dataset.id_, obj.id_, name, modelId);
-                    
                     
                     obj.props = getProperties(obj);
                     
                     % find created property and return
                     propNames = {obj.props.displayName};
+                    obj.nrProperties = length(obj.props);
                     prop = obj.props(strcmp(name, propNames));
                     
                 otherwise
@@ -339,7 +339,7 @@ classdef BFModel < BFBaseSchemaNode
                         error('There was an error creating the property, does another property with the same name already exist?');
                     end
 
-                    obj.props = BFModelProperty.createFromResponse(resp.Body.Data, obj.session_);
+                    obj.props = getProperties(obj);
                     obj.nrProperties = length(obj.props);
 
                     % find created property and return
