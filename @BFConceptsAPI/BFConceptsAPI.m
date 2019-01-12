@@ -193,6 +193,8 @@ classdef BFConceptsAPI
         
         function records = createRecords(obj, dataset, model, data)
             
+            propNames = {model.props.name};
+            
             batch_array = {};
             for i=1: length(data)
                 curItem = data(i);
@@ -203,6 +205,35 @@ classdef BFConceptsAPI
                     item = struct();
                     item.name = lower(fields{j});
                     item.value = curItem.(fields{j});
+                    
+                    % Validate value
+                    curProp = model.props(strcmpi(item.name, propNames));
+                    switch curProp.dataType
+                        case 'String'
+                            if isempty(item.value)
+                                item.value = '';
+                            end
+                        case 'Date'
+                            if isnumeric(item.value)
+                                item.value = datestr(item.value, ...
+                                    'YYYY-MM-DDThh:mm:ss.000+00:00');
+                            end
+                        case 'Model'
+                        case 'Double'
+                            assert(isnumeric(item.value), sprintf('Incorrect dataType for property: %s',item.name));
+                            if isempty(item.value)
+                                item.value = NaN;
+                            end
+                        case 'Long'
+                            assert(mod(item.value,1),0, sprintf('Incorrect dataType for property: %s',item.name));
+                            if isempty(item.value)
+                                item.value = NaN;
+                            end
+                        otherwise
+                            
+                    end
+                    
+                    
                     rec_array(j) = item;
                 end
                 jsonArray = jsonencode(rec_array);
@@ -311,7 +342,7 @@ classdef BFConceptsAPI
             response = request.delete(endPoint, recordIds);
             
             if response.StatusCode == 'OK'
-                success =  response.Body.Data.success;
+                success = true;
             else
                 error('Unable to perform request.')
             end

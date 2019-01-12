@@ -143,9 +143,7 @@ classdef testConcepts < matlab.unittest.TestCase
             testCase.verifyEqual(related(1).id_, records(2).id_); 
 
         end
-        
-        
-        
+
     end
     
     methods

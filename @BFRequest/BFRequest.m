@@ -24,9 +24,10 @@ classdef BFRequest < handle
     
     function response = post(obj, uri, message)
       obj.options.MediaType = 'application/json';
+      obj.options.Timeout = 60;
       try
         response = webwrite(uri, message, obj.options);
-      catch ME
+      catch ME              
         obj.handleError(ME);
       end
     end
@@ -97,6 +98,11 @@ classdef BFRequest < handle
         msg = [' The platform responded with a authorization error. '...
             'It is possible that you have been logged out'];
         causeException = MException('MATLAB:Blackfynn:BadRequest',msg);
+        ME = addCause(ME, causeException);  
+      elseif (strcmp(ME.identifier, 'MATLAB:webservices:CopyContentToDataStreamError'))
+        msg = [' MATLAB could not send all the data in a single request.' ...
+            'Try limiting the number of objects that you send per request'];
+        causeException = MException('MATLAB:Blackfynn:webservices',msg);
         ME = addCause(ME, causeException);  
       end
 
