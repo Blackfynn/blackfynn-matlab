@@ -316,6 +316,31 @@ classdef BFRecord < BFBaseNode & dynamicprops
             
             
         end
+        
+        function out = allvalues(obj, propName)                         
+            %ALLVALUES  Return all values for a prop in array of objects
+            %   OUT = ALLVALUES(OBJ, 'propName') returns a cell array with
+            %   all values of a property in an array of BFRecord objects.
+            %
+            %   This method provides a workaround for the lack of support
+            %   in MATLAB to aggregate values of properties that are
+            %   dynamically added to an object. 
+            %
+            %   Typically, you can access all the values of a property in
+            %   an array of objects using the following syntax: 
+            %
+            %       allProps = {objectArray.propName}
+            %
+            %   However, this is not available for dynamic properties which
+            %   are used in this toolbox. This method provides similar
+            %   functionality.
+            
+            out = cell(1, length(obj));
+            for i=1: length(obj)
+                out{i} = obj(i).(propName);
+            end
+            
+        end
     end
     
     methods (Access = protected)     

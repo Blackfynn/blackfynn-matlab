@@ -73,7 +73,7 @@ classdef BFModel < BFBaseSchemaNode
             offset = 0;
             
             if nargin > 1
-                narginchk(2,2);
+                narginchk(3,3);
                 maxCount = varargin{1};
                 offset = varargin{2};
             end
