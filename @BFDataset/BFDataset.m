@@ -8,6 +8,10 @@ classdef BFDataset < BFBaseCollection
         description     % Description of the dataset
     end
     
+    properties (SetAccess = private)
+        status = "NO_STATUS" % Status of package
+    end
+    
     properties (Dependent)
         models          % Models that are defined within the dataset
     end
@@ -195,6 +199,9 @@ classdef BFDataset < BFBaseCollection
             
             if isfield(content, 'description')
                 out.description = content.description;
+            end
+            if isfield(content, 'status')
+                out.status = content.status;
             end
         end
     end
